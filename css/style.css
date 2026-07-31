@@ -42,6 +42,13 @@
   --transition-fast: 180ms ease;
   --transition-medium: 350ms ease;
   --transition-slow: 600ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Variables spécifiques à videollamada.html */
+  --booking-container-width: 820px;
+  --page-padding: clamp(1.25rem, 5vw, 4.5rem);
+  --booking-color-gray: #777777;
+  --booking-color-gray-dark: #272727;
+  --color-whatsapp: #25d366;
 }
 
 /* =========================================================
@@ -726,21 +733,6 @@ img {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* =========================================================
-   BOTONES DE LA SECCIÓN CLASES
-========================================================= */
-
-.classes__actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 3rem;
-}
-
-.classes__actions .button {
-  min-width: 240px;
-}
-
 .service-card {
   min-height: 310px;
   padding: 2.25rem;
@@ -794,6 +786,10 @@ img {
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 3rem;
+}
+
+.classes__actions .button {
+  min-width: 240px;
 }
 
 /* Botón principal (blanco) */
@@ -1858,15 +1854,6 @@ img {
   }
 
   .product-card__footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .product-card__footer .button {
-    width: 100%;
-  }
-
-  .product-card__footer {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -1985,19 +1972,6 @@ body.menu-open {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* =========================================================
-   VARIABLES SPÉCIFIQUES — PAGE VIDEOLLAMADA
-   Ces variables n'altèrent pas la mise en page de index.html
-========================================================= */
-
-:root {
-  --booking-container-width: 820px;
-  --page-padding: clamp(1.25rem, 5vw, 4.5rem);
-  --booking-color-gray: #777777;
-  --booking-color-gray-dark: #272727;
-  --color-whatsapp: #25d366;
 }
 
 /* =========================================================
@@ -2200,6 +2174,7 @@ body.menu-open {
   min-width: 0;
 
   background-color: var(--color-white);
+  color: var(--color-black);
 }
 
 .booking-content::before {
@@ -2449,49 +2424,6 @@ body.menu-open {
 }
 
 /* =========================================================
-   WHATSAPP FLOTANTE
-========================================================= */
-
-.whatsapp-float {
-  position: fixed;
-  z-index: 1500;
-
-  right: 2rem;
-  bottom: 2rem;
-
-  display: flex;
-
-  width: 58px;
-  height: 58px;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background-color: var(--color-whatsapp);
-  color: var(--color-white-pure);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-
-  transition:
-    transform var(--transition-medium),
-    box-shadow var(--transition-medium);
-}
-
-.whatsapp-float i {
-  font-size: 1.8rem;
-}
-
-.whatsapp-float:hover {
-  color: var(--color-white-pure);
-
-  transform: translateY(-5px) scale(1.05);
-
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
-}
-
-/* =========================================================
    12. NOTA INFERIOR
 ========================================================= */
 
@@ -2707,5 +2639,137 @@ body.menu-open {
 
   .booking-support {
     padding: 1.5rem;
+  }
+}
+
+/* =========================================================
+   WHATSAPP FLOTTANT — NOIR ET BLANC
+========================================================= */
+
+.whatsapp-float {
+  position: fixed;
+  z-index: 1400;
+
+  right: 1.4rem;
+  bottom: 1.4rem;
+
+  display: inline-flex;
+  width: 52px;
+  height: 52px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+
+  background-color: var(--color-black);
+  color: var(--color-white);
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+
+  transition:
+    background-color var(--transition-medium),
+    color var(--transition-medium),
+    border-color var(--transition-medium),
+    transform var(--transition-medium),
+    box-shadow var(--transition-medium);
+
+  animation: whatsapp-soft-pulse 5s ease-in-out infinite;
+}
+
+.whatsapp-float i {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.whatsapp-float:hover,
+.whatsapp-float:focus-visible {
+  border-color: var(--color-black);
+
+  background-color: var(--color-white);
+  color: var(--color-black);
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.36);
+
+  transform: translateY(-4px) scale(1.04);
+}
+
+.whatsapp-float:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 4px;
+}
+
+/* Petit texte affiché au survol */
+.whatsapp-float__tooltip {
+  position: absolute;
+
+  right: calc(100% + 12px);
+
+  visibility: hidden;
+
+  padding: 0.5rem 0.7rem;
+
+  background-color: var(--color-black);
+  color: var(--color-white);
+
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  opacity: 0;
+  transform: translateX(6px);
+
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast),
+    visibility var(--transition-fast);
+
+  pointer-events: none;
+}
+
+.whatsapp-float:hover .whatsapp-float__tooltip,
+.whatsapp-float:focus-visible .whatsapp-float__tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Animation discrète toutes les quelques secondes */
+@keyframes whatsapp-soft-pulse {
+  0%,
+  82%,
+  100% {
+    transform: scale(1);
+  }
+
+  88% {
+    transform: scale(1.08);
+  }
+
+  94% {
+    transform: scale(1);
+  }
+}
+
+/* Ajustement mobile */
+@media (max-width: 600px) {
+  .whatsapp-float {
+    right: 1rem;
+    bottom: 1rem;
+
+    width: 48px;
+    height: 48px;
+  }
+
+  .whatsapp-float i {
+    font-size: 1.2rem;
+  }
+
+  .whatsapp-float__tooltip {
+    display: none;
   }
 }
