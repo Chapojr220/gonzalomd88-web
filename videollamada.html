@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <!-- Configuración general -->
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="Reserva una videollamada gratuita o una clase privada con Gonzalo MD88."
+    />
+
+    <title>Reservar una llamada | Gonzalo MD88</title>
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+
+    <!-- CSS específico de esta página -->
+    <link rel="stylesheet" href="./css/videollamada.css" />
+  </head>
+
+  <body>
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
+    <header class="booking-header">
+      <nav
+        class="booking-navbar"
+        aria-label="Navegación de la página de reserva"
+      >
+        <!-- Logo -->
+        <a
+          class="booking-navbar__logo"
+          href="./index.html"
+          aria-label="Volver al sitio principal"
+        >
+          GONZALO MD88
+        </a>
+
+        <!-- Volver al sitio -->
+        <a class="booking-navbar__back" href="./index.html">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+
+          <span>Volver al sitio</span>
+        </a>
+      </nav>
+    </header>
+
+    <!-- ==================================================
+         CONTENIDO PRINCIPAL
+    =================================================== -->
+    <main class="booking-page">
+      <!-- ==================================================
+           COLUMNA IZQUIERDA — IMAGEN
+      =================================================== -->
+      <section
+        class="booking-visual"
+        aria-label="Cabina espacial de reserva"
+      >
+        <!-- Overlay suave -->
+        <div class="booking-visual__overlay"></div>
+
+        <!-- Información sobre la imagen -->
+        <div class="booking-visual__content">
+          <p class="booking-visual__eyebrow">
+            PRIVATE CONNECTION · GMD88
+          </p>
+
+          <div class="booking-visual__message">
+            <p>FOCUS</p>
+            <p>CREATE</p>
+            <p>EVOLVE</p>
+          </div>
+
+          <p class="booking-visual__description">
+            No necesitas tener experiencia. Solo una idea, un objetivo y ganas
+            de desarrollar tu música.
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================================================
+           COLUMNA DERECHA — CALENDLY
+      =================================================== -->
+      <section class="booking-content">
+        <div class="booking-content__inner">
+          <!-- Encabezado -->
+          <div class="booking-heading">
+            <div class="booking-heading__meta">
+              <span>01</span>
+              <span>RESERVA</span>
+            </div>
+
+            <h1 class="booking-heading__title">
+              Hablemos de tu proyecto.
+            </h1>
+
+            <p class="booking-heading__description">
+              Reserva una llamada gratuita para resolver tus dudas o agenda
+              directamente una clase privada adaptada a tu nivel y objetivos.
+            </p>
+          </div>
+
+          <!-- Tipos de reserva -->
+          <div class="booking-options">
+            <article class="booking-option">
+              <span class="booking-option__number">01</span>
+
+              <div>
+                <h2 class="booking-option__title">
+                  Llamada gratuita
+                </h2>
+
+                <p class="booking-option__description">
+                  Una videollamada breve para hablar de tu nivel, tus objetivos
+                  y descubrir cómo podemos trabajar juntos.
+                </p>
+              </div>
+            </article>
+
+            <article class="booking-option">
+              <span class="booking-option__number">02</span>
+
+              <div>
+                <h2 class="booking-option__title">
+                  Clase privada
+                </h2>
+
+                <p class="booking-option__description">
+                  Reserva directamente una sesión personalizada de producción,
+                  sound design, mezcla o mastering.
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <!-- ==================================================
+               CALENDLY
+               
+               Reemplaza TU_USUARIO por el usuario real.
+               Ejemplo:
+               https://calendly.com/gonzalomd88
+          =================================================== -->
+          <div class="booking-calendar">
+            <div
+              class="calendly-inline-widget"
+              data-url="https://calendly.com/papiflowbeats/30min"
+              aria-label="Calendario para reservar una videollamada o una clase"
+            ></div>
+          </div>
+
+          <!-- ==================================================
+               WHATSAPP
+          =================================================== -->
+          <div class="booking-support">
+            <div class="booking-support__text">
+              <p class="booking-support__eyebrow">
+                ¿PREFIERES ESCRIBIR PRIMERO?
+              </p>
+
+              <h2 class="booking-support__title">
+                Resuelve tus dudas por WhatsApp.
+              </h2>
+
+              <p class="booking-support__description">
+                Escríbeme para consultar la disponibilidad, explicar tu
+                proyecto o saber qué tipo de sesión se adapta mejor a ti.
+              </p>
+            </div>
+
+            <!--
+              Sustituye 41790000000 por el número real.
+              Debe incluir el código del país y no llevar espacios.
+            -->
+            <a
+              class="whatsapp-button"
+              href="https://wa.me/41790000000?text=Hola%20Gonzalo%2C%20me%20gustaría%20recibir%20información%20sobre%20tus%20clases."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="bi bi-whatsapp" aria-hidden="true"></i>
+
+              <span>Hablar por WhatsApp</span>
+            </a>
+          </div>
+
+          <!-- Nota inferior -->
+          <div class="booking-note">
+            <i class="bi bi-camera-video" aria-hidden="true"></i>
+
+            <p>
+              Las videollamadas se realizan online. Recibirás los detalles de
+              acceso después de confirmar la reserva.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Script oficial del widget de Calendly -->
+    <script
+      src="https://assets.calendly.com/assets/external/widget.js"
+      async
+    ></script>
+  </body>
+</html>
