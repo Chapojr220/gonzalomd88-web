@@ -1940,6 +1940,35 @@ img {
 }
 
 /* =========================================================
+   MENU HAMBURGER — ÉTAT ACTIF
+   Transforme les trois lignes en croix
+========================================================= */
+
+.navbar__toggle span {
+  transform-origin: center;
+  transition:
+    transform var(--transition-medium),
+    opacity var(--transition-medium);
+}
+
+.navbar__toggle.is-active span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.navbar__toggle.is-active span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar__toggle.is-active span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Bloque le défilement derrière le menu mobile ouvert */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* =========================================================
    18. ACCESIBILIDAD
 ========================================================= */
 

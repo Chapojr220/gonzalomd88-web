@@ -777,6 +777,34 @@ a {
 }
 
 /* =========================================================
+   MOBILE PETIT — AJUSTEMENTS DU HEADER
+========================================================= */
+
+@media (max-width: 380px) {
+  .booking-navbar__logo {
+    font-size: 1.45rem;
+  }
+
+  .booking-navbar__back {
+    width: 40px;
+    height: 40px;
+  }
+
+  .booking-content__inner {
+    width: min(calc(100% - 2rem), var(--container-width));
+  }
+
+  .booking-option {
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .booking-support {
+    padding: 1.5rem;
+  }
+}
+
+/* =========================================================
    17. ACCESIBILIDAD
 ========================================================= */
 
