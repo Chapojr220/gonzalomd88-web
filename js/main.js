@@ -187,3 +187,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// =========================================================
+// TEST SUPABASE : RÉCUPÉRATION DES PRODUITS
+// =========================================================
+
+async function loadProductsFromSupabase() {
+  const { data, error } = await window.supabaseClient
+    .from("products")
+    .select("*");
+
+  if (error) {
+    console.error("❌ Erreur lors du chargement des produits :", error);
+    return;
+  }
+
+  console.log("✅ Produits récupérés depuis Supabase :", data);
+}
+
+loadProductsFromSupabase();

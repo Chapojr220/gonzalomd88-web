@@ -1,0 +1,23 @@
+{
+  "name": "007_gonzalomd88_14.07.2026_",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chapojr220/gonzalomd88-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chapojr220/gonzalomd88-web/issues"
+  },
+  "homepage": "https://github.com/Chapojr220/gonzalomd88-web#readme"
+}
