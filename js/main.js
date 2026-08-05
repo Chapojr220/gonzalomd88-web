@@ -192,6 +192,10 @@ const productsGrid = document.getElementById("productsGrid");
 
 console.log("✅ Grille produits trouvée :", productsGrid);
 
+const productsCounter = document.getElementById("productsCounter");
+
+console.log("✅ Compteur produits trouvé :", productsCounter);
+
 // =========================================================
 // SUPABASE : RÉCUPÉRATION DES PRODUITS
 // =========================================================
@@ -215,6 +219,8 @@ async function loadProductsFromSupabase() {
     return;
   }
 
+  productsCounter.textContent = `${String(products.length).padStart(2, "0")} PRODUCTOS DIGITALES`;
+
   products.forEach((product) => {
     const dynamicCard = document.createElement("article");
     dynamicCard.classList.add("product-card");
@@ -222,7 +228,7 @@ async function loadProductsFromSupabase() {
     dynamicCard.innerHTML = `
     <div class="product-card__image">
       <img
-        src="${product.cover_image_url || "./images/Products/product1.png"}"
+        src="${product.cover_image_url}"
         alt="Portada de ${product.title}"
       />
     </div>
