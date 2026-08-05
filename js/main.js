@@ -188,21 +188,79 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+const productsGrid = document.getElementById("productsGrid");
+
+console.log("✅ Grille produits trouvée :", productsGrid);
+
 // =========================================================
-// TEST SUPABASE : RÉCUPÉRATION DES PRODUITS
+// SUPABASE : RÉCUPÉRATION DES PRODUITS
 // =========================================================
 
 async function loadProductsFromSupabase() {
-  const { data, error } = await window.supabaseClient
+  const { data: products, error } = await window.supabaseClient
     .from("products")
-    .select("*");
+    .select("*")
+    .eq("is_published", true)
+    .order("display_order", { ascending: true });
 
   if (error) {
     console.error("❌ Erreur lors du chargement des produits :", error);
     return;
   }
 
-  console.log("✅ Produits récupérés depuis Supabase :", data);
+  console.log("✅ Produits récupérés depuis Supabase :", products);
+
+  if (!products || products.length === 0) {
+    console.warn("⚠️ Aucun produit publié trouvé.");
+    return;
+  }
+
+  products.forEach((product) => {
+    const dynamicCard = document.createElement("article");
+    dynamicCard.classList.add("product-card");
+
+    dynamicCard.innerHTML = `
+    <div class="product-card__image">
+      <img
+        src="${product.cover_image_url || "./images/Products/product1.png"}"
+        alt="Portada de ${product.title}"
+      />
+    </div>
+
+    <div class="product-card__content">
+      <p class="product-card__type">
+        ${product.product_type}
+      </p>
+
+      <h3 class="product-card__title">
+        ${product.title}
+      </h3>
+
+      <p class="product-card__description">
+        ${
+          product.short_description ||
+          "Producto digital diseñado para productores."
+        }
+      </p>
+
+      <div class="product-card__footer">
+        <p class="product-card__price">
+          $${Number(product.price ?? 0).toFixed(2)} ${product.currency}
+        </p>
+
+        <a class="button button--dark" href="#">
+          Descubrir
+        </a>
+      </div>
+    </div>
+  `;
+
+    productsGrid.appendChild(dynamicCard);
+  });
 }
 
-loadProductsFromSupabase();
+if (!productsGrid) {
+  console.error("❌ La grille #productsGrid est introuvable.");
+} else {
+  loadProductsFromSupabase();
+}
