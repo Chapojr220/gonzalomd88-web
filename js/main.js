@@ -196,6 +196,14 @@ const productsCounter = document.getElementById("productsCounter");
 
 console.log("✅ Compteur produits trouvé :", productsCounter);
 
+const musicCarousel = document.getElementById("musicCarousel");
+
+console.log("✅ Carrousel musique trouvé :", musicCarousel);
+
+const musicCounter = document.getElementById("musicCounter");
+
+console.log("✅ Compteur musique trouvé :", musicCounter);
+
 // =========================================================
 // SUPABASE : RÉCUPÉRATION DES PRODUITS
 // =========================================================
@@ -269,4 +277,112 @@ if (!productsGrid) {
   console.error("❌ La grille #productsGrid est introuvable.");
 } else {
   loadProductsFromSupabase();
+}
+
+// =========================================================
+// SUPABASE : RÉCUPÉRATION DES RELEASES
+// =========================================================
+
+async function loadReleasesFromSupabase() {
+  const { data: releases, error } = await window.supabaseClient
+    .from("releases")
+    .select(
+      `
+  *,
+  tracks (
+    id,
+    title,
+    track_number,
+    audio_url,
+    display_order,
+    is_published
+  )
+`,
+    )
+    .eq("is_published", true)
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("❌ Erreur Supabase :", error);
+    console.log("Releases :", releases);
+    return;
+  }
+
+  console.log("❗Erreur éventuelle :", error);
+  console.log("✅ Releases récupérées depuis Supabase :", releases);
+
+  const totalTracks = releases.reduce((total, release) => {
+    return total + (release.tracks || []).length;
+  }, 0);
+
+  musicCounter.textContent =
+    `${String(releases.length).padStart(2, "0")} PROYECTOS · ` +
+    `${String(totalTracks).padStart(2, "0")} TRACKS`;
+
+  musicCarousel.innerHTML = "";
+
+  releases.forEach((release) => {
+    const releaseCard = document.createElement("article");
+
+    releaseCard.classList.add("release-card");
+
+    releaseCard.innerHTML = `
+    <div class="release-card__image">
+      <img
+        src="${release.cover_image_url}"
+        alt="Portada de ${release.title}"
+      />
+    </div>
+
+    <div class="release-card__content">
+      <p class="release-card__type">
+        ${release.release_type}
+      </p>
+
+      <h3 class="release-card__title">
+        ${release.title}
+      </h3>
+
+      <p class="release-card__meta">
+        ${release.release_year} · ${release.genre}
+      </p>
+
+      <div class="track-list">
+  ${(release.tracks || [])
+    .filter((track) => track.is_published)
+    .sort((a, b) => a.display_order - b.display_order)
+    .map(
+      (track) => `
+        <div class="track">
+          <p class="track__name">
+            ${String(track.track_number).padStart(2, "0")}. ${track.title}
+          </p>
+
+          <audio
+            controls
+            preload="none"
+            controlslist="nodownload noplaybackrate"
+            oncontextmenu="return false;"
+          >
+            <source
+              src="${track.audio_url}"
+              type="audio/mpeg"
+            />
+          </audio>
+        </div>
+      `,
+    )
+    .join("")}
+</div>
+    </div>
+  `;
+
+    musicCarousel.appendChild(releaseCard);
+  });
+}
+
+if (!musicCarousel) {
+  console.error("❌ Le carrousel musique est introuvable.");
+} else {
+  loadReleasesFromSupabase();
 }
