@@ -983,67 +983,148 @@ img {
   height: 38px;
 }
 
-/* Plataformas */
+/* =========================================================
+   PLATEFORMES DES RELEASES
+   ========================================================= */
+
 .release-card__platforms {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.65rem;
+
   margin-top: 2rem;
+  padding-top: 1.5rem;
+
+  border-top: var(--border-dark);
 }
 
+/* Bouton d'une plateforme */
 .release-card__platforms a {
   position: relative;
+
   display: inline-flex;
+  flex: 0 0 44px;
+
   width: 44px;
   height: 44px;
+
   align-items: center;
   justify-content: center;
+
   border: var(--border-dark);
+
   background-color: transparent;
   color: var(--color-black);
+
   transition:
     background-color var(--transition-medium),
     color var(--transition-medium),
+    border-color var(--transition-medium),
     transform var(--transition-medium);
 }
 
+/* Icône */
+.release-card__platforms i {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Hover */
 .release-card__platforms a:hover {
+  border-color: var(--color-black);
   background-color: var(--color-black);
   color: var(--color-white);
   transform: translateY(-3px);
 }
 
-.release-card__platforms i {
-  font-size: 1rem;
+/* Accessibilité clavier */
+.release-card__platforms a:focus-visible {
+  outline: 2px solid var(--color-black);
+  outline-offset: 3px;
 }
 
-/* Tooltip */
+/* =========================================================
+   TOOLTIP — NOM DE LA PLATEFORME
+   ========================================================= */
+
 .release-card__platforms a::after {
   position: absolute;
+  z-index: 20;
+
   bottom: calc(100% + 10px);
   left: 50%;
+
   visibility: hidden;
-  padding: 0.4rem 0.55rem;
+
+  padding: 0.45rem 0.6rem;
+
   background-color: var(--color-black);
   color: var(--color-white);
+
   font-family: var(--font-mono);
   font-size: 0.55rem;
+  font-weight: 600;
   letter-spacing: 0.06em;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
+
   opacity: 0;
+
   content: attr(aria-label);
+
   transform: translate(-50%, 5px);
+
   transition:
     opacity var(--transition-fast),
     transform var(--transition-fast),
     visibility var(--transition-fast);
+
   pointer-events: none;
 }
 
-.release-card__platforms a:hover::after {
+/* Petite flèche du tooltip */
+.release-card__platforms a::before {
+  position: absolute;
+  z-index: 20;
+
+  bottom: calc(100% + 4px);
+  left: 50%;
+
+  visibility: hidden;
+
+  width: 0;
+  height: 0;
+
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  border-top: 6px solid var(--color-black);
+
+  opacity: 0;
+
+  content: "";
+
+  transform: translateX(-50%);
+
+  transition:
+    opacity var(--transition-fast),
+    visibility var(--transition-fast);
+
+  pointer-events: none;
+}
+
+/* Affichage du tooltip */
+.release-card__platforms a:hover::after,
+.release-card__platforms a:focus-visible::after,
+.release-card__platforms a:hover::before,
+.release-card__platforms a:focus-visible::before {
   visibility: visible;
   opacity: 1;
+}
+
+.release-card__platforms a:hover::after,
+.release-card__platforms a:focus-visible::after {
   transform: translate(-50%, 0);
 }
 
