@@ -123,21 +123,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================================================
-     03. LECTEURS AUDIO
-     Empêche plusieurs morceaux de jouer simultanément
-     ========================================================= */
+   03. LECTEURS AUDIO
+   Empêche plusieurs morceaux de jouer simultanément
+   Fonctionne aussi avec les lecteurs créés dynamiquement
+   ========================================================= */
 
-  const audioPlayers = document.querySelectorAll(".track audio");
+  document.addEventListener(
+    "play",
+    (event) => {
+      const currentPlayer = event.target;
 
-  audioPlayers.forEach((currentPlayer) => {
-    currentPlayer.addEventListener("play", () => {
+      if (
+        !(currentPlayer instanceof HTMLAudioElement) ||
+        !currentPlayer.closest(".track")
+      ) {
+        return;
+      }
+
+      const audioPlayers = document.querySelectorAll(".track audio");
+
       audioPlayers.forEach((otherPlayer) => {
         if (otherPlayer !== currentPlayer) {
           otherPlayer.pause();
         }
       });
-    });
-  });
+    },
+    true,
+  );
 
   /* =========================================================
      04. CARRUSEL DE PRODUITS
@@ -203,6 +215,38 @@ console.log("✅ Carrousel musique trouvé :", musicCarousel);
 const musicCounter = document.getElementById("musicCounter");
 
 console.log("✅ Compteur musique trouvé :", musicCounter);
+
+// =========================================================
+// SUPABASE : RÉCUPÉRATION DES CONTENUS DU SITE
+// =========================================================
+
+async function loadSiteContentFromSupabase() {
+  const { data: contents, error } = await window.supabaseClient
+    .from("site_content")
+    .select("content_key, content_value")
+    .eq("is_active", true);
+
+  if (error) {
+    console.error("❌ Erreur lors du chargement des contenus du site :", error);
+    return;
+  }
+
+  console.log("✅ Contenus récupérés depuis Supabase :", contents);
+
+  contents.forEach((content) => {
+    const element = document.querySelector(
+      `[data-content-key="${content.content_key}"]`,
+    );
+
+    if (!element) {
+      return;
+    }
+
+    element.textContent = content.content_value;
+  });
+}
+
+loadSiteContentFromSupabase();
 
 // =========================================================
 // SUPABASE : RÉCUPÉRATION DES PRODUITS
