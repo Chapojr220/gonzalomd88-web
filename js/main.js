@@ -302,11 +302,24 @@ async function loadSiteSettingsFromSupabase() {
   // CALENDLY
   // ---------------------------------------------------------
 
-  document.querySelectorAll('[data-setting="calendly_url"]').forEach((link) => {
-    if (!settings.calendly_url) return;
+  document
+    .querySelectorAll('[data-setting="calendly_url"]')
+    .forEach((element) => {
+      if (!settings.calendly_url) {
+        return;
+      }
 
-    link.href = settings.calendly_url;
-  });
+      // Si l'élément est un lien classique
+      if (element.tagName === "A") {
+        element.href = settings.calendly_url;
+        return;
+      }
+
+      // Si l'élément est le widget Calendly
+      if (element.classList.contains("calendly-inline-widget")) {
+        element.dataset.url = settings.calendly_url;
+      }
+    });
 
   // ---------------------------------------------------------
   // WHATSAPP
@@ -319,7 +332,75 @@ async function loadSiteSettingsFromSupabase() {
   });
 }
 
-loadSiteSettingsFromSupabase();
+// =========================================================
+// CALENDLY : CHARGEMENT DYNAMIQUE DU WIDGET
+// =========================================================
+
+function loadCalendlyWidget() {
+  // ---------------------------------------------------------
+  // Vérifie si la page contient réellement un widget Calendly
+  // ---------------------------------------------------------
+
+  const calendlyWidget = document.querySelector(".calendly-inline-widget");
+
+  // index.html ne possède pas forcément de widget Calendly.
+  // Dans ce cas, on arrête simplement la fonction.
+  if (!calendlyWidget) {
+    return;
+  }
+
+  // ---------------------------------------------------------
+  // Vérifie qu'une URL Calendly est disponible
+  // ---------------------------------------------------------
+
+  const calendlyUrl = calendlyWidget.dataset.url;
+
+  if (!calendlyUrl) {
+    console.warn("⚠️ Aucune URL Calendly disponible.");
+    return;
+  }
+
+  // ---------------------------------------------------------
+  // Évite de charger plusieurs fois le script Calendly
+  // ---------------------------------------------------------
+
+  if (document.querySelector('script[data-calendly-script="true"]')) {
+    return;
+  }
+
+  // ---------------------------------------------------------
+  // Création dynamique du script officiel Calendly
+  // ---------------------------------------------------------
+
+  const calendlyScript = document.createElement("script");
+
+  calendlyScript.src = "https://assets.calendly.com/assets/external/widget.js";
+
+  calendlyScript.async = true;
+  calendlyScript.dataset.calendlyScript = "true";
+
+  // ---------------------------------------------------------
+  // Confirmation dans la console
+  // ---------------------------------------------------------
+
+  calendlyScript.addEventListener("load", () => {
+    console.log("✅ Widget Calendly chargé avec l'URL :", calendlyUrl);
+  });
+
+  calendlyScript.addEventListener("error", () => {
+    console.error("❌ Impossible de charger le widget Calendly.");
+  });
+
+  // ---------------------------------------------------------
+  // Ajout du script dans la page
+  // ---------------------------------------------------------
+
+  document.body.appendChild(calendlyScript);
+}
+
+loadSiteSettingsFromSupabase().then(() => {
+  loadCalendlyWidget();
+});
 
 // =========================================================
 // SUPABASE : RÉCUPÉRATION DES RÉSEAUX SOCIAUX
