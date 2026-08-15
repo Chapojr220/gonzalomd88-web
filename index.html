@@ -297,21 +297,29 @@
       </section>
 
       <!-- ==================================================
-     SECCIÓN 3 — MÚSICA Y LANZAMIENTOS
-=================================================== -->
+      SECCIÓN 3 — MÚSICA Y LANZAMIENTOS
+      =================================================== -->
       <section class="music section section--light" id="musica">
         <div class="container">
           <!-- Encabezado -->
           <div class="section-heading">
             <p class="section-heading__number">02</p>
 
-            <p class="section-heading__eyebrow">MÚSICA Y LANZAMIENTOS</p>
+            <p
+              class="section-heading__eyebrow"
+              data-content-key="music_eyebrow"
+            >
+              MÚSICA Y LANZAMIENTOS
+            </p>
 
-            <h2 class="section-heading__title">
+            <h2 class="section-heading__title" data-content-key="music_title">
               Explora los últimos proyectos.
             </h2>
 
-            <p class="section-heading__description">
+            <p
+              class="section-heading__description"
+              data-content-key="music_description"
+            >
               Escucha una selección de EPs, descubre cada proyecto y accede a
               las plataformas oficiales para comprar o seguir los lanzamientos.
             </p>
@@ -352,21 +360,32 @@
       </section>
 
       <!-- ==================================================
-     SECCIÓN 4 — SAMPLE PACKS Y PRODUCTOS
-=================================================== -->
+      SECCIÓN 4 — SAMPLE PACKS Y PRODUCTOS
+      =================================================== -->
       <section class="products section section--image" id="productos">
         <div class="container">
           <!-- Encabezado de la sección -->
           <div class="section-heading section-heading--light">
             <p class="section-heading__number">03</p>
 
-            <p class="section-heading__eyebrow">PRODUCTOS</p>
+            <p
+              class="section-heading__eyebrow"
+              data-content-key="products_eyebrow"
+            >
+              PRODUCTOS
+            </p>
 
-            <h2 class="section-heading__title">
+            <h2
+              class="section-heading__title"
+              data-content-key="products_title"
+            >
               Herramientas creadas para productores.
             </h2>
 
-            <p class="section-heading__description">
+            <p
+              class="section-heading__description"
+              data-content-key="products_description"
+            >
               Sample packs, Ableton racks y formaciones diseñadas para mejorar
               tu flujo de trabajo, desarrollar tu sonido y producir con mayor
               libertad.
@@ -408,7 +427,7 @@
       </section>
 
       <!-- ==================================================
-           SECCIÓN 5 — SOBRE EL ARTISTA
+      SECCIÓN 5 — SOBRE EL ARTISTA
       =================================================== -->
       <section class="artist section section--image" id="artista">
         <div class="section__overlay"></div>
@@ -417,34 +436,43 @@
           <div class="section-heading section-heading--light">
             <p class="section-heading__number">04</p>
 
-            <p class="section-heading__eyebrow">EL ARTISTA</p>
+            <p
+              class="section-heading__eyebrow"
+              data-content-key="artist_eyebrow"
+            >
+              EL ARTISTA
+            </p>
 
-            <h2 class="section-heading__title">
+            <h2 class="section-heading__title" data-content-key="artist_title">
               Una visión construida entre máquinas, ritmo y experimentación.
             </h2>
           </div>
 
           <div class="artist__description">
-            <p>
+            <p data-content-key="artist_paragraph_1">
               Gonzalo MD88 desarrolla una propuesta centrada en el techno, la
               creación de grooves y la búsqueda de una identidad sonora propia.
             </p>
 
-            <p>
+            <p data-content-key="artist_paragraph_2">
               Su trabajo combina producción, experimentación y transmisión de
               conocimientos para ayudar a otros artistas a comprender mejor su
               proceso creativo.
             </p>
           </div>
 
-          <a class="button button--light" href="./videollamada.html">
+          <a
+            class="button button--light"
+            href="./videollamada.html"
+            data-content-key="artist_button"
+          >
             Trabajar conmigo
           </a>
         </div>
       </section>
 
       <!-- ==================================================
-           SECCIÓN 6 — CONTACTO Y RESERVA
+      SECCIÓN 6 — CONTACTO Y RESERVA
       =================================================== -->
       <section class="contact section section--dark" id="contacto">
         <div class="container contact__layout">
@@ -452,26 +480,51 @@
             <div class="section-heading section-heading--light">
               <p class="section-heading__number">05</p>
 
-              <p class="section-heading__eyebrow">CONTACTO</p>
+              <p
+                class="section-heading__eyebrow"
+                data-content-key="contact_eyebrow"
+              >
+                CONTACTO
+              </p>
 
-              <h2 class="section-heading__title">
+              <h2
+                class="section-heading__title"
+                data-content-key="contact_title"
+              >
                 ¿Listo para llevar tu sonido más lejos?
               </h2>
 
-              <p class="section-heading__description">
+              <p
+                class="section-heading__description"
+                data-content-key="contact_description"
+              >
                 Reserva una clase privada, solicita información o presenta tu
                 proyecto.
               </p>
             </div>
 
             <div class="contact__links">
-              <a href="mailto:correo@ejemplo.com">correo@ejemplo.com</a>
+              <a href="mailto:correo@ejemplo.com" data-setting="contact_email">
+                correo@ejemplo.com
+              </a>
 
-              <a href="#" target="_blank" rel="noopener">
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener"
+                data-setting="calendly_url"
+                data-content-key="contact_calendly_label"
+              >
                 Reservar mediante Calendly
               </a>
 
-              <a href="#" target="_blank" rel="noopener">
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener"
+                data-setting="whatsapp_url"
+                data-content-key="contact_whatsapp_label"
+              >
                 Contactar por WhatsApp
               </a>
             </div>
@@ -480,7 +533,9 @@
           <!-- Formulario de contacto -->
           <form class="contact-form">
             <div class="contact-form__group">
-              <label for="name">Nombre</label>
+              <label for="name" data-content-key="contact_form_name_label">
+                Nombre
+              </label>
 
               <input
                 id="name"
@@ -492,7 +547,9 @@
             </div>
 
             <div class="contact-form__group">
-              <label for="email">Correo electrónico</label>
+              <label for="email" data-content-key="contact_form_email_label">
+                Correo electrónico
+              </label>
 
               <input
                 id="email"
@@ -504,7 +561,12 @@
             </div>
 
             <div class="contact-form__group">
-              <label for="service">Servicio</label>
+              <label
+                for="service"
+                data-content-key="contact_form_service_label"
+              >
+                Servicio
+              </label>
 
               <select id="service" name="service" required>
                 <option value="">Selecciona una opción</option>
@@ -517,7 +579,12 @@
             </div>
 
             <div class="contact-form__group">
-              <label for="message">Mensaje</label>
+              <label
+                for="message"
+                data-content-key="contact_form_message_label"
+              >
+                Mensaje
+              </label>
 
               <textarea
                 id="message"
@@ -527,7 +594,11 @@
               ></textarea>
             </div>
 
-            <button class="button button--light" type="submit">
+            <button
+              class="button button--light"
+              type="submit"
+              data-content-key="contact_form_submit"
+            >
               Enviar mensaje
             </button>
           </form>
@@ -568,8 +639,19 @@
 
     <!-- ==================================================
      WHATSAPP FLOTTANT
-=================================================== -->
+    =================================================== -->
     <a
+      class="whatsapp-float"
+      href="https://wa.me/41790000000?text=Hola%20Gonzalo%2C%20me%20gustaría%20recibir%20más%20información."
+      data-setting="whatsapp_url"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Contactar con Gonzalo MD88 por WhatsApp"
+    >
+      <i class="bi bi-whatsapp" aria-hidden="true"></i>
+
+      <span class="whatsapp-float__tooltip"> WhatsApp </span> </a
+    ><a
       class="whatsapp-float"
       href="https://wa.me/41790000000?text=Hola%20Gonzalo%2C%20me%20gustaría%20recibir%20más%20información."
       target="_blank"

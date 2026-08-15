@@ -249,6 +249,69 @@ async function loadSiteContentFromSupabase() {
 loadSiteContentFromSupabase();
 
 // =========================================================
+// SUPABASE : RÉCUPÉRATION DES PARAMÈTRES GLOBAUX
+// =========================================================
+
+async function loadSiteSettingsFromSupabase() {
+  const { data: settings, error } = await window.supabaseClient
+    .from("site_settings")
+    .select("contact_email, calendly_url, whatsapp_url")
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error(
+      "❌ Erreur lors du chargement des paramètres globaux :",
+      error,
+    );
+    return;
+  }
+
+  if (!settings) {
+    console.warn("⚠️ Aucun paramètre global trouvé.");
+    return;
+  }
+
+  console.log("✅ Paramètres globaux récupérés :", settings);
+
+  // ---------------------------------------------------------
+  // EMAIL
+  // ---------------------------------------------------------
+
+  document
+    .querySelectorAll('[data-setting="contact_email"]')
+    .forEach((link) => {
+      if (!settings.contact_email) return;
+
+      link.textContent = settings.contact_email;
+      link.href = `mailto:${settings.contact_email}`;
+    });
+
+  // ---------------------------------------------------------
+  // CALENDLY
+  // ---------------------------------------------------------
+
+  document.querySelectorAll('[data-setting="calendly_url"]').forEach((link) => {
+    if (!settings.calendly_url) return;
+
+    link.href = settings.calendly_url;
+  });
+
+  // ---------------------------------------------------------
+  // WHATSAPP
+  // ---------------------------------------------------------
+
+  document.querySelectorAll('[data-setting="whatsapp_url"]').forEach((link) => {
+    if (!settings.whatsapp_url) return;
+
+    link.href = settings.whatsapp_url;
+  });
+}
+
+loadSiteSettingsFromSupabase();
+
+// =========================================================
 // SUPABASE : RÉCUPÉRATION DES PRODUITS
 // =========================================================
 
