@@ -33,7 +33,7 @@
     <header class="header">
       <nav class="navbar" aria-label="Navegación principal">
         <!-- Nombre o futuro logotipo del artista -->
-        <a class="navbar__logo" href="#inicio" aria-label="Volver al inicio">
+        <a class="navbar__logo" href="#inicio" data-setting="site_name">
           GONZALO MD88
         </a>
 
@@ -53,27 +53,55 @@
         <!-- Enlaces internos hacia las diferentes secciones -->
         <ul class="navbar__menu" id="navbar-menu">
           <li>
-            <a class="navbar__link" href="#inicio">Inicio</a>
+            <a class="navbar__link" href="#inicio" data-content-key="nav_home">
+              Inicio
+            </a>
           </li>
 
           <li>
-            <a class="navbar__link" href="#clases">Clases</a>
+            <a
+              class="navbar__link"
+              href="#clases"
+              data-content-key="nav_classes"
+            >
+              Clases
+            </a>
           </li>
 
           <li>
-            <a class="navbar__link" href="#musica">Música</a>
+            <a class="navbar__link" href="#musica" data-content-key="nav_music">
+              Música
+            </a>
           </li>
 
           <li>
-            <a class="navbar__link" href="#productos">Productos</a>
+            <a
+              class="navbar__link"
+              href="#productos"
+              data-content-key="nav_products"
+            >
+              Productos
+            </a>
           </li>
 
           <li>
-            <a class="navbar__link" href="#artista">Artista</a>
+            <a
+              class="navbar__link"
+              href="#artista"
+              data-content-key="nav_artist"
+            >
+              Artista
+            </a>
           </li>
 
           <li>
-            <a class="navbar__link" href="#contacto">Contacto</a>
+            <a
+              class="navbar__link"
+              href="#contacto"
+              data-content-key="nav_contact"
+            >
+              Contacto
+            </a>
           </li>
         </ul>
       </nav>
@@ -114,6 +142,7 @@
               class="button button--light"
               href="./videollamada.html"
               aria-label="Agendar una llamada gratuita"
+              data-content-key="hero_button_primary"
             >
               Agendar una llamada gratis
             </a>
@@ -123,6 +152,7 @@
               class="button button--outline-light"
               href="#productos"
               aria-label="Descubrir nuestros productos"
+              data-content-key="hero_button_secondary"
             >
               Descubrir nuestros productos
             </a>
@@ -130,44 +160,9 @@
             <!-- Redes y plataformas -->
             <div
               class="hero__socials"
+              data-social-links="global"
               aria-label="Redes sociales y plataformas musicales"
-            >
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-              >
-                <i class="bi bi-instagram" aria-hidden="true"></i>
-              </a>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Spotify"
-              >
-                <i class="bi bi-spotify" aria-hidden="true"></i>
-              </a>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="SoundCloud"
-              >
-                <i class="bi bi-soundwave" aria-hidden="true"></i>
-              </a>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Bandcamp"
-              >
-                <i class="bi bi-vinyl" aria-hidden="true"></i>
-              </a>
-            </div>
+            ></div>
           </div>
         </div>
 
@@ -569,12 +564,41 @@
               </label>
 
               <select id="service" name="service" required>
-                <option value="">Selecciona una opción</option>
-                <option value="private-class">Clase privada</option>
-                <option value="feedback">Feedback de proyecto</option>
-                <option value="product">Información sobre productos</option>
-                <option value="collaboration">Colaboración</option>
-                <option value="other">Otro</option>
+                <option value="" data-content-key="contact_option_placeholder">
+                  Selecciona una opción
+                </option>
+
+                <option
+                  value="private-class"
+                  data-content-key="contact_option_private_class"
+                >
+                  Clase privada
+                </option>
+
+                <option
+                  value="feedback"
+                  data-content-key="contact_option_feedback"
+                >
+                  Feedback de proyecto
+                </option>
+
+                <option
+                  value="product"
+                  data-content-key="contact_option_product"
+                >
+                  Información sobre productos
+                </option>
+
+                <option
+                  value="collaboration"
+                  data-content-key="contact_option_collaboration"
+                >
+                  Colaboración
+                </option>
+
+                <option value="other" data-content-key="contact_option_other">
+                  Otro
+                </option>
               </select>
             </div>
 
@@ -611,25 +635,16 @@
     =================================================== -->
     <footer class="footer">
       <div class="container footer__content">
-        <a class="footer__logo" href="#inicio">GONZALO MD88</a>
+        <a class="footer__logo" href="#inicio" data-setting="site_name">
+          GONZALO MD88
+        </a>
 
-        <ul class="footer__socials">
-          <li>
-            <a href="#" target="_blank" rel="noopener">Instagram</a>
-          </li>
-
-          <li>
-            <a href="#" target="_blank" rel="noopener">Spotify</a>
-          </li>
-
-          <li>
-            <a href="#" target="_blank" rel="noopener">SoundCloud</a>
-          </li>
-
-          <li>
-            <a href="#" target="_blank" rel="noopener">Bandcamp</a>
-          </li>
-        </ul>
+        <ul
+          class="footer__socials"
+          data-social-links="global"
+          data-social-display="text"
+          aria-label="Redes sociales y plataformas musicales"
+        ></ul>
 
         <p class="footer__copyright">
           © 2026 Gonzalo MD88. Todos los derechos reservados.

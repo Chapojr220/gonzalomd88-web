@@ -255,7 +255,7 @@ loadSiteContentFromSupabase();
 async function loadSiteSettingsFromSupabase() {
   const { data: settings, error } = await window.supabaseClient
     .from("site_settings")
-    .select("contact_email, calendly_url, whatsapp_url")
+    .select("site_name, contact_email, calendly_url, whatsapp_url")
     .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
@@ -274,6 +274,16 @@ async function loadSiteSettingsFromSupabase() {
   }
 
   console.log("✅ Paramètres globaux récupérés :", settings);
+
+  // ---------------------------------------------------------
+  // NOM DU SITE
+  // ---------------------------------------------------------
+
+  document.querySelectorAll('[data-setting="site_name"]').forEach((element) => {
+    if (!settings.site_name) return;
+
+    element.textContent = settings.site_name;
+  });
 
   // ---------------------------------------------------------
   // EMAIL
@@ -310,6 +320,66 @@ async function loadSiteSettingsFromSupabase() {
 }
 
 loadSiteSettingsFromSupabase();
+
+// =========================================================
+// SUPABASE : RÉCUPÉRATION DES RÉSEAUX SOCIAUX
+// =========================================================
+
+async function loadSocialLinksFromSupabase() {
+  const { data: socialLinks, error } = await window.supabaseClient
+    .from("social_links")
+    .select("slug, label, url, icon_class, display_order")
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("❌ Erreur lors du chargement des réseaux sociaux :", error);
+    return;
+  }
+
+  console.log("✅ Réseaux sociaux récupérés :", socialLinks);
+
+  const socialContainers = document.querySelectorAll(
+    '[data-social-links="global"]',
+  );
+
+  socialContainers.forEach((container) => {
+    container.innerHTML = "";
+
+    const displayMode = container.dataset.socialDisplay || "icon";
+
+    socialLinks.forEach((social) => {
+      if (!social.url) {
+        return;
+      }
+
+      const link = document.createElement("a");
+
+      link.href = social.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.setAttribute("aria-label", social.label);
+
+      if (displayMode === "text") {
+        const listItem = document.createElement("li");
+
+        link.textContent = social.label;
+
+        listItem.appendChild(link);
+        container.appendChild(listItem);
+
+        return;
+      }
+
+      link.innerHTML = `
+        <i class="${social.icon_class}" aria-hidden="true"></i>
+      `;
+
+      container.appendChild(link);
+    });
+  });
+}
+
+loadSocialLinksFromSupabase();
 
 // =========================================================
 // SUPABASE : RÉCUPÉRATION DES PRODUITS
