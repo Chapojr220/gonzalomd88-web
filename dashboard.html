@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- ==================================================
+         CONFIGURACIÓN GENERAL
+    =================================================== -->
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Panel privado de administración del sitio."
+    />
+
+    <title>Dashboard | Gonzalo MD88</title>
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+
+    <!-- Hoja de estilos principal -->
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+
+  <body class="dashboard-page">
+    <!-- ==================================================
+         DASHBOARD
+    =================================================== -->
+
+    <div class="dashboard-shell">
+      <!-- ==================================================
+           SIDEBAR
+      =================================================== -->
+
+      <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <!-- ==================================================
+             IDENTIDAD
+        =================================================== -->
+
+        <div class="dashboard-sidebar__header">
+          <a
+            class="dashboard-sidebar__logo"
+            href="./index.html"
+            data-setting="site_name"
+            aria-label="Volver al sitio público"
+          >
+            GONZALO MD88
+          </a>
+
+          <p class="dashboard-sidebar__label">CMS · PRIVATE ACCESS</p>
+        </div>
+
+        <!-- ==================================================
+             NAVEGACIÓN
+        =================================================== -->
+
+        <nav
+          class="dashboard-sidebar__nav"
+          aria-label="Navegación del dashboard"
+        >
+          <!-- Inicio -->
+          <a
+            class="dashboard-sidebar__link dashboard-sidebar__link--active"
+            href="#dashboard-overview"
+            data-dashboard-nav="overview"
+          >
+            <span class="dashboard-sidebar__link-number">01</span>
+
+            <i class="bi bi-grid-1x2" aria-hidden="true"></i>
+
+            <span>Resumen</span>
+          </a>
+
+          <!-- Contenidos -->
+          <a
+            class="dashboard-sidebar__link"
+            href="#dashboard-content"
+            data-dashboard-nav="content"
+          >
+            <span class="dashboard-sidebar__link-number">02</span>
+
+            <i class="bi bi-type" aria-hidden="true"></i>
+
+            <span>Contenidos</span>
+          </a>
+
+          <!-- Música -->
+          <a
+            class="dashboard-sidebar__link"
+            href="#dashboard-music"
+            data-dashboard-nav="music"
+          >
+            <span class="dashboard-sidebar__link-number">03</span>
+
+            <i class="bi bi-vinyl" aria-hidden="true"></i>
+
+            <span>Música</span>
+          </a>
+
+          <!-- Productos -->
+          <a
+            class="dashboard-sidebar__link"
+            href="#dashboard-products"
+            data-dashboard-nav="products"
+          >
+            <span class="dashboard-sidebar__link-number">04</span>
+
+            <i class="bi bi-box-seam" aria-hidden="true"></i>
+
+            <span>Productos</span>
+          </a>
+
+          <!-- Redes sociales -->
+          <a
+            class="dashboard-sidebar__link"
+            href="#dashboard-social"
+            data-dashboard-nav="social"
+          >
+            <span class="dashboard-sidebar__link-number">05</span>
+
+            <i class="bi bi-share" aria-hidden="true"></i>
+
+            <span>Redes</span>
+          </a>
+
+          <!-- Ajustes -->
+          <a
+            class="dashboard-sidebar__link"
+            href="#dashboard-settings"
+            data-dashboard-nav="settings"
+          >
+            <span class="dashboard-sidebar__link-number">06</span>
+
+            <i class="bi bi-sliders" aria-hidden="true"></i>
+
+            <span>Ajustes</span>
+          </a>
+        </nav>
+
+        <!-- ==================================================
+             ACCIONES INFERIORES
+        =================================================== -->
+
+        <div class="dashboard-sidebar__footer">
+          <a
+            class="dashboard-sidebar__site-link"
+            href="./index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+
+            <span>Ver sitio</span>
+          </a>
+
+          <button
+            class="dashboard-sidebar__logout"
+            id="dashboard-logout-button"
+            type="button"
+          >
+            <i class="bi bi-box-arrow-left" aria-hidden="true"></i>
+
+            <span>Cerrar sesión</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- ==================================================
+           CONTENIDO PRINCIPAL
+      =================================================== -->
+
+      <div class="dashboard-main">
+        <!-- ==================================================
+             TOPBAR
+        =================================================== -->
+
+        <header class="dashboard-topbar">
+          <div class="dashboard-topbar__left">
+            <!-- Mobile -->
+            <button
+              class="dashboard-topbar__menu"
+              id="dashboard-menu-button"
+              type="button"
+              aria-label="Abrir navegación"
+              aria-controls="dashboard-sidebar"
+              aria-expanded="false"
+            >
+              <i class="bi bi-list" aria-hidden="true"></i>
+            </button>
+
+            <div>
+              <p class="dashboard-topbar__eyebrow">PANEL DE ADMINISTRACIÓN</p>
+
+              <p class="dashboard-topbar__status">
+                <span class="dashboard-topbar__status-dot"></span>
+                Sistema conectado
+              </p>
+            </div>
+          </div>
+
+          <div class="dashboard-topbar__user">
+            <div class="dashboard-topbar__user-text">
+              <strong id="dashboard-user-name"> Administrador </strong>
+
+              <span id="dashboard-user-role"> CMS </span>
+            </div>
+
+            <div class="dashboard-topbar__avatar" aria-hidden="true">
+              <i class="bi bi-person"></i>
+            </div>
+          </div>
+        </header>
+
+        <!-- ==================================================
+             MAIN
+        =================================================== -->
+
+        <main class="dashboard-content">
+          <!-- ==================================================
+               SECTION 01 — OVERVIEW
+          =================================================== -->
+
+          <section
+            class="dashboard-section dashboard-section--dark"
+            id="dashboard-overview"
+          >
+            <div class="dashboard-section__inner">
+              <div class="dashboard-section__heading">
+                <div>
+                  <p class="dashboard-section__number">01 / RESUMEN</p>
+
+                  <h1 class="dashboard-section__title">
+                    Tu sitio.
+                    <br />
+                    Bajo control.
+                  </h1>
+                </div>
+
+                <p class="dashboard-section__description">
+                  Gestiona los contenidos principales del sitio desde un único
+                  espacio. Los cambios se sincronizan con Supabase y se reflejan
+                  automáticamente en las páginas públicas.
+                </p>
+              </div>
+
+              <!-- ==================================================
+                   QUICK CARDS
+              =================================================== -->
+
+              <div class="dashboard-overview-grid">
+                <!-- Contenidos -->
+                <a class="dashboard-overview-card" href="#dashboard-content">
+                  <div class="dashboard-overview-card__top">
+                    <span>01</span>
+                    <i class="bi bi-type" aria-hidden="true"></i>
+                  </div>
+
+                  <div>
+                    <h2>Contenidos</h2>
+
+                    <p>Textos, títulos, botones y secciones del sitio.</p>
+                  </div>
+
+                  <i
+                    class="bi bi-arrow-down-right dashboard-overview-card__arrow"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+
+                <!-- Música -->
+                <a class="dashboard-overview-card" href="#dashboard-music">
+                  <div class="dashboard-overview-card__top">
+                    <span>02</span>
+                    <i class="bi bi-vinyl" aria-hidden="true"></i>
+                  </div>
+
+                  <div>
+                    <h2>Música</h2>
+
+                    <p>Releases, tracks, covers, audio y plataformas.</p>
+                  </div>
+
+                  <i
+                    class="bi bi-arrow-down-right dashboard-overview-card__arrow"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+
+                <!-- Productos -->
+                <a class="dashboard-overview-card" href="#dashboard-products">
+                  <div class="dashboard-overview-card__top">
+                    <span>03</span>
+                    <i class="bi bi-box-seam" aria-hidden="true"></i>
+                  </div>
+
+                  <div>
+                    <h2>Productos</h2>
+
+                    <p>Productos digitales, imágenes, archivos y licencias.</p>
+                  </div>
+
+                  <i
+                    class="bi bi-arrow-down-right dashboard-overview-card__arrow"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+
+                <!-- Ajustes -->
+                <a class="dashboard-overview-card" href="#dashboard-settings">
+                  <div class="dashboard-overview-card__top">
+                    <span>04</span>
+                    <i class="bi bi-sliders" aria-hidden="true"></i>
+                  </div>
+
+                  <div>
+                    <h2>Ajustes</h2>
+
+                    <p>
+                      Nombre, email, WhatsApp, Calendly y parámetros globales.
+                    </p>
+                  </div>
+
+                  <i
+                    class="bi bi-arrow-down-right dashboard-overview-card__arrow"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================================================
+               SECTION 02 — CONTENIDOS
+          =================================================== -->
+
+          <section
+            class="dashboard-section dashboard-section--light"
+            id="dashboard-content"
+          >
+            <div class="dashboard-section__inner">
+              <div class="dashboard-section__heading">
+                <div>
+                  <p class="dashboard-section__number">02 / CONTENIDOS</p>
+
+                  <h2 class="dashboard-section__title">Edita el mensaje.</h2>
+                </div>
+
+                <p class="dashboard-section__description">
+                  Modifica los textos visibles del sitio sin tocar el código.
+                </p>
+              </div>
+
+              <!-- ==================================================
+                   LISTA DE SECCIONES
+              =================================================== -->
+
+              <div class="dashboard-management-grid">
+                <!-- Hero -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>01</span>
+
+                    <i class="bi bi-stars" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Inicio / Hero</h3>
+
+                  <p>Eyebrow, título principal, descripción y botones.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="hero"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Clases -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>02</span>
+
+                    <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Clases</h3>
+
+                  <p>Textos de presentación, servicios y botones.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="classes"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Música -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>03</span>
+
+                    <i class="bi bi-music-note-beamed" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Sección música</h3>
+
+                  <p>Títulos y textos generales de la sección musical.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="music-content"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Productos -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>04</span>
+
+                    <i class="bi bi-bag" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Sección productos</h3>
+
+                  <p>Títulos, descripciones y llamadas a la acción.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="products-content"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Artista -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>05</span>
+
+                    <i class="bi bi-person-badge" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Artista</h3>
+
+                  <p>Biografía, presentación y contenido de identidad.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="artist"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Contacto -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>06</span>
+
+                    <i class="bi bi-envelope" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Contacto</h3>
+
+                  <p>Textos, formulario y opciones de contacto.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="contact"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Booking -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>07</span>
+
+                    <i class="bi bi-camera-video" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Videollamada</h3>
+
+                  <p>Contenido completo de la página de reserva.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="booking"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+
+                <!-- Navigation -->
+                <article class="dashboard-management-card">
+                  <div class="dashboard-management-card__header">
+                    <span>08</span>
+
+                    <i class="bi bi-list" aria-hidden="true"></i>
+                  </div>
+
+                  <h3>Navegación</h3>
+
+                  <p>Nombres visibles de las secciones del menú.</p>
+
+                  <button
+                    class="dashboard-management-card__button"
+                    type="button"
+                    data-dashboard-editor="navigation"
+                  >
+                    Editar contenido
+
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================================================
+               SECTION 03 — MÚSICA
+          =================================================== -->
+
+          <section
+            class="dashboard-section dashboard-section--dark"
+            id="dashboard-music"
+          >
+            <div class="dashboard-section__inner">
+              <div class="dashboard-section__heading">
+                <div>
+                  <p class="dashboard-section__number">03 / MÚSICA</p>
+
+                  <h2 class="dashboard-section__title">
+                    Gestiona tus releases.
+                  </h2>
+                </div>
+
+                <p class="dashboard-section__description">
+                  Crea proyectos musicales, añade tracks, covers y enlaces a tus
+                  plataformas.
+                </p>
+              </div>
+
+              <div class="dashboard-action-bar">
+                <div>
+                  <p class="dashboard-action-bar__eyebrow">CATÁLOGO MUSICAL</p>
+
+                  <h3>Lanzamientos</h3>
+                </div>
+
+                <button
+                  class="button button--light"
+                  type="button"
+                  id="dashboard-add-release"
+                >
+                  <i class="bi bi-plus-lg" aria-hidden="true"></i>
+
+                  Nuevo release
+                </button>
+              </div>
+
+              <!-- Releases injectés par JS -->
+              <div class="dashboard-data-grid" id="dashboard-releases-list">
+                <div class="dashboard-empty-state">
+                  <i class="bi bi-vinyl" aria-hidden="true"></i>
+
+                  <p>Los releases aparecerán aquí.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================================================
+               SECTION 04 — PRODUCTOS
+          =================================================== -->
+
+          <section
+            class="dashboard-section dashboard-section--light"
+            id="dashboard-products"
+          >
+            <div class="dashboard-section__inner">
+              <div class="dashboard-section__heading">
+                <div>
+                  <p class="dashboard-section__number">04 / PRODUCTOS</p>
+
+                  <h2 class="dashboard-section__title">
+                    Construye tu catálogo.
+                  </h2>
+                </div>
+
+                <p class="dashboard-section__description">
+                  Gestiona tus productos digitales, imágenes, archivos y
+                  licencias desde un único espacio.
+                </p>
+              </div>
+
+              <div class="dashboard-action-bar dashboard-action-bar--light">
+                <div>
+                  <p class="dashboard-action-bar__eyebrow">CATÁLOGO</p>
+
+                  <h3>Productos digitales</h3>
+                </div>
+
+                <button
+                  class="button button--dark"
+                  type="button"
+                  id="dashboard-add-product"
+                >
+                  <i class="bi bi-plus-lg" aria-hidden="true"></i>
+
+                  Nuevo producto
+                </button>
+              </div>
+
+              <!-- Produits injectés par JS -->
+              <div class="dashboard-data-grid" id="dashboard-products-list">
+                <div class="dashboard-empty-state dashboard-empty-state--light">
+                  <i class="bi bi-box-seam" aria-hidden="true"></i>
+
+                  <p>Los productos aparecerán aquí.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================================================
+               SECTION 05 — REDES SOCIALES
+          =================================================== -->
+
+          <section
+            class="dashboard-section dashboard-section--dark"
+            id="dashboard-social"
+          >
+            <div class="dashboard-section__inner">
+              <div class="dashboard-section__heading">
+                <div>
+                  <p class="dashboard-section__number">05 / REDES</p>
+
+                  <h2 class="dashboard-section__title">
+                    Conecta tus plataformas.
+                  </h2>
+                </div>
+
+                <p class="dashboard-section__description">
+                  Define qué redes aparecen en el sitio y hacia dónde dirige
+                  cada enlace.
+                </p>
+              </div>
+
+              <div
+                class="dashboard-social-list"
+                id="dashboard-social-links-list"
+              >
+                <div class="dashboard-empty-state">
+                  <i class="bi bi-share" aria-hidden="true"></i>
+
+                  <p>Las redes sociales aparecerán aquí.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================================================
+               SECTION 06 — AJUSTES GLOBALES
+          =================================================== -->
+
+          <section
+            class="dashboard-section dashboard-section--light"
+            id="dashboard-settings"
+          >
+            <div class="dashboard-section__inner">
+              <div class="dashboard-section__heading">
+                <div>
+                  <p class="dashboard-section__number">06 / AJUSTES</p>
+
+                  <h2 class="dashboard-section__title">
+                    Una sola configuración.
+                  </h2>
+                </div>
+
+                <p class="dashboard-section__description">
+                  Estos parámetros se utilizan globalmente en todo el sitio,
+                  incluida la página de videollamada.
+                </p>
+              </div>
+
+              <!-- ==================================================
+                   FORMULARIO SETTINGS
+              =================================================== -->
+
+              <form
+                class="dashboard-settings-form"
+                id="dashboard-settings-form"
+              >
+                <div class="dashboard-settings-form__grid">
+                  <!-- Nombre -->
+                  <div class="dashboard-field">
+                    <label for="dashboard-site-name"> Nombre del sitio </label>
+
+                    <input
+                      id="dashboard-site-name"
+                      name="site_name"
+                      type="text"
+                      autocomplete="off"
+                    />
+                  </div>
+
+                  <!-- Email -->
+                  <div class="dashboard-field">
+                    <label for="dashboard-contact-email">
+                      Correo electrónico
+                    </label>
+
+                    <input
+                      id="dashboard-contact-email"
+                      name="contact_email"
+                      type="email"
+                      autocomplete="email"
+                    />
+                  </div>
+
+                  <!-- WhatsApp -->
+                  <div class="dashboard-field">
+                    <label for="dashboard-whatsapp-url"> WhatsApp </label>
+
+                    <input
+                      id="dashboard-whatsapp-url"
+                      name="whatsapp_url"
+                      type="url"
+                      placeholder="https://wa.me/..."
+                    />
+                  </div>
+
+                  <!-- Calendly -->
+                  <div class="dashboard-field">
+                    <label for="dashboard-calendly-url"> Calendly </label>
+
+                    <input
+                      id="dashboard-calendly-url"
+                      name="calendly_url"
+                      type="url"
+                      placeholder="https://calendly.com/..."
+                    />
+                  </div>
+                </div>
+
+                <div class="dashboard-settings-form__footer">
+                  <p>
+                    Los cambios se aplicarán en todas las páginas que utilizan
+                    estos parámetros.
+                  </p>
+
+                  <button
+                    class="button button--dark"
+                    id="dashboard-settings-submit"
+                    type="submit"
+                  >
+                    Guardar cambios
+
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- ==================================================
+               FOOTER DASHBOARD
+          =================================================== -->
+
+          <footer class="dashboard-footer">
+            <div>
+              <p class="dashboard-footer__brand">NARAWEB · CMS</p>
+
+              <p class="dashboard-footer__text">
+                Panel privado de administración.
+              </p>
+            </div>
+
+            <a href="./index.html">
+              Ver sitio público
+              <i class="bi bi-arrow-up-right"></i>
+            </a>
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <!-- ==================================================
+         PANEL / MODAL DE EDICIÓN
+    =================================================== -->
+    <!--
+      Este panel permanecerá oculto por defecto.
+
+      main.js lo utilizará posteriormente para editar:
+      - textos;
+      - releases;
+      - productos;
+      - redes sociales;
+      - etc.
+
+      Esto nos permite mantener una experiencia simple:
+      el usuario no cambia de página para editar.
+    -->
+
+    <div class="dashboard-editor" id="dashboard-editor" aria-hidden="true">
+      <div class="dashboard-editor__overlay" data-dashboard-editor-close></div>
+
+      <aside
+        class="dashboard-editor__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dashboard-editor-title"
+      >
+        <header class="dashboard-editor__header">
+          <div>
+            <p class="dashboard-editor__eyebrow">EDITAR</p>
+
+            <h2 id="dashboard-editor-title">Contenido</h2>
+          </div>
+
+          <button
+            class="dashboard-editor__close"
+            type="button"
+            data-dashboard-editor-close
+            aria-label="Cerrar editor"
+          >
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        <!-- Contenu dynamique injecté depuis main.js -->
+        <div
+          class="dashboard-editor__content"
+          id="dashboard-editor-content"
+        ></div>
+      </aside>
+    </div>
+
+    <!-- ==================================================
+         MENSAJES / NOTIFICACIONES
+    =================================================== -->
+
+    <div
+      class="dashboard-toast"
+      id="dashboard-toast"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+
+    <!-- ==================================================
+         SCRIPTS
+    =================================================== -->
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Configuración Supabase -->
+    <script src="./js/supabase.js"></script>
+
+    <!-- JavaScript principal -->
+    <script src="./js/main.js"></script>
+  </body>
+</html>

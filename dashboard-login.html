@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- ==================================================
+         CONFIGURACIÓN GENERAL
+    =================================================== -->
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Acceso privado al panel de administración del sitio."
+    />
+
+    <title>Acceso privado | Gonzalo MD88</title>
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+
+    <!-- Hoja de estilos principal del sitio -->
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+
+  <body class="dashboard-login-page">
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
+
+    <header class="dashboard-login-header">
+      <div class="container dashboard-login-header__content">
+        <!--
+          Nombre global del sitio.
+          Se actualizará mediante site_settings.site_name.
+        -->
+        <a
+          class="dashboard-login-header__logo"
+          href="./index.html"
+          data-setting="site_name"
+          aria-label="Volver al sitio principal"
+        >
+          GONZALO MD88
+        </a>
+
+        <a
+          class="dashboard-login-header__back"
+          href="./index.html"
+          aria-label="Volver al sitio principal"
+        >
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          <span>Volver al sitio</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- ==================================================
+         CONTENIDO PRINCIPAL
+    =================================================== -->
+
+    <main class="dashboard-login">
+      <!-- Fondo / ambiente visual -->
+      <div class="dashboard-login__background" aria-hidden="true">
+        <div class="dashboard-login__circle dashboard-login__circle--1"></div>
+        <div class="dashboard-login__circle dashboard-login__circle--2"></div>
+      </div>
+
+      <div class="container dashboard-login__container">
+        <!-- ==================================================
+             COLUMNA IZQUIERDA — IDENTIDAD
+        =================================================== -->
+
+        <section class="dashboard-login__intro">
+          <div class="dashboard-login__meta">
+            <span>PRIVATE ACCESS</span>
+            <span>CMS</span>
+          </div>
+
+          <p class="dashboard-login__eyebrow">PANEL DE ADMINISTRACIÓN</p>
+
+          <h1 class="dashboard-login__title">Gestiona tu universo creativo.</h1>
+
+          <p class="dashboard-login__description">
+            Accede al panel privado para actualizar los contenidos, productos,
+            lanzamientos, enlaces y ajustes globales del sitio.
+          </p>
+
+          <div class="dashboard-login__security">
+            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+
+            <div>
+              <p class="dashboard-login__security-title">Acceso protegido</p>
+
+              <p class="dashboard-login__security-text">
+                Solo los administradores autorizados pueden acceder al CMS.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================
+             COLUMNA DERECHA — FORMULARIO
+        =================================================== -->
+
+        <section
+          class="dashboard-login__panel"
+          aria-labelledby="dashboard-login-title"
+        >
+          <div class="dashboard-login__panel-header">
+            <span class="dashboard-login__panel-number">01</span>
+
+            <div>
+              <p class="dashboard-login__panel-eyebrow">IDENTIFICACIÓN</p>
+
+              <h2
+                class="dashboard-login__panel-title"
+                id="dashboard-login-title"
+              >
+                Iniciar sesión
+              </h2>
+            </div>
+          </div>
+
+          <!-- ==================================================
+               MENSAJES DEL SISTEMA
+          =================================================== -->
+
+          <div
+            class="dashboard-login__message"
+            id="dashboard-login-message"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+
+          <!-- ==================================================
+               FORMULARIO DE CONEXIÓN
+          =================================================== -->
+
+          <form
+            class="dashboard-login-form"
+            id="dashboard-login-form"
+            novalidate
+          >
+            <!-- EMAIL -->
+            <div class="dashboard-login-form__group">
+              <label for="dashboard-email"> Correo electrónico </label>
+
+              <div class="dashboard-login-form__field">
+                <i class="bi bi-envelope" aria-hidden="true"></i>
+
+                <input
+                  id="dashboard-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="tu@email.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="dashboard-login-form__group">
+              <label for="dashboard-password"> Contraseña </label>
+
+              <div class="dashboard-login-form__field">
+                <i class="bi bi-lock" aria-hidden="true"></i>
+
+                <input
+                  id="dashboard-password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="••••••••••••"
+                  required
+                />
+
+                <button
+                  class="dashboard-login-form__password-toggle"
+                  id="dashboard-password-toggle"
+                  type="button"
+                  aria-label="Mostrar contraseña"
+                  aria-pressed="false"
+                >
+                  <i
+                    class="bi bi-eye"
+                    id="dashboard-password-icon"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <button
+              class="button button--light dashboard-login-form__submit"
+              id="dashboard-login-submit"
+              type="submit"
+            >
+              <span>Entrar al dashboard</span>
+
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <!-- ==================================================
+               INFORMACIÓN INFERIOR
+          =================================================== -->
+
+          <div class="dashboard-login__footer">
+            <i class="bi bi-lock-fill" aria-hidden="true"></i>
+
+            <p>
+              La sesión se gestiona de forma segura mediante Supabase
+              Authentication.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ==================================================
+         FIRMA INFERIOR
+    =================================================== -->
+
+    <footer class="dashboard-login-footer">
+      <div class="container dashboard-login-footer__content">
+        <p>PANEL PRIVADO · CMS</p>
+
+        <p>
+          © 2026
+          <span data-setting="site_name">GONZALO MD88</span>
+        </p>
+      </div>
+    </footer>
+
+    <!-- ==================================================
+         SCRIPTS
+    =================================================== -->
+
+    <!-- Biblioteca oficial de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Configuración Supabase existente -->
+    <script src="./js/supabase.js"></script>
+
+    <!-- JavaScript global del sitio -->
+    <script src="./js/main.js"></script>
+
+    <!-- JavaScript específico del login -->
+    <script src="./js/dashboard-login.js"></script>
+  </body>
+</html>
