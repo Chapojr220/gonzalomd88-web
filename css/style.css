@@ -5260,3 +5260,47 @@ body.menu-open {
 
   cursor: pointer;
 }
+
+/* =========================================================
+   NAVBAR — LOGIN
+========================================================= */
+
+.navbar__login-item {
+  display: flex;
+  align-items: center;
+
+  margin-left: 0.75rem;
+}
+
+.navbar__login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+  padding: 0 1.25rem;
+
+  background: #f4f2ec;
+  color: #0b0b0b;
+
+  border: 1px solid #f4f2ec;
+
+  text-decoration: none;
+
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.navbar__login:hover {
+  background: #0b0b0b;
+  color: #f4f2ec;
+
+  border-color: #f4f2ec;
+}

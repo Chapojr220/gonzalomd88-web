@@ -3546,8 +3546,6 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
   // -------------------------------------------------------
   // AUCUNE IMAGE
   // -------------------------------------------------------
-  // La cover reste optionnelle pour le moment.
-  // -------------------------------------------------------
 
   if (!coverFile) {
     return null;
@@ -3566,8 +3564,6 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
   // -------------------------------------------------------
   // VALIDATION DE LA TAILLE
   // -------------------------------------------------------
-  // Limite volontaire: 8 MB.
-  // -------------------------------------------------------
 
   const maxSize = 8 * 1024 * 1024;
 
@@ -3583,12 +3579,6 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
 
   // -------------------------------------------------------
   // NOM UNIQUE
-  // -------------------------------------------------------
-  //
-  // Exemple:
-  //
-  // darkside-protocol/1723843435.webp
-  //
   // -------------------------------------------------------
 
   const fileName = `${Date.now()}.${extension}`;
@@ -3636,26 +3626,48 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
 }
 
 // =========================================================
-// SUBMIT RELEASE
+// RELEASE — CRÉATION PRINCIPALE
 // =========================================================
-// Pour l'instant :
+// Cette fonction:
 //
-// - crée la ligne principale dans releases;
-// - récupère le nouvel ID;
-// - rafraîchit le dashboard.
+// 1. récupère les données du formulaire;
+// 2. valide les champs;
+// 3. upload la cover;
+// 4. récupère l'URL publique;
+// 5. crée le release dans Supabase;
+// 6. rafraîchit le dashboard.
 //
-// Dans l'étape suivante nous brancherons:
-// - Storage cover;
-// - tracks;
-// - release_links.
+// Tracks et release_links viendront juste après.
 // =========================================================
 
 async function submitDashboardReleaseForm(form) {
   const formData = new FormData(form);
 
-  const title = formData.get("title")?.trim();
+  // =======================================================
+  // INFORMATIONS PRINCIPALES
+  // =======================================================
 
-  const slug = formData.get("slug")?.trim();
+  const title = formData.get("title")?.trim() || "";
+
+  const slug = formData.get("slug")?.trim() || "";
+
+  const releaseType = formData.get("release_type")?.trim() || "Single";
+
+  const releaseYearRaw = formData.get("release_year");
+
+  const releaseYear = releaseYearRaw
+    ? Number(releaseYearRaw)
+    : new Date().getFullYear();
+
+  const genre = formData.get("genre")?.trim() || null;
+
+  const description = formData.get("description")?.trim() || null;
+
+  const isPublished = formData.get("is_published") === "on";
+
+  // =======================================================
+  // VALIDATION
+  // =======================================================
 
   if (!title || !slug) {
     showDashboardToast("El título y el slug son obligatorios.");
@@ -3663,50 +3675,88 @@ async function submitDashboardReleaseForm(form) {
     return;
   }
 
-  const submitButton = document.querySelector(
-    "#dashboard-create-release-submit",
-  );
+  if (
+    !Number.isInteger(releaseYear) ||
+    releaseYear < 1900 ||
+    releaseYear > 2100
+  ) {
+    showDashboardToast("Introduce un año válido.");
+
+    return;
+  }
+
+  // =======================================================
+  // COVER
+  // =======================================================
+
+  const coverInput = form.querySelector("#release-cover-file");
+
+  const coverFile = coverInput?.files?.[0] || null;
+
+  // =======================================================
+  // BOUTON LOADING
+  // =======================================================
+
+  const submitButton = form.querySelector("#dashboard-create-release-submit");
 
   if (submitButton) {
     submitButton.disabled = true;
 
     submitButton.innerHTML = `
       Creando...
-      <i class="bi bi-arrow-repeat"></i>
+      <i
+        class="bi bi-arrow-repeat"
+        aria-hidden="true"
+      ></i>
     `;
   }
 
   try {
+    // =====================================================
+    // UPLOAD COVER
+    // =====================================================
+
+    let coverImageUrl = null;
+
+    if (coverFile) {
+      coverImageUrl = await uploadDashboardReleaseCover(coverFile, slug);
+    }
+
+    // =====================================================
+    // DONNÉES DU RELEASE
+    // =====================================================
+
     const releaseData = {
       title,
       slug,
-
-      genre: formData.get("genre")?.trim() || null,
-
-      description: formData.get("description")?.trim() || null,
-
-      spotify_url: formData.get("spotify_url")?.trim() || null,
-
-      soundcloud_url: formData.get("soundcloud_url")?.trim() || null,
-
-      bandcamp_url: formData.get("bandcamp_url")?.trim() || null,
-
-      youtube_url: formData.get("youtube_url")?.trim() || null,
-
-      is_published: formData.get("is_published") === "on",
+      release_type: releaseType,
+      release_year: releaseYear,
+      genre,
+      description,
+      cover_image_url: coverImageUrl,
+      is_published: isPublished,
     };
 
-    const { data: createdRelease, error } = await window.supabaseClient
-      .from("releases")
-      .insert(releaseData)
-      .select()
-      .single();
+    // =====================================================
+    // INSERT SUPABASE
+    // =====================================================
 
-    if (error) {
-      throw error;
+    const { data: createdRelease, error: releaseError } =
+      await window.supabaseClient
+        .from("releases")
+        .insert(releaseData)
+        .select()
+        .single();
+
+    if (releaseError) {
+      throw releaseError;
     }
 
-    console.log("✅ Release créé :", createdRelease);
+    // =====================================================
+    // SUCCÈS
+    // =====================================================
+
+    console.log("✅ Release créé dans Supabase:", createdRelease);
 
     showDashboardToast("Release creado correctamente.");
 
@@ -3716,14 +3766,17 @@ async function submitDashboardReleaseForm(form) {
   } catch (error) {
     console.error("❌ Error creando release:", error);
 
-    showDashboardToast("No se pudo crear el release.", 5000);
+    showDashboardToast(error?.message || "No se pudo crear el release.", 5000);
 
     if (submitButton) {
       submitButton.disabled = false;
 
       submitButton.innerHTML = `
         Crear release
-        <i class="bi bi-arrow-right"></i>
+        <i
+          class="bi bi-arrow-right"
+          aria-hidden="true"
+        ></i>
       `;
     }
   }
@@ -3731,9 +3784,6 @@ async function submitDashboardReleaseForm(form) {
 
 // =========================================================
 // REMPLACER LE BOUTON "NUEVO RELEASE"
-// =========================================================
-// On clone le bouton pour supprimer l'ancien listener
-// générique et le remplacer par notre vrai éditeur.
 // =========================================================
 
 if (dashboardAddReleaseButton) {
