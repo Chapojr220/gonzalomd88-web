@@ -5304,3 +5304,43 @@ body.menu-open {
 
   border-color: #f4f2ec;
 }
+
+/* =========================================================
+   DASHBOARD — TRACK AUDIO UPLOAD
+========================================================= */
+
+.dashboard-track-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  cursor: pointer;
+}
+
+.dashboard-track-upload__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  width: fit-content;
+
+  padding: 0.7rem 0;
+
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dashboard-track-upload__filename {
+  font-size: 0.72rem;
+  opacity: 0.48;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-track-upload input {
+  display: none;
+}

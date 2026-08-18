@@ -1806,7 +1806,30 @@ async function loadDashboardReleases() {
 
   const { data, error } = await window.supabaseClient
     .from("releases")
-    .select("*");
+    .select(
+      `
+    *,
+    tracks (
+      id,
+      created_at,
+      release_id,
+      title,
+      track_number,
+      audio_url,
+      spotify_url,
+      soundcloud_url,
+      bandcamp_url,
+      youtube_url,
+      display_order,
+      is_published,
+      updated_at
+    )
+  `,
+    )
+    .order("track_number", {
+      referencedTable: "tracks",
+      ascending: true,
+    });
 
   if (error) {
     console.error("❌ Error cargando releases:", error);
@@ -1903,7 +1926,7 @@ function renderDashboardReleases() {
       );
 
       if (release) {
-        openDashboardRecordEditor("releases", release, "Release");
+        openDashboardReleaseEditor(release);
       }
     });
   });
@@ -2181,6 +2204,719 @@ function openDashboardRecordEditor(tableName, record, editorTitle) {
     event.preventDefault();
 
     await saveDashboardRecord(tableName, record, form);
+  });
+}
+
+// =========================================================
+// RELEASE — ÉDITEUR DÉDIÉ
+// =========================================================
+// Cet éditeur est différent de l'éditeur générique.
+//
+// Il gère:
+// - les informations du release;
+// - la cover actuelle;
+// - les tracks liés au release;
+// - le remplacement futur de la cover;
+// - le remplacement futur des fichiers audio;
+// - l'ajout / suppression future des tracks.
+//
+// La sauvegarde complète sera branchée dans l'étape suivante.
+// =========================================================
+
+function openDashboardReleaseEditor(release) {
+  if (!release) {
+    return;
+  }
+
+  // -------------------------------------------------------
+  // TRACKS EXISTANTS
+  // -------------------------------------------------------
+
+  const tracks = Array.isArray(release.tracks)
+    ? [...release.tracks].sort((a, b) => {
+        const numberA = Number(a.track_number ?? a.display_order ?? 0);
+
+        const numberB = Number(b.track_number ?? b.display_order ?? 0);
+
+        return numberA - numberB;
+      })
+    : [];
+
+  // -------------------------------------------------------
+  // HTML DES TRACKS
+  // -------------------------------------------------------
+
+  const tracksHtml = tracks.length
+    ? tracks
+        .map((track, index) => {
+          const trackNumber = index + 1;
+
+          return `
+            <article
+              class="dashboard-track-row"
+              data-release-track
+              data-track-id="${escapeDashboardHtml(track.id)}"
+              data-current-audio-url="${escapeDashboardHtml(
+                track.audio_url || "",
+              )}"
+            >
+              <div class="dashboard-track-row__number">
+                ${String(trackNumber).padStart(2, "0")}
+              </div>
+
+              <div class="dashboard-track-row__fields">
+
+                <!-- TITRE ACTUEL -->
+                <input
+                  name="track_title"
+                  type="text"
+                  value="${escapeDashboardHtml(track.title || "")}"
+                  placeholder="Título del track"
+                />
+
+                <!-- AUDIO ACTUEL -->
+                ${
+                  track.audio_url
+                    ? `
+                      <div class="dashboard-track-current-audio">
+                        <span>
+                          Audio actual
+                        </span>
+
+                        <audio
+                          controls
+                          preload="none"
+                          controlslist="nodownload noplaybackrate"
+                        >
+                          <source
+                            src="${escapeDashboardHtml(track.audio_url)}"
+                          />
+                        </audio>
+                      </div>
+                    `
+                    : `
+                      <div class="dashboard-track-current-audio">
+                        <span>
+                          Sin audio actual
+                        </span>
+                      </div>
+                    `
+                }
+
+                <!-- REMPLACER AUDIO -->
+                <label class="dashboard-track-upload">
+                  <span class="dashboard-track-upload__button">
+                    <i class="bi bi-music-note-beamed"></i>
+
+                    Reemplazar archivo audio
+                  </span>
+
+                  <span
+                    class="dashboard-track-upload__filename"
+                    data-track-filename
+                  >
+                    Mantener archivo actual
+                  </span>
+
+                  <input
+                    name="track_audio_file"
+                    type="file"
+                    accept="audio/mpeg,audio/wav,audio/x-wav,audio/flac,audio/mp4,audio/aac"
+                    data-track-audio-file
+                  />
+                </label>
+
+              </div>
+
+              <!-- SUPPRIMER TRACK -->
+              <button
+                class="dashboard-track-row__remove"
+                type="button"
+                data-remove-edit-release-track
+                aria-label="Eliminar track"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </article>
+          `;
+        })
+        .join("")
+    : `
+        <div
+          class="dashboard-empty-state dashboard-empty-state--light"
+          id="dashboard-release-edit-no-tracks"
+        >
+          <i class="bi bi-music-note-beamed"></i>
+
+          <p>
+            Este release todavía no contiene tracks.
+          </p>
+        </div>
+      `;
+
+  // -------------------------------------------------------
+  // OUVERTURE DU PANEL
+  // -------------------------------------------------------
+
+  openDashboardEditor(
+    `Release · ${getDashboardRecordTitle(release)}`,
+    `
+      <form
+        class="dashboard-release-form"
+        id="dashboard-release-edit-form"
+        data-release-id="${escapeDashboardHtml(release.id)}"
+      >
+
+        <!-- ==============================================
+             01 — INFORMACIÓN
+        =============================================== -->
+
+        <section class="dashboard-editor-section">
+
+          <div class="dashboard-editor-section__heading">
+            <span>01</span>
+
+            <div>
+              <p>INFORMACIÓN</p>
+
+              <h3>
+                Datos principales
+              </h3>
+            </div>
+          </div>
+
+          <div class="dashboard-editor-form__fields">
+
+            <!-- TITLE -->
+            <div class="dashboard-editor-field">
+              <label for="edit-release-title">
+                Título
+              </label>
+
+              <input
+                id="edit-release-title"
+                name="title"
+                type="text"
+                value="${escapeDashboardHtml(release.title || "")}"
+                required
+              />
+            </div>
+
+
+            <!-- SLUG -->
+            <div class="dashboard-editor-field">
+              <label for="edit-release-slug">
+                Slug
+              </label>
+
+              <input
+                id="edit-release-slug"
+                name="slug"
+                type="text"
+                value="${escapeDashboardHtml(release.slug || "")}"
+                required
+              />
+            </div>
+
+
+            <!-- TYPE -->
+            <div class="dashboard-editor-field">
+              <label for="edit-release-type">
+                Tipo de release
+              </label>
+
+              <select
+                id="edit-release-type"
+                name="release_type"
+              >
+
+                <option
+                  value="Single"
+                  ${release.release_type === "Single" ? "selected" : ""}
+                >
+                  Single
+                </option>
+
+                <option
+                  value="EP"
+                  ${release.release_type === "EP" ? "selected" : ""}
+                >
+                  EP
+                </option>
+
+                <option
+                  value="Album"
+                  ${release.release_type === "Album" ? "selected" : ""}
+                >
+                  Album
+                </option>
+
+                <option
+                  value="Mixtape"
+                  ${release.release_type === "Mixtape" ? "selected" : ""}
+                >
+                  Mixtape
+                </option>
+
+              </select>
+            </div>
+
+
+            <!-- YEAR -->
+            <div class="dashboard-editor-field">
+              <label for="edit-release-year">
+                Año
+              </label>
+
+              <input
+                id="edit-release-year"
+                name="release_year"
+                type="number"
+                min="1900"
+                max="2100"
+                value="${escapeDashboardHtml(
+                  release.release_year || new Date().getFullYear(),
+                )}"
+              />
+            </div>
+
+
+            <!-- GENRE -->
+            <div class="dashboard-editor-field">
+              <label for="edit-release-genre">
+                Género
+              </label>
+
+              <input
+                id="edit-release-genre"
+                name="genre"
+                type="text"
+                value="${escapeDashboardHtml(release.genre || "")}"
+              />
+            </div>
+
+
+            <!-- DESCRIPTION -->
+            <div class="dashboard-editor-field">
+              <label for="edit-release-description">
+                Descripción
+              </label>
+
+              <textarea
+                id="edit-release-description"
+                name="description"
+                rows="5"
+              >${escapeDashboardHtml(release.description || "")}</textarea>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ==============================================
+             02 — COVER
+        =============================================== -->
+
+        <section class="dashboard-editor-section">
+
+          <div class="dashboard-editor-section__heading">
+            <span>02</span>
+
+            <div>
+              <p>COVER</p>
+
+              <h3>
+                Imagen del release
+              </h3>
+            </div>
+          </div>
+
+
+          ${
+            release.cover_image_url
+              ? `
+                <div class="dashboard-release-cover__preview">
+                  <img
+                    src="${escapeDashboardHtml(release.cover_image_url)}"
+                    alt="Portada actual de ${escapeDashboardHtml(
+                      release.title || "release",
+                    )}"
+                  />
+                </div>
+              `
+              : ""
+          }
+
+
+          <div class="dashboard-release-cover">
+
+            <label
+              class="dashboard-upload-zone"
+              for="edit-release-cover-file"
+            >
+
+              <i
+                class="bi bi-image"
+                aria-hidden="true"
+              ></i>
+
+              <strong>
+                Reemplazar imagen
+              </strong>
+
+              <span>
+                JPG, PNG o WEBP
+              </span>
+
+              <input
+                id="edit-release-cover-file"
+                name="cover_file"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+              />
+
+            </label>
+
+
+            <div
+              class="dashboard-release-cover__preview"
+              id="edit-release-cover-preview"
+              hidden
+            >
+
+              <img
+                id="edit-release-cover-preview-image"
+                src=""
+                alt="Nueva portada"
+              />
+
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ==============================================
+             03 — TRACKS
+        =============================================== -->
+
+        <section class="dashboard-editor-section">
+
+          <div class="dashboard-editor-section__heading">
+            <span>03</span>
+
+            <div>
+              <p>TRACKS</p>
+
+              <h3>
+                Lista de canciones
+              </h3>
+            </div>
+          </div>
+
+
+          <div
+            class="dashboard-tracks-editor"
+            id="dashboard-release-tracks"
+          >
+            ${tracksHtml}
+          </div>
+
+
+          <button
+            class="dashboard-editor-add-button"
+            id="dashboard-add-edit-release-track"
+            type="button"
+          >
+            <i class="bi bi-plus-lg"></i>
+
+            Añadir track
+          </button>
+
+        </section>
+
+
+        <!-- ==============================================
+             04 — PLATAFORMAS
+        =============================================== -->
+
+        <section class="dashboard-editor-section">
+
+          <div class="dashboard-editor-section__heading">
+            <span>04</span>
+
+            <div>
+              <p>PLATAFORMAS</p>
+
+              <h3>
+                Enlaces externos
+              </h3>
+            </div>
+          </div>
+
+
+          <div class="dashboard-editor-form__fields">
+
+            <div class="dashboard-editor-field">
+              <label for="edit-release-spotify-url">
+                Spotify
+              </label>
+
+              <input
+                id="edit-release-spotify-url"
+                name="spotify_url"
+                type="url"
+                value="${escapeDashboardHtml(release.spotify_url || "")}"
+                placeholder="https://..."
+              />
+            </div>
+
+
+            <div class="dashboard-editor-field">
+              <label for="edit-release-soundcloud-url">
+                SoundCloud
+              </label>
+
+              <input
+                id="edit-release-soundcloud-url"
+                name="soundcloud_url"
+                type="url"
+                value="${escapeDashboardHtml(release.soundcloud_url || "")}"
+                placeholder="https://..."
+              />
+            </div>
+
+
+            <div class="dashboard-editor-field">
+              <label for="edit-release-bandcamp-url">
+                Bandcamp
+              </label>
+
+              <input
+                id="edit-release-bandcamp-url"
+                name="bandcamp_url"
+                type="url"
+                value="${escapeDashboardHtml(release.bandcamp_url || "")}"
+                placeholder="https://..."
+              />
+            </div>
+
+
+            <div class="dashboard-editor-field">
+              <label for="edit-release-youtube-url">
+                YouTube
+              </label>
+
+              <input
+                id="edit-release-youtube-url"
+                name="youtube_url"
+                type="url"
+                value="${escapeDashboardHtml(release.youtube_url || "")}"
+                placeholder="https://..."
+              />
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ==============================================
+             05 — PUBLICACIÓN
+        =============================================== -->
+
+        <section class="dashboard-editor-section">
+
+          <div class="dashboard-editor-section__heading">
+            <span>05</span>
+
+            <div>
+              <p>PUBLICACIÓN</p>
+
+              <h3>
+                Estado del release
+              </h3>
+            </div>
+          </div>
+
+
+          <label class="dashboard-toggle-row">
+
+            <div>
+              <strong>
+                Publicar en el sitio
+              </strong>
+
+              <span>
+                El release será visible públicamente.
+              </span>
+            </div>
+
+
+            <input
+              name="is_published"
+              type="checkbox"
+              ${release.is_published ? "checked" : ""}
+            />
+
+          </label>
+        </section>
+
+
+        <!-- ==============================================
+             FOOTER
+        =============================================== -->
+
+        <div class="dashboard-editor-form__footer">
+
+          <p>
+            Los cambios se guardarán directamente en Supabase.
+          </p>
+
+
+          <button
+            class="button button--dark"
+            id="dashboard-edit-release-submit"
+            type="submit"
+          >
+            Guardar cambios
+
+            <i
+              class="bi bi-arrow-right"
+              aria-hidden="true"
+            ></i>
+          </button>
+
+        </div>
+
+      </form>
+    `,
+  );
+
+  // =======================================================
+  // INITIALISATION DE L'ÉDITEUR
+  // =======================================================
+
+  initializeDashboardReleaseEditEditor(release);
+}
+
+// =========================================================
+// RELEASE — INITIALISER L'ÉDITEUR DE MODIFICATION
+// =========================================================
+
+function initializeDashboardReleaseEditEditor(release) {
+  const form = document.querySelector("#dashboard-release-edit-form");
+
+  const coverInput = document.querySelector("#edit-release-cover-file");
+
+  const coverPreview = document.querySelector("#edit-release-cover-preview");
+
+  const coverPreviewImage = document.querySelector(
+    "#edit-release-cover-preview-image",
+  );
+
+  const addTrackButton = document.querySelector(
+    "#dashboard-add-edit-release-track",
+  );
+
+  if (!form) {
+    return;
+  }
+
+  // =======================================================
+  // PREVIEW NOUVELLE COVER
+  // =======================================================
+
+  if (coverInput && coverPreview && coverPreviewImage) {
+    coverInput.addEventListener("change", () => {
+      const file = coverInput.files?.[0];
+
+      if (!file) {
+        coverPreview.hidden = true;
+        coverPreviewImage.src = "";
+
+        return;
+      }
+
+      const previewUrl = URL.createObjectURL(file);
+
+      coverPreviewImage.src = previewUrl;
+
+      coverPreview.hidden = false;
+    });
+  }
+
+  // =======================================================
+  // AFFICHER LE NOM DES NOUVEAUX FICHIERS AUDIO
+  // =======================================================
+
+  connectDashboardTrackFileInputs();
+
+  // =======================================================
+  // AJOUTER UN NOUVEAU TRACK
+  // =======================================================
+
+  if (addTrackButton) {
+    addTrackButton.addEventListener("click", () => {
+      // L'ancienne fonction sait déjà créer
+      // une nouvelle ligne correctement.
+
+      addDashboardReleaseTrackRow();
+
+      const emptyState = document.querySelector(
+        "#dashboard-release-edit-no-tracks",
+      );
+
+      if (emptyState) {
+        emptyState.remove();
+      }
+    });
+  }
+
+  // =======================================================
+  // SUPPRIMER VISUELLEMENT UN TRACK
+  // =======================================================
+  // IMPORTANT:
+  // Pour le moment nous retirons uniquement la ligne
+  // du formulaire.
+  //
+  // Dans la prochaine étape la sauvegarde comparera les IDs
+  // présents avec les IDs originaux et supprimera réellement
+  // les tracks disparus dans Supabase.
+  // =======================================================
+
+  document
+    .querySelectorAll("[data-remove-edit-release-track]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const row = button.closest("[data-release-track]");
+
+        if (!row) {
+          return;
+        }
+
+        row.remove();
+
+        refreshDashboardReleaseTrackNumbers();
+      });
+    });
+
+  // =======================================================
+  // SUBMIT
+  // =======================================================
+  // Nous BLOQUONS volontairement la sauvegarde pour cette
+  // première vérification.
+  //
+  // Ne retire pas ceci.
+  // La vraie fonction UPDATE arrive juste après le test.
+  // =======================================================
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    showDashboardToast(
+      "Editor cargado correctamente. La sauvegarde sera connectée à l'étape suivante.",
+      5000,
+    );
   });
 }
 
@@ -3150,11 +3886,26 @@ function openCreateReleaseEditor() {
                   placeholder="Título del track"
                 />
 
-                <input
-                  name="track_audio_url"
-                  type="url"
-                  placeholder="URL de audio opcional"
-                />
+            <label class="dashboard-track-upload">
+              <span class="dashboard-track-upload__button">
+                <i class="bi bi-music-note-beamed"></i>
+                Seleccionar archivo audio
+              </span>
+
+              <span
+                class="dashboard-track-upload__filename"
+                data-track-filename
+              >
+                Ningún archivo seleccionado
+              </span>
+
+              <input
+                name="track_audio_file"
+                type="file"
+                accept="audio/mpeg,audio/wav,audio/x-wav,audio/flac,audio/mp4,audio/aac"
+                data-track-audio-file
+              />
+            </label>
               </div>
 
               <button
@@ -3388,6 +4139,7 @@ function initializeCreateReleaseEditor() {
   // =======================================================
 
   connectDashboardReleaseTrackRemoveButtons();
+  connectDashboardTrackFileInputs();
 
   // =======================================================
   // SUBMIT
@@ -3446,11 +4198,26 @@ function addDashboardReleaseTrackRow() {
         placeholder="Título del track"
       />
 
+          <label class="dashboard-track-upload">
+      <span class="dashboard-track-upload__button">
+        <i class="bi bi-music-note-beamed"></i>
+        Seleccionar archivo audio
+      </span>
+
+      <span
+        class="dashboard-track-upload__filename"
+        data-track-filename 
+      >
+        Ningún archivo seleccionado
+      </span>
+
       <input
-        name="track_audio_url"
-        type="url"
-        placeholder="URL de audio opcional"
+        name="track_audio_file"
+        type="file"
+        accept="audio/mpeg,audio/wav,audio/x-wav,audio/flac,audio/mp4,audio/aac"
+        data-track-audio-file
       />
+    </label>
     </div>
 
     <button
@@ -3466,6 +4233,31 @@ function addDashboardReleaseTrackRow() {
   tracksContainer.appendChild(track);
 
   connectDashboardReleaseTrackRemoveButtons();
+  connectDashboardTrackFileInputs();
+}
+
+// =========================================================
+// AFFICHER LE NOM DU FICHIER AUDIO SÉLECTIONNÉ
+// =========================================================
+
+function connectDashboardTrackFileInputs() {
+  const inputs = document.querySelectorAll("[data-track-audio-file]");
+
+  inputs.forEach((input) => {
+    input.onchange = () => {
+      const row = input.closest("[data-release-track]");
+
+      const filename = row?.querySelector("[data-track-filename]");
+
+      const file = input.files?.[0];
+
+      if (!filename) {
+        return;
+      }
+
+      filename.textContent = file ? file.name : "Ningún archivo seleccionado";
+    };
+  });
 }
 
 // =========================================================
@@ -3493,7 +4285,7 @@ function connectDashboardReleaseTrackRemoveButtons() {
       if (!rows || rows.length <= 1) {
         const titleInput = row.querySelector('[name="track_title"]');
 
-        const audioInput = row.querySelector('[name="track_audio_url"]');
+        const audioInput = row.querySelector('[name="track_audio_file"]');
 
         if (titleInput) {
           titleInput.value = "";
@@ -3626,6 +4418,231 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
 }
 
 // =========================================================
+// TRACK — UPLOAD AUDIO SUPABASE STORAGE
+// =========================================================
+// Envoie un fichier audio dans:
+//
+// release-audio
+//
+// Puis retourne:
+// - l'URL publique;
+// - le chemin Storage.
+//
+// Le chemin Storage sera utile si nous devons nettoyer
+// un fichier après une erreur.
+// =========================================================
+
+async function uploadDashboardTrackAudio(
+  audioFile,
+  releaseSlug,
+  trackTitle,
+  trackNumber,
+) {
+  // -------------------------------------------------------
+  // FICHIER OBLIGATOIRE
+  // -------------------------------------------------------
+
+  if (!audioFile) {
+    throw new Error(`El track ${trackNumber} necesita un archivo de audio.`);
+  }
+
+  // -------------------------------------------------------
+  // TYPES AUDIO AUTORISÉS
+  // -------------------------------------------------------
+
+  const allowedTypes = [
+    "audio/mpeg",
+    "audio/wav",
+    "audio/x-wav",
+    "audio/flac",
+    "audio/mp4",
+    "audio/aac",
+  ];
+
+  if (!allowedTypes.includes(audioFile.type)) {
+    throw new Error(
+      `El archivo del track ${trackNumber} no tiene un formato de audio permitido.`,
+    );
+  }
+
+  // -------------------------------------------------------
+  // TAILLE MAXIMALE
+  // -------------------------------------------------------
+  // Ton bucket release-audio est actuellement limité
+  // à 50 MB.
+  // -------------------------------------------------------
+
+  const maxSize = 50 * 1024 * 1024;
+
+  if (audioFile.size > maxSize) {
+    throw new Error(
+      `El audio del track ${trackNumber} no puede superar los 50 MB.`,
+    );
+  }
+
+  // -------------------------------------------------------
+  // EXTENSION
+  // -------------------------------------------------------
+
+  const extension = audioFile.name.split(".").pop()?.toLowerCase() || "mp3";
+
+  // -------------------------------------------------------
+  // NOM DU TRACK SÉCURISÉ
+  // -------------------------------------------------------
+
+  const trackSlug = createDashboardSlug(trackTitle) || `track-${trackNumber}`;
+
+  // -------------------------------------------------------
+  // CHEMIN STORAGE
+  // -------------------------------------------------------
+  //
+  // Exemple:
+  //
+  // test-cms/01-mon-track-1724000000000.mp3
+  //
+  // -------------------------------------------------------
+
+  const fileName =
+    `${String(trackNumber).padStart(2, "0")}-` +
+    `${trackSlug}-` +
+    `${Date.now()}.${extension}`;
+
+  const storagePath = `${releaseSlug}/${fileName}`;
+
+  // -------------------------------------------------------
+  // UPLOAD
+  // -------------------------------------------------------
+
+  const { data: uploadedFile, error: uploadError } =
+    await window.supabaseClient.storage
+      .from("release-audio")
+      .upload(storagePath, audioFile, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: audioFile.type,
+      });
+
+  if (uploadError) {
+    console.error("❌ Error upload audio:", uploadError);
+
+    throw uploadError;
+  }
+
+  console.log("✅ Audio envoyé vers Storage:", uploadedFile);
+
+  // -------------------------------------------------------
+  // URL PUBLIQUE
+  // -------------------------------------------------------
+
+  const { data: publicUrlData } = window.supabaseClient.storage
+    .from("release-audio")
+    .getPublicUrl(storagePath);
+
+  const publicUrl = publicUrlData?.publicUrl;
+
+  if (!publicUrl) {
+    throw new Error(
+      `No se pudo generar la URL pública del track ${trackNumber}.`,
+    );
+  }
+
+  console.log("✅ URL publique audio:", publicUrl);
+
+  return {
+    publicUrl,
+    storagePath,
+  };
+}
+
+// =========================================================
+// TRACKS — ENREGISTRER DANS SUPABASE
+// =========================================================
+// Pour chaque track:
+//
+// 1. upload du fichier vers release-audio;
+// 2. récupération de l'URL publique;
+// 3. création de la ligne dans public.tracks;
+// 4. liaison avec releases.id.
+// =========================================================
+
+async function createDashboardReleaseTracks(
+  trackEntries,
+  createdRelease,
+  releaseSlug,
+  isPublished,
+) {
+  if (!trackEntries.length) {
+    return [];
+  }
+
+  const uploadedPaths = [];
+
+  try {
+    const trackRecords = [];
+
+    for (const trackEntry of trackEntries) {
+      const { title, audioFile, trackNumber } = trackEntry;
+
+      const { publicUrl, storagePath } = await uploadDashboardTrackAudio(
+        audioFile,
+        releaseSlug,
+        title,
+        trackNumber,
+      );
+
+      uploadedPaths.push(storagePath);
+
+      trackRecords.push({
+        release_id: createdRelease.id,
+
+        title,
+
+        track_number: trackNumber,
+
+        audio_url: publicUrl,
+
+        display_order: trackNumber - 1,
+
+        is_published: isPublished,
+      });
+    }
+
+    // -----------------------------------------------------
+    // INSERT DES TRACKS
+    // -----------------------------------------------------
+
+    const { data: createdTracks, error: tracksError } =
+      await window.supabaseClient.from("tracks").insert(trackRecords).select();
+
+    if (tracksError) {
+      throw tracksError;
+    }
+
+    console.log("✅ Tracks créés dans Supabase:", createdTracks);
+
+    return createdTracks || [];
+  } catch (error) {
+    console.error("❌ Error creando tracks:", error);
+
+    // -----------------------------------------------------
+    // NETTOYAGE DES FICHIERS DÉJÀ UPLOADÉS
+    // -----------------------------------------------------
+
+    if (uploadedPaths.length > 0) {
+      const { error: cleanupError } = await window.supabaseClient.storage
+        .from("release-audio")
+        .remove(uploadedPaths);
+
+      if (cleanupError) {
+        console.error("❌ Error limpiando audios:", cleanupError);
+      }
+    }
+
+    throw error;
+  }
+}
+
+// =========================================================
 // RELEASE — CRÉATION PRINCIPALE
 // =========================================================
 // Cette fonction:
@@ -3694,6 +4711,79 @@ async function submitDashboardReleaseForm(form) {
   const coverFile = coverInput?.files?.[0] || null;
 
   // =======================================================
+  // TRACKS
+  // =======================================================
+  // On récupère toutes les lignes visibles dans
+  // l'éditeur AVANT de modifier Supabase.
+  // =======================================================
+
+  const trackRows = Array.from(
+    form.querySelectorAll("#dashboard-release-tracks [data-release-track]"),
+  );
+
+  const trackEntries = [];
+
+  for (let index = 0; index < trackRows.length; index += 1) {
+    const row = trackRows[index];
+
+    const trackNumber = index + 1;
+
+    const titleInput = row.querySelector('[name="track_title"]');
+
+    const audioInput = row.querySelector('[name="track_audio_file"]');
+
+    const trackTitle = titleInput?.value.trim() || "";
+
+    const audioFile = audioInput?.files?.[0] || null;
+
+    // -----------------------------------------------------
+    // LIGNE COMPLÈTEMENT VIDE
+    // -----------------------------------------------------
+    // Elle est simplement ignorée.
+    // -----------------------------------------------------
+
+    if (!trackTitle && !audioFile) {
+      continue;
+    }
+
+    // -----------------------------------------------------
+    // TITRE SANS AUDIO
+    // -----------------------------------------------------
+
+    if (trackTitle && !audioFile) {
+      showDashboardToast(
+        `Selecciona un archivo de audio para el track ${trackNumber}.`,
+        5000,
+      );
+
+      return;
+    }
+
+    // -----------------------------------------------------
+    // AUDIO SANS TITRE
+    // -----------------------------------------------------
+
+    if (!trackTitle && audioFile) {
+      showDashboardToast(
+        `Introduce un título para el track ${trackNumber}.`,
+        5000,
+      );
+
+      return;
+    }
+
+    // -----------------------------------------------------
+    // TRACK VALIDE
+    // -----------------------------------------------------
+
+    trackEntries.push({
+      title: trackTitle,
+      audioFile,
+      trackNumber,
+    });
+  }
+
+  // =======================================================
   // BOUTON LOADING
   // =======================================================
 
@@ -3751,6 +4841,17 @@ async function submitDashboardReleaseForm(form) {
     if (releaseError) {
       throw releaseError;
     }
+
+    // =====================================================
+    // CRÉATION DES TRACKS
+    // =====================================================
+
+    await createDashboardReleaseTracks(
+      trackEntries,
+      createdRelease,
+      slug,
+      isPublished,
+    );
 
     // =====================================================
     // SUCCÈS
