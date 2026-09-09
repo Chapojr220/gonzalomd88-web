@@ -2328,15 +2328,39 @@ function openDashboardReleaseEditor(release) {
 
               </div>
 
-              <!-- SUPPRIMER TRACK -->
-              <button
-                class="dashboard-track-row__remove"
-                type="button"
-                data-remove-edit-release-track
-                aria-label="Eliminar track"
-              >
-                <i class="bi bi-x-lg"></i>
-              </button>
+              <!-- ORDEN + SUPRESIÓN TRACK -->
+              <div class="dashboard-track-row__actions">
+
+                <button
+                  class="dashboard-track-row__move"
+                  type="button"
+                  data-move-release-track="up"
+                  aria-label="Mover track hacia arriba"
+                  title="Subir"
+                  >
+                  <i class="bi bi-arrow-up"></i>
+                </button>
+
+                <button
+                  class="dashboard-track-row__move"
+                  type="button"
+                  data-move-release-track="down"
+                  aria-label="Mover track hacia abajo"
+                  title="Bajar"
+                  >
+                  <i class="bi bi-arrow-down"></i>
+                </button>
+
+                <button
+                  class="dashboard-track-row__remove"
+                  type="button"
+                  data-remove-edit-release-track
+                  aria-label="Eliminar track"
+                  title="Eliminar"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
             </article>
           `;
         })
@@ -2850,6 +2874,7 @@ function initializeDashboardReleaseEditEditor(release) {
   // =======================================================
 
   connectDashboardTrackFileInputs();
+  connectDashboardReleaseTrackMoveButtons();
 
   // =======================================================
   // AJOUTER UN NOUVEAU TRACK
@@ -2873,15 +2898,16 @@ function initializeDashboardReleaseEditEditor(release) {
   }
 
   // =======================================================
-  // SUPPRIMER VISUELLEMENT UN TRACK
+  // SUPPRIMER UN TRACK DU FORMULAIRE
   // =======================================================
-  // IMPORTANT:
-  // Pour le moment nous retirons uniquement la ligne
-  // du formulaire.
+  // Le track est retiré visuellement ici.
   //
-  // Dans la prochaine étape la sauvegarde comparera les IDs
-  // présents avec les IDs originaux et supprimera réellement
-  // les tracks disparus dans Supabase.
+  // Lors de GUARDAR CAMBIOS,
+  // syncDashboardReleaseTracks() comparera les IDs
+  // encore présents avec les tracks originaux.
+  //
+  // Les tracks disparus seront ensuite supprimés
+  // réellement de Supabase et de Storage.
   // =======================================================
 
   document
@@ -2901,23 +2927,543 @@ function initializeDashboardReleaseEditEditor(release) {
     });
 
   // =======================================================
-  // SUBMIT
+  // SUBMIT — SAUVEGARDE DU RELEASE
   // =======================================================
-  // Nous BLOQUONS volontairement la sauvegarde pour cette
-  // première vérification.
+  // Envoie les modifications principales du release
+  // vers Supabase.
   //
-  // Ne retire pas ceci.
-  // La vraie fonction UPDATE arrive juste après le test.
+  // La synchronisation complète des tracks
+  // sera ajoutée dans l'étape suivante.
   // =======================================================
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    await submitDashboardReleaseEditForm(form, release);
+  });
+}
+
+// =========================================================
+// RELEASE — GUARDAR MODIFICACIONES
+// =========================================================
+
+async function submitDashboardReleaseEditForm(form, originalRelease) {
+  const formData = new FormData(form);
+
+  const title = formData.get("title")?.trim() || "";
+
+  const slug = formData.get("slug")?.trim() || "";
+
+  const releaseType = formData.get("release_type")?.trim() || "Single";
+
+  const releaseYearRaw = formData.get("release_year");
+
+  const releaseYear = releaseYearRaw
+    ? Number(releaseYearRaw)
+    : new Date().getFullYear();
+
+  const genre = formData.get("genre")?.trim() || null;
+
+  const description = formData.get("description")?.trim() || null;
+
+  const spotifyUrl = formData.get("spotify_url")?.trim() || null;
+
+  const soundcloudUrl = formData.get("soundcloud_url")?.trim() || null;
+
+  const bandcampUrl = formData.get("bandcamp_url")?.trim() || null;
+
+  const youtubeUrl = formData.get("youtube_url")?.trim() || null;
+
+  const isPublished = formData.get("is_published") === "on";
+
+  const coverFile = formData.get("cover_file");
+
+  const hasNewCover = coverFile instanceof File && coverFile.size > 0;
+
+  // =======================================================
+  // VALIDATION
+  // =======================================================
+
+  if (!title || !slug) {
+    showDashboardToast("El título y el slug son obligatorios.", 5000);
+
+    return;
+  }
+
+  if (
+    !Number.isInteger(releaseYear) ||
+    releaseYear < 1900 ||
+    releaseYear > 2100
+  ) {
+    showDashboardToast("Introduce un año válido.", 5000);
+
+    return;
+  }
+
+  // =======================================================
+  // BOUTON LOADING
+  // =======================================================
+
+  const submitButton = form.querySelector("#dashboard-edit-release-submit");
+
+  if (submitButton) {
+    submitButton.disabled = true;
+
+    submitButton.innerHTML = `
+      Guardando...
+      <i
+        class="bi bi-arrow-repeat"
+        aria-hidden="true"
+      ></i>
+    `;
+  }
+
+  try {
+    // =====================================================
+    // COVER — REMPLACEMENT OPTIONNEL
+    // =====================================================
+
+    let newCoverUrl = null;
+
+    if (hasNewCover) {
+      newCoverUrl = await uploadDashboardReleaseCover(coverFile, slug);
+
+      console.log("✅ Nueva portada subida:", newCoverUrl);
+    }
+
+    // =====================================================
+    // DONNÉES PRINCIPALES DU RELEASE
+    // =====================================================
+
+    const releaseData = {
+      title,
+      slug,
+      release_type: releaseType,
+      release_year: releaseYear,
+      genre,
+      description,
+      spotify_url: spotifyUrl,
+      soundcloud_url: soundcloudUrl,
+      bandcamp_url: bandcampUrl,
+      youtube_url: youtubeUrl,
+      is_published: isPublished,
+    };
+
+    if (newCoverUrl) {
+      releaseData.cover_image_url = newCoverUrl;
+    }
+
+    // =====================================================
+    // UPDATE DU RELEASE
+    // =====================================================
+
+    const { data: updatedRelease, error: releaseError } =
+      await window.supabaseClient
+        .from("releases")
+        .update(releaseData)
+        .eq("id", originalRelease.id)
+        .select()
+        .single();
+
+    if (releaseError) {
+      throw releaseError;
+    }
+
+    console.log("✅ Release actualizado:", updatedRelease);
+
+    // =====================================================
+    // SYNCHRONISATION DES TRACKS
+    // =====================================================
+
+    await syncDashboardReleaseTracks(form, originalRelease, slug, isPublished);
+
+    // =====================================================
+    // NETTOYAGE DE L'ANCIENNE COVER
+    // =====================================================
+
+    if (
+      newCoverUrl &&
+      originalRelease.cover_image_url &&
+      originalRelease.cover_image_url !== newCoverUrl
+    ) {
+      const oldCoverPath = getDashboardReleaseCoverStoragePath(
+        originalRelease.cover_image_url,
+      );
+
+      if (oldCoverPath) {
+        const { error: deleteOldCoverError } =
+          await window.supabaseClient.storage
+            .from("release-covers")
+            .remove([oldCoverPath]);
+
+        if (deleteOldCoverError) {
+          console.error(
+            "⚠️ La nueva portada fue guardada, pero no se pudo eliminar la antigua:",
+            deleteOldCoverError,
+          );
+        }
+      }
+    }
+
+    // =====================================================
+    // SUCCÈS COMPLET
+    // =====================================================
+
+    showDashboardToast("Release y tracks actualizados correctamente.");
+
+    closeDashboardEditor();
+
+    await loadDashboardReleases();
+  } catch (error) {
+    console.error("❌ Error actualizando release:", error);
+
     showDashboardToast(
-      "Editor cargado correctamente. La sauvegarde sera connectée à l'étape suivante.",
+      error?.message || "No se pudo actualizar el release.",
       5000,
     );
-  });
+
+    if (submitButton) {
+      submitButton.disabled = false;
+
+      submitButton.innerHTML = `
+        Guardar cambios
+        <i
+          class="bi bi-arrow-right"
+          aria-hidden="true"
+        ></i>
+      `;
+    }
+  }
+}
+
+// =========================================================
+// RELEASE — SYNCHRONISER LES TRACKS
+// =========================================================
+// Cette fonction gère:
+//
+// - modification du titre;
+// - modification de l'ordre;
+// - remplacement du fichier audio;
+// - ajout d'un nouveau track;
+// - suppression d'un track;
+// - nettoyage des anciens fichiers Storage.
+// =========================================================
+
+async function syncDashboardReleaseTracks(
+  form,
+  originalRelease,
+  releaseSlug,
+  isPublished,
+) {
+  const tracksContainer = form.querySelector("#dashboard-release-tracks");
+
+  if (!tracksContainer) {
+    return;
+  }
+
+  const rows = Array.from(
+    tracksContainer.querySelectorAll("[data-release-track]"),
+  );
+
+  const originalTracks = Array.isArray(originalRelease.tracks)
+    ? originalRelease.tracks
+    : [];
+
+  // -------------------------------------------------------
+  // IDs ENCORE PRÉSENTS DANS LE FORMULAIRE
+  // -------------------------------------------------------
+
+  const remainingTrackIds = rows
+    .map((row) => row.dataset.trackId)
+    .filter(Boolean);
+
+  // -------------------------------------------------------
+  // TRACKS SUPPRIMÉS VISUELLEMENT
+  // -------------------------------------------------------
+
+  const deletedTracks = originalTracks.filter(
+    (track) => !remainingTrackIds.includes(String(track.id)),
+  );
+
+  // -------------------------------------------------------
+  // FICHIERS À NETTOYER APRÈS SUCCÈS
+  // -------------------------------------------------------
+
+  const oldAudioPathsToDelete = [];
+
+  // -------------------------------------------------------
+  // NOUVEAUX FICHIERS UPLOADÉS
+  // -------------------------------------------------------
+  // En cas d'erreur, ils pourront être supprimés.
+  // -------------------------------------------------------
+
+  const newlyUploadedPaths = [];
+
+  try {
+    // =====================================================
+    // PHASE 1 — LIBÉRER LES NUMÉROS DE TRACK
+    // =====================================================
+    // Les tracks existants sont déplacés temporairement
+    // vers des numéros élevés.
+    //
+    // Cela évite les collisions avec la contrainte UNIQUE
+    // (release_id + track_number) pendant un changement
+    // d'ordre.
+    // =====================================================
+
+    const existingRows = rows.filter((row) => row.dataset.trackId);
+
+    for (let index = 0; index < existingRows.length; index += 1) {
+      const row = existingRows[index];
+
+      const temporaryTrackNumber = 10000 + index + 1;
+
+      const { error: temporaryNumberError } = await window.supabaseClient
+        .from("tracks")
+        .update({
+          track_number: temporaryTrackNumber,
+        })
+        .eq("id", row.dataset.trackId);
+
+      if (temporaryNumberError) {
+        throw temporaryNumberError;
+      }
+    }
+
+    // =====================================================
+    // SUPPRIMER LES TRACKS RETIRÉS AVEC X
+    // =====================================================
+
+    for (const deletedTrack of deletedTracks) {
+      const { error: deleteTrackError } = await window.supabaseClient
+        .from("tracks")
+        .delete()
+        .eq("id", deletedTrack.id);
+
+      if (deleteTrackError) {
+        throw deleteTrackError;
+      }
+
+      const deletedAudioPath = getDashboardReleaseAudioStoragePath(
+        deletedTrack.audio_url,
+      );
+
+      if (deletedAudioPath) {
+        oldAudioPathsToDelete.push(deletedAudioPath);
+      }
+    }
+
+    // =====================================================
+    // TRAITEMENT DES TRACKS PRÉSENTS
+    // =====================================================
+
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = rows[index];
+
+      const trackNumber = index + 1;
+
+      const titleInput = row.querySelector('[name="track_title"]');
+
+      const audioInput = row.querySelector('[name="track_audio_file"]');
+
+      const title = titleInput?.value.trim() || "";
+
+      const newAudioFile = audioInput?.files?.[0] || null;
+
+      const trackId = row.dataset.trackId || null;
+
+      const currentAudioUrl = row.dataset.currentAudioUrl || null;
+
+      // ---------------------------------------------------
+      // VALIDATION TITRE
+      // ---------------------------------------------------
+
+      if (!title) {
+        throw new Error(`El track ${trackNumber} necesita un título.`);
+      }
+
+      // ===================================================
+      // A. TRACK EXISTANT
+      // ===================================================
+
+      if (trackId) {
+        const trackData = {
+          title,
+          track_number: trackNumber,
+          display_order: trackNumber - 1,
+          is_published: isPublished,
+        };
+
+        // -------------------------------------------------
+        // REMPLACEMENT AUDIO
+        // -------------------------------------------------
+
+        if (newAudioFile) {
+          const { publicUrl, storagePath } = await uploadDashboardTrackAudio(
+            newAudioFile,
+            releaseSlug,
+            title,
+            trackNumber,
+          );
+
+          newlyUploadedPaths.push(storagePath);
+
+          trackData.audio_url = publicUrl;
+
+          // Ancien fichier à supprimer seulement
+          // après la réussite de la modification.
+          const oldStoragePath =
+            getDashboardReleaseAudioStoragePath(currentAudioUrl);
+
+          if (oldStoragePath) {
+            oldAudioPathsToDelete.push(oldStoragePath);
+          }
+        }
+
+        // -------------------------------------------------
+        // UPDATE TRACK
+        // -------------------------------------------------
+
+        const { error: updateTrackError } = await window.supabaseClient
+          .from("tracks")
+          .update(trackData)
+          .eq("id", trackId);
+
+        if (updateTrackError) {
+          throw updateTrackError;
+        }
+
+        continue;
+      }
+
+      // ===================================================
+      // B. NOUVEAU TRACK
+      // ===================================================
+
+      if (!newAudioFile) {
+        throw new Error(
+          `El nuevo track ${trackNumber} necesita un archivo de audio.`,
+        );
+      }
+
+      const { publicUrl, storagePath } = await uploadDashboardTrackAudio(
+        newAudioFile,
+        releaseSlug,
+        title,
+        trackNumber,
+      );
+
+      newlyUploadedPaths.push(storagePath);
+
+      const { error: insertTrackError } = await window.supabaseClient
+        .from("tracks")
+        .insert({
+          release_id: originalRelease.id,
+          title,
+          track_number: trackNumber,
+          audio_url: publicUrl,
+          display_order: trackNumber - 1,
+          is_published: isPublished,
+        });
+
+      if (insertTrackError) {
+        throw insertTrackError;
+      }
+    }
+
+    // =====================================================
+    // NETTOYAGE DES ANCIENS AUDIOS
+    // =====================================================
+
+    const uniqueOldPaths = [...new Set(oldAudioPathsToDelete)];
+
+    if (uniqueOldPaths.length > 0) {
+      const { error: storageCleanupError } = await window.supabaseClient.storage
+        .from("release-audio")
+        .remove(uniqueOldPaths);
+
+      if (storageCleanupError) {
+        console.error(
+          "⚠️ Tracks actualizados pero algunos audios antiguos no pudieron eliminarse:",
+          storageCleanupError,
+        );
+      }
+    }
+
+    console.log("✅ Tracks sincronizados correctamente.");
+  } catch (error) {
+    // =====================================================
+    // NETTOYAGE DES NOUVEAUX UPLOADS EN CAS D'ERREUR
+    // =====================================================
+
+    if (newlyUploadedPaths.length > 0) {
+      const { error: rollbackStorageError } =
+        await window.supabaseClient.storage
+          .from("release-audio")
+          .remove(newlyUploadedPaths);
+
+      if (rollbackStorageError) {
+        console.error(
+          "⚠️ No se pudieron limpiar algunos audios después del error:",
+          rollbackStorageError,
+        );
+      }
+    }
+
+    throw error;
+  }
+}
+
+// =========================================================
+// STORAGE — EXTRAIRE LE CHEMIN D'UN AUDIO DEPUIS SON URL
+// =========================================================
+
+function getDashboardReleaseAudioStoragePath(publicUrl) {
+  if (!publicUrl) {
+    return null;
+  }
+
+  const marker = "/storage/v1/object/public/release-audio/";
+
+  const markerIndex = publicUrl.indexOf(marker);
+
+  if (markerIndex === -1) {
+    return null;
+  }
+
+  const encodedPath = publicUrl.slice(markerIndex + marker.length);
+
+  try {
+    return decodeURIComponent(encodedPath);
+  } catch (error) {
+    return encodedPath;
+  }
+}
+
+// =========================================================
+// STORAGE — EXTRAIRE LE CHEMIN D'UNE COVER
+// =========================================================
+
+function getDashboardReleaseCoverStoragePath(publicUrl) {
+  if (!publicUrl) {
+    return null;
+  }
+
+  const marker = "/storage/v1/object/public/release-covers/";
+
+  const markerIndex = publicUrl.indexOf(marker);
+
+  if (markerIndex === -1) {
+    return null;
+  }
+
+  const encodedPath = publicUrl.slice(markerIndex + marker.length);
+
+  try {
+    return decodeURIComponent(encodedPath);
+  } catch (error) {
+    return encodedPath;
+  }
 }
 
 // =========================================================
@@ -4220,20 +4766,45 @@ function addDashboardReleaseTrackRow() {
     </label>
     </div>
 
-    <button
-      class="dashboard-track-row__remove"
-      type="button"
-      data-remove-release-track
-      aria-label="Eliminar track"
-    >
-      <i class="bi bi-x-lg"></i>
-    </button>
+    <div class="dashboard-track-row__actions">
+
+      <button
+        class="dashboard-track-row__move"
+        type="button"
+        data-move-release-track="up"
+        aria-label="Mover track hacia arriba"
+        title="Subir"
+      >
+        <i class="bi bi-arrow-up"></i>
+      </button>
+
+      <button
+        class="dashboard-track-row__move"
+        type="button"
+        data-move-release-track="down"
+        aria-label="Mover track hacia abajo"
+        title="Bajar"
+      >
+        <i class="bi bi-arrow-down"></i>
+      </button>
+
+      <button
+        class="dashboard-track-row__remove"
+        type="button"
+        data-remove-release-track
+        aria-label="Eliminar track"
+        title="Eliminar"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
   `;
 
   tracksContainer.appendChild(track);
 
   connectDashboardReleaseTrackRemoveButtons();
   connectDashboardTrackFileInputs();
+  connectDashboardReleaseTrackMoveButtons();
 }
 
 // =========================================================
@@ -4320,6 +4891,48 @@ function refreshDashboardReleaseTrackNumbers() {
     if (number) {
       number.textContent = String(index + 1).padStart(2, "0");
     }
+  });
+}
+
+// =========================================================
+// TRACKS — CHANGER L'ORDRE
+// =========================================================
+
+function connectDashboardReleaseTrackMoveButtons() {
+  const buttons = document.querySelectorAll("[data-move-release-track]");
+
+  buttons.forEach((button) => {
+    button.onclick = () => {
+      const row = button.closest("[data-release-track]");
+
+      const tracksContainer = row?.parentElement;
+
+      if (!row || !tracksContainer) {
+        return;
+      }
+
+      const direction = button.dataset.moveReleaseTrack;
+
+      if (direction === "up") {
+        const previousRow = row.previousElementSibling;
+
+        if (previousRow && previousRow.matches("[data-release-track]")) {
+          tracksContainer.insertBefore(row, previousRow);
+        }
+      }
+
+      if (direction === "down") {
+        const nextRow = row.nextElementSibling;
+
+        if (nextRow && nextRow.matches("[data-release-track]")) {
+          tracksContainer.insertBefore(nextRow, row);
+        }
+      }
+
+      refreshDashboardReleaseTrackNumbers();
+
+      connectDashboardReleaseTrackMoveButtons();
+    };
   });
 }
 
