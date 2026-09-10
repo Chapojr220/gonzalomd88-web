@@ -5426,3 +5426,66 @@ body.menu-open {
 .dashboard-track-row {
   align-items: center;
 }
+
+/* =========================================================
+   DASHBOARD — ACTIONS FOOTER RELEASE
+   ========================================================= */
+
+.dashboard-editor-form__footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 180px;
+}
+
+/* Les deux boutons ont exactement les mêmes dimensions */
+.dashboard-editor-form__footer-actions .button {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  margin: 0;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   ELIMINAR RELEASE
+   Blanc → Noir
+   --------------------------------------------------------- */
+
+.button--danger {
+  background: #fff;
+  color: #111;
+  border: 1px solid #111;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.button--danger:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* ---------------------------------------------------------
+   GUARDAR CAMBIOS
+   Noir → Blanc
+   --------------------------------------------------------- */
+
+.dashboard-editor-form__footer-actions .button--dark {
+  background: #111;
+  color: #fff;
+  border: 1px solid #111;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dashboard-editor-form__footer-actions .button--dark:hover {
+  background: #fff;
+  color: #111;
+}

@@ -39,11 +39,6 @@
         class="booking-navbar"
         aria-label="Navegación de la página de reserva"
       >
-        <!--
-          Nombre global del sitio.
-          Supabase sustituye este contenido mediante:
-          site_settings.site_name
-        -->
         <a
           class="booking-navbar__logo"
           href="./index.html"
@@ -197,15 +192,6 @@
           =================================================== -->
 
           <div class="booking-calendar">
-            <!--
-              URL de respaldo:
-              si Supabase no responde, se utilizará temporalmente
-              esta dirección.
-
-              Cuando site_settings.calendly_url contenga una URL,
-              main.js sustituirá automáticamente data-url antes
-              de cargar el widget oficial de Calendly.
-            -->
             <div
               class="calendly-inline-widget"
               data-setting="calendly_url"
@@ -243,12 +229,6 @@
               </p>
             </div>
 
-            <!--
-              El href funciona como respaldo.
-
-              Supabase sustituirá automáticamente la URL utilizando:
-              site_settings.whatsapp_url
-            -->
             <a
               class="whatsapp-button"
               href="https://wa.me/41790000000?text=Hola%20Gonzalo%2C%20me%20gustaría%20recibir%20información%20sobre%20tus%20clases."
@@ -284,10 +264,6 @@
          WHATSAPP FLOTANTE
     =================================================== -->
 
-    <!--
-      Utiliza exactamente el mismo parámetro global que
-      el botón WhatsApp principal.
-    -->
     <a
       class="whatsapp-float"
       href="https://wa.me/41790000000?text=Hola%20Gonzalo%2C%20me%20gustaría%20recibir%20más%20información."
@@ -311,15 +287,6 @@
     <!-- Configuración y conexión con Supabase -->
     <script src="./js/supabase.js"></script>
 
-    <!--
-      JavaScript principal del sitio.
-
-      main.js:
-      - recupera los textos desde site_content;
-      - recupera los parámetros globales desde site_settings;
-      - actualiza WhatsApp y Calendly;
-      - carga Calendly después de recibir la configuración global.
-    -->
     <script src="./js/main.js"></script>
   </body>
 </html>

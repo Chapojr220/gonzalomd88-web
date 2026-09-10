@@ -202,19 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const productsGrid = document.getElementById("productsGrid");
 
-console.log("✅ Grille produits trouvée :", productsGrid);
-
 const productsCounter = document.getElementById("productsCounter");
-
-console.log("✅ Compteur produits trouvé :", productsCounter);
 
 const musicCarousel = document.getElementById("musicCarousel");
 
-console.log("✅ Carrousel musique trouvé :", musicCarousel);
-
 const musicCounter = document.getElementById("musicCounter");
-
-console.log("✅ Compteur musique trouvé :", musicCounter);
 
 // =========================================================
 // SUPABASE : RÉCUPÉRATION DES CONTENUS DU SITE
@@ -227,11 +219,9 @@ async function loadSiteContentFromSupabase() {
     .eq("is_active", true);
 
   if (error) {
-    console.error("❌ Erreur lors du chargement des contenus du site :", error);
+    console.error("❌ Erreur lors du chargement des contenus du site.");
     return;
   }
-
-  console.log("✅ Contenus récupérés depuis Supabase :", contents);
 
   contents.forEach((content) => {
     const element = document.querySelector(
@@ -261,10 +251,7 @@ async function loadSiteSettingsFromSupabase() {
     .maybeSingle();
 
   if (error) {
-    console.error(
-      "❌ Erreur lors du chargement des paramètres globaux :",
-      error,
-    );
+    console.error("❌ Erreur lors du chargement des paramètres globaux.");
     return;
   }
 
@@ -272,8 +259,6 @@ async function loadSiteSettingsFromSupabase() {
     console.warn("⚠️ Aucun paramètre global trouvé.");
     return;
   }
-
-  console.log("✅ Paramètres globaux récupérés :", settings);
 
   // ---------------------------------------------------------
   // NOM DU SITE
@@ -296,6 +281,7 @@ async function loadSiteSettingsFromSupabase() {
 
       link.textContent = settings.contact_email;
       link.href = `mailto:${settings.contact_email}`;
+      link.hidden = false;
     });
 
   // ---------------------------------------------------------
@@ -312,6 +298,7 @@ async function loadSiteSettingsFromSupabase() {
       // Si l'élément est un lien classique
       if (element.tagName === "A") {
         element.href = settings.calendly_url;
+        element.hidden = false;
         return;
       }
 
@@ -329,6 +316,10 @@ async function loadSiteSettingsFromSupabase() {
     if (!settings.whatsapp_url) return;
 
     link.href = settings.whatsapp_url;
+
+    if (link.closest(".contact__links")) {
+      link.hidden = false;
+    }
   });
 }
 
@@ -383,13 +374,7 @@ function loadCalendlyWidget() {
   // Confirmation dans la console
   // ---------------------------------------------------------
 
-  calendlyScript.addEventListener("load", () => {
-    console.log("✅ Widget Calendly chargé avec l'URL :", calendlyUrl);
-  });
-
-  calendlyScript.addEventListener("error", () => {
-    console.error("❌ Impossible de charger le widget Calendly.");
-  });
+  calendlyScript.addEventListener("load", () => {});
 
   // ---------------------------------------------------------
   // Ajout du script dans la page
@@ -413,11 +398,9 @@ async function loadSocialLinksFromSupabase() {
     .order("display_order", { ascending: true });
 
   if (error) {
-    console.error("❌ Erreur lors du chargement des réseaux sociaux :", error);
+    console.error("❌ Erreur lors du chargement des réseaux sociaux.");
     return;
   }
-
-  console.log("✅ Réseaux sociaux récupérés :", socialLinks);
 
   const socialContainers = document.querySelectorAll(
     '[data-social-links="global"]',
@@ -474,11 +457,9 @@ async function loadProductsFromSupabase() {
     .order("display_order", { ascending: true });
 
   if (error) {
-    console.error("❌ Erreur lors du chargement des produits :", error);
+    console.error("❌ Erreur lors du chargement des produits.");
     return;
   }
-
-  console.log("✅ Produits récupérés depuis Supabase :", products);
 
   if (!products || products.length === 0) {
     console.warn("⚠️ Aucun produit publié trouvé.");
@@ -574,12 +555,9 @@ async function loadReleasesFromSupabase() {
     .order("display_order", { ascending: true });
 
   if (error) {
-    console.error("❌ Erreur Supabase :", error);
-    console.log("Releases :", releases);
+    console.error("❌ Erreur lors du chargement des releases.");
     return;
   }
-
-  console.log("✅ Releases récupérées depuis Supabase :", releases);
 
   const totalTracks = releases.reduce((total, release) => {
     return total + (release.tracks || []).length;
@@ -846,7 +824,7 @@ async function getCurrentCmsAdmin() {
   } = await window.supabaseClient.auth.getUser();
 
   if (userError) {
-    console.error("❌ Error al verificar el usuario autenticado:", userError);
+    console.error("❌ Error al verificar el usuario autenticado.");
 
     return null;
   }
@@ -862,7 +840,7 @@ async function getCurrentCmsAdmin() {
     .maybeSingle();
 
   if (adminError) {
-    console.error("❌ Error al comprobar los permisos CMS:", adminError);
+    console.error("❌ Error al comprobar los permisos CMS.");
 
     return null;
   }
@@ -920,7 +898,7 @@ if (dashboardLoginForm) {
         });
 
       if (signInError) {
-        console.error("❌ Error de autenticación:", signInError);
+        console.error("❌ Error de autenticación.");
 
         showDashboardLoginMessage(
           "Correo electrónico o contraseña incorrectos.",
@@ -954,8 +932,6 @@ if (dashboardLoginForm) {
       // 3. ACCESO AUTORIZADO
       // ---------------------------------------------------
 
-      console.log("✅ Administrador CMS autenticado:", cmsAdmin.adminUser);
-
       showDashboardLoginMessage(
         `Bienvenido, ${cmsAdmin.adminUser.display_name}.`,
         "success",
@@ -966,7 +942,7 @@ if (dashboardLoginForm) {
         window.location.href = "./dashboard.html";
       }, 500);
     } catch (error) {
-      console.error("❌ Error inesperado durante el login:", error);
+      console.error("❌ Error inesperado durante el login.");
 
       showDashboardLoginMessage(
         "Se ha producido un error inesperado. Inténtalo de nuevo.",
@@ -997,11 +973,9 @@ async function redirectAuthenticatedAdminFromLogin() {
       return;
     }
 
-    console.log("✅ Sesión CMS existente detectada:", cmsAdmin.adminUser);
-
     window.location.href = "./dashboard.html";
   } catch (error) {
-    console.error("❌ Error al verificar la sesión CMS existente:", error);
+    console.error("❌ Error al verificar la sesión CMS existente.");
   }
 }
 
@@ -1024,8 +998,6 @@ redirectAuthenticatedAdminFromLogin();
 // - ouverture / fermeture du panneau d'édition;
 // - notifications.
 //
-// Les éditeurs avancés pour les contenus, releases,
-// produits et réseaux sociaux seront ajoutés ensuite.
 // =========================================================
 
 // =========================================================
@@ -1151,11 +1123,9 @@ async function protectDashboardPage() {
       return null;
     }
 
-    console.log("✅ Accès dashboard autorisé :", cmsAdmin.adminUser);
-
     return cmsAdmin;
   } catch (error) {
-    console.error("❌ Erreur lors de la vérification du dashboard :", error);
+    console.error("❌ Erreur lors de la vérification du dashboard.");
 
     window.location.replace("./dashboard-login.html");
 
@@ -1200,7 +1170,7 @@ if (dashboardLogoutButton) {
 
       window.location.replace("./dashboard-login.html");
     } catch (error) {
-      console.error("❌ Erreur pendant la déconnexion :", error);
+      console.error("❌ Erreur pendant la déconnexion.");
 
       showDashboardToast("No se pudo cerrar la sesión.");
 
@@ -1341,11 +1311,6 @@ dashboardEditorButtons.forEach((button) => {
       `
         <div class="dashboard-empty-state dashboard-empty-state--light">
           <i class="bi bi-pencil-square" aria-hidden="true"></i>
-
-          <p>
-            El editor de esta sección se conectará a Supabase
-            en el siguiente paso.
-          </p>
         </div>
       `,
     );
@@ -1374,7 +1339,7 @@ async function loadDashboardSiteSettings() {
     .maybeSingle();
 
   if (error) {
-    console.error("❌ Erreur chargement site_settings :", error);
+    console.error("❌ Erreur lors du chargement des paramètres du site.");
 
     showDashboardToast("Error al cargar los ajustes globales.");
 
@@ -1489,7 +1454,7 @@ if (dashboardSettingsForm) {
           element.textContent = siteName;
         });
     } catch (error) {
-      console.error("❌ Erreur sauvegarde site_settings :", error);
+      console.error("❌ Erreur lors de la sauvegarde des paramètres du site.");
 
       showDashboardToast("No se pudieron guardar los cambios.");
     } finally {
@@ -1524,8 +1489,6 @@ async function initializeDashboard() {
   // -------------------------------------------------------
 
   await loadDashboardSiteSettings();
-
-  console.log("✅ Dashboard initialisé correctement.");
 }
 
 // =========================================================
@@ -1668,7 +1631,7 @@ async function loadDashboardSiteContent() {
     });
 
   if (error) {
-    console.error("❌ Error cargando site_content:", error);
+    console.error("❌ Error al cargar el contenido del dashboard.");
 
     showDashboardToast("No se pudieron cargar los contenidos.");
 
@@ -1676,8 +1639,6 @@ async function loadDashboardSiteContent() {
   }
 
   dashboardSiteContent = data || [];
-
-  console.log("✅ Contenidos CMS cargados:", dashboardSiteContent);
 }
 
 // =========================================================
@@ -1697,7 +1658,7 @@ async function loadDashboardSocialLinks() {
     });
 
   if (error) {
-    console.error("❌ Error cargando social_links:", error);
+    console.error("❌ Error al cargar los enlaces sociales del dashboard.");
 
     dashboardSocialLinksList.innerHTML = `
       <div class="dashboard-empty-state">
@@ -1816,13 +1777,17 @@ async function loadDashboardReleases() {
       title,
       track_number,
       audio_url,
-      spotify_url,
-      soundcloud_url,
-      bandcamp_url,
-      youtube_url,
       display_order,
       is_published,
       updated_at
+    ),
+    release_links (
+      id,
+      release_id,
+      platform,
+      url,
+      display_order,
+      is_visible
     )
   `,
     )
@@ -1832,7 +1797,7 @@ async function loadDashboardReleases() {
     });
 
   if (error) {
-    console.error("❌ Error cargando releases:", error);
+    console.error("❌ Error al cargar los releases del dashboard.");
 
     dashboardReleasesList.innerHTML = `
       <div class="dashboard-empty-state">
@@ -1946,7 +1911,7 @@ async function loadDashboardProducts() {
     .select("*");
 
   if (error) {
-    console.error("❌ Error cargando products:", error);
+    console.error("❌ Error al cargar los productos del dashboard.");
 
     dashboardProductsList.innerHTML = `
       <div class="dashboard-empty-state dashboard-empty-state--light">
@@ -2040,7 +2005,7 @@ function renderDashboardProducts() {
       );
 
       if (product) {
-        openDashboardRecordEditor("products", product, "Producto");
+        openDashboardProductEditEditor(product);
       }
     });
   });
@@ -2176,17 +2141,11 @@ function openDashboardRecordEditor(tableName, record, editorTitle) {
         </div>
 
         <div class="dashboard-editor-form__footer">
-          <p>
-            Los cambios se guardarán directamente
-            en Supabase.
-          </p>
-
           <button
             class="button button--dark"
             type="submit"
           >
             Guardar cambios
-
             <i class="bi bi-arrow-right"></i>
           </button>
         </div>
@@ -2216,11 +2175,6 @@ function openDashboardRecordEditor(tableName, record, editorTitle) {
 // - les informations du release;
 // - la cover actuelle;
 // - les tracks liés au release;
-// - le remplacement futur de la cover;
-// - le remplacement futur des fichiers audio;
-// - l'ajout / suppression future des tracks.
-//
-// La sauvegarde complète sera branchée dans l'étape suivante.
 // =========================================================
 
 function openDashboardReleaseEditor(release) {
@@ -2241,6 +2195,16 @@ function openDashboardReleaseEditor(release) {
         return numberA - numberB;
       })
     : [];
+
+  const releaseLinks = Array.isArray(release.release_links)
+    ? release.release_links
+    : [];
+
+  const getReleasePlatformUrl = (platform) => {
+    const link = releaseLinks.find((item) => item.platform === platform);
+
+    return link?.url || "";
+  };
 
   // -------------------------------------------------------
   // HTML DES TRACKS
@@ -2690,7 +2654,7 @@ function openDashboardReleaseEditor(release) {
                 id="edit-release-spotify-url"
                 name="spotify_url"
                 type="url"
-                value="${escapeDashboardHtml(release.spotify_url || "")}"
+                value="${escapeDashboardHtml(getReleasePlatformUrl("spotify"))}"
                 placeholder="https://..."
               />
             </div>
@@ -2705,7 +2669,7 @@ function openDashboardReleaseEditor(release) {
                 id="edit-release-soundcloud-url"
                 name="soundcloud_url"
                 type="url"
-                value="${escapeDashboardHtml(release.soundcloud_url || "")}"
+                value="${escapeDashboardHtml(getReleasePlatformUrl("soundcloud"))}"
                 placeholder="https://..."
               />
             </div>
@@ -2720,7 +2684,7 @@ function openDashboardReleaseEditor(release) {
                 id="edit-release-bandcamp-url"
                 name="bandcamp_url"
                 type="url"
-                value="${escapeDashboardHtml(release.bandcamp_url || "")}"
+                value="${escapeDashboardHtml(getReleasePlatformUrl("bandcamp"))}"
                 placeholder="https://..."
               />
             </div>
@@ -2735,7 +2699,7 @@ function openDashboardReleaseEditor(release) {
                 id="edit-release-youtube-url"
                 name="youtube_url"
                 type="url"
-                value="${escapeDashboardHtml(release.youtube_url || "")}"
+                value="${escapeDashboardHtml(getReleasePlatformUrl("youtube"))}"
                 placeholder="https://..."
               />
             </div>
@@ -2792,23 +2756,35 @@ function openDashboardReleaseEditor(release) {
 
         <div class="dashboard-editor-form__footer">
 
-          <p>
-            Los cambios se guardarán directamente en Supabase.
-          </p>
+          <div class="dashboard-editor-form__footer-actions">
 
+            <button
+              class="button button--danger"
+              id="dashboard-delete-release"
+              type="button"
+            >
+              Eliminar release
 
-          <button
-            class="button button--dark"
-            id="dashboard-edit-release-submit"
-            type="submit"
-          >
-            Guardar cambios
+              <i
+                class="bi bi-trash3"
+                aria-hidden="true"
+              ></i>
+            </button>
 
-            <i
-              class="bi bi-arrow-right"
-              aria-hidden="true"
-            ></i>
-          </button>
+            <button
+              class="button button--dark"
+              id="dashboard-edit-release-submit"
+              type="submit"
+            >
+              Guardar cambios
+
+              <i
+                class="bi bi-arrow-right"
+                aria-hidden="true"
+              ></i>
+            </button>
+
+          </div>
 
         </div>
 
@@ -2821,6 +2797,124 @@ function openDashboardReleaseEditor(release) {
   // =======================================================
 
   initializeDashboardReleaseEditEditor(release);
+}
+
+// =========================================================
+// RELEASE — SUPPRESSION COMPLÈTE
+// =========================================================
+
+async function deleteDashboardRelease(release) {
+  if (!release?.id) {
+    throw new Error("Release inválido.");
+  }
+
+  try {
+    // =====================================================
+    // 1 — RÉCUPÉRER LES TRACKS DU RELEASE
+    // =====================================================
+
+    const { data: tracks, error: tracksFetchError } =
+      await window.supabaseClient
+        .from("tracks")
+        .select("id, audio_url")
+        .eq("release_id", release.id);
+
+    if (tracksFetchError) {
+      throw tracksFetchError;
+    }
+
+    // =====================================================
+    // 2 — SUPPRIMER LES AUDIOS DU STORAGE
+    // =====================================================
+
+    const audioPaths = (tracks || [])
+      .map((track) => getDashboardReleaseAudioStoragePath(track.audio_url))
+      .filter(Boolean);
+
+    if (audioPaths.length > 0) {
+      const { error: audioStorageError } = await window.supabaseClient.storage
+        .from("release-audio")
+        .remove(audioPaths);
+
+      if (audioStorageError) {
+        throw audioStorageError;
+      }
+    }
+
+    // =====================================================
+    // 3 — SUPPRIMER LA COVER DU STORAGE
+    // =====================================================
+
+    const coverPath = getDashboardReleaseCoverStoragePath(
+      release.cover_image_url,
+    );
+
+    if (coverPath) {
+      const { error: coverStorageError } = await window.supabaseClient.storage
+        .from("release-covers")
+        .remove([coverPath]);
+
+      if (coverStorageError) {
+        throw coverStorageError;
+      }
+    }
+
+    // =====================================================
+    // 4 — SUPPRIMER LES LIENS PLATEFORMES
+    // =====================================================
+
+    const { error: linksError } = await window.supabaseClient
+      .from("release_links")
+      .delete()
+      .eq("release_id", release.id);
+
+    if (linksError) {
+      throw linksError;
+    }
+
+    // =====================================================
+    // 5 — SUPPRIMER LES TRACKS
+    // =====================================================
+
+    const { error: tracksDeleteError } = await window.supabaseClient
+      .from("tracks")
+      .delete()
+      .eq("release_id", release.id);
+
+    if (tracksDeleteError) {
+      throw tracksDeleteError;
+    }
+
+    // =====================================================
+    // 6 — SUPPRIMER LE RELEASE
+    // =====================================================
+
+    const { error: releaseDeleteError } = await window.supabaseClient
+      .from("releases")
+      .delete()
+      .eq("id", release.id);
+
+    if (releaseDeleteError) {
+      throw releaseDeleteError;
+    }
+
+    // =====================================================
+    // 7 — RAFRAÎCHIR LE DASHBOARD
+    // =====================================================
+
+    showDashboardToast("Release eliminado correctamente.");
+
+    closeDashboardEditor();
+
+    await loadDashboardReleases();
+  } catch (error) {
+    console.error("❌ Error al eliminar el release.");
+
+    showDashboardToast(
+      error?.message || "No se pudo eliminar el release.",
+      5000,
+    );
+  }
 }
 
 // =========================================================
@@ -2844,6 +2938,24 @@ function initializeDashboardReleaseEditEditor(release) {
 
   if (!form) {
     return;
+  }
+
+  const deleteReleaseButton = document.querySelector(
+    "#dashboard-delete-release",
+  );
+
+  if (deleteReleaseButton) {
+    deleteReleaseButton.addEventListener("click", () => {
+      const confirmed = window.confirm(
+        `¿Seguro que quieres eliminar "${release.title}"? Esta acción no se puede deshacer.`,
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      deleteDashboardRelease(release);
+    });
   }
 
   // =======================================================
@@ -2932,15 +3044,108 @@ function initializeDashboardReleaseEditEditor(release) {
   // Envoie les modifications principales du release
   // vers Supabase.
   //
-  // La synchronisation complète des tracks
-  // sera ajoutée dans l'étape suivante.
-  // =======================================================
-
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     await submitDashboardReleaseEditForm(form, release);
   });
+}
+
+// =========================================================
+// RELEASE — SYNCHRONISER LES LIENS PLATEFORMES
+// =========================================================
+
+async function syncDashboardReleaseLinks(originalRelease, platformUrls) {
+  const existingLinks = Array.isArray(originalRelease.release_links)
+    ? originalRelease.release_links
+    : [];
+
+  const platforms = [
+    {
+      platform: "spotify",
+      url: platformUrls.spotify,
+      display_order: 1,
+    },
+    {
+      platform: "soundcloud",
+      url: platformUrls.soundcloud,
+      display_order: 2,
+    },
+    {
+      platform: "bandcamp",
+      url: platformUrls.bandcamp,
+      display_order: 3,
+    },
+    {
+      platform: "youtube",
+      url: platformUrls.youtube,
+      display_order: 4,
+    },
+  ];
+
+  for (const item of platforms) {
+    const existingLink = existingLinks.find(
+      (link) => link.platform === item.platform,
+    );
+
+    // -----------------------------------------------------
+    // URL présente + lien existant = UPDATE
+    // -----------------------------------------------------
+
+    if (item.url && existingLink) {
+      const { error } = await window.supabaseClient
+        .from("release_links")
+        .update({
+          url: item.url,
+          display_order: item.display_order,
+          is_visible: true,
+        })
+        .eq("id", existingLink.id);
+
+      if (error) {
+        throw error;
+      }
+
+      continue;
+    }
+
+    // -----------------------------------------------------
+    // URL présente + aucun lien = INSERT
+    // -----------------------------------------------------
+
+    if (item.url && !existingLink) {
+      const { error } = await window.supabaseClient
+        .from("release_links")
+        .insert({
+          release_id: originalRelease.id,
+          platform: item.platform,
+          url: item.url,
+          display_order: item.display_order,
+          is_visible: true,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      continue;
+    }
+
+    // -----------------------------------------------------
+    // Champ vide + lien existant = DELETE
+    // -----------------------------------------------------
+
+    if (!item.url && existingLink) {
+      const { error } = await window.supabaseClient
+        .from("release_links")
+        .delete()
+        .eq("id", existingLink.id);
+
+      if (error) {
+        throw error;
+      }
+    }
+  }
 }
 
 // =========================================================
@@ -3027,8 +3232,6 @@ async function submitDashboardReleaseEditForm(form, originalRelease) {
 
     if (hasNewCover) {
       newCoverUrl = await uploadDashboardReleaseCover(coverFile, slug);
-
-      console.log("✅ Nueva portada subida:", newCoverUrl);
     }
 
     // =====================================================
@@ -3042,10 +3245,6 @@ async function submitDashboardReleaseEditForm(form, originalRelease) {
       release_year: releaseYear,
       genre,
       description,
-      spotify_url: spotifyUrl,
-      soundcloud_url: soundcloudUrl,
-      bandcamp_url: bandcampUrl,
-      youtube_url: youtubeUrl,
       is_published: isPublished,
     };
 
@@ -3069,7 +3268,16 @@ async function submitDashboardReleaseEditForm(form, originalRelease) {
       throw releaseError;
     }
 
-    console.log("✅ Release actualizado:", updatedRelease);
+    // =====================================================
+    // SYNCHRONISATION DES LIENS PLATEFORMES
+    // =====================================================
+
+    await syncDashboardReleaseLinks(originalRelease, {
+      spotify: spotifyUrl,
+      soundcloud: soundcloudUrl,
+      bandcamp: bandcampUrl,
+      youtube: youtubeUrl,
+    });
 
     // =====================================================
     // SYNCHRONISATION DES TRACKS
@@ -3098,8 +3306,7 @@ async function submitDashboardReleaseEditForm(form, originalRelease) {
 
         if (deleteOldCoverError) {
           console.error(
-            "⚠️ La nueva portada fue guardada, pero no se pudo eliminar la antigua:",
-            deleteOldCoverError,
+            "⚠️ La nueva portada fue guardada, pero no se pudo eliminar la antigua.",
           );
         }
       }
@@ -3115,7 +3322,7 @@ async function submitDashboardReleaseEditForm(form, originalRelease) {
 
     await loadDashboardReleases();
   } catch (error) {
-    console.error("❌ Error actualizando release:", error);
+    console.error("❌ Error al actualizar el release.");
 
     showDashboardToast(
       error?.message || "No se pudo actualizar el release.",
@@ -3384,13 +3591,10 @@ async function syncDashboardReleaseTracks(
 
       if (storageCleanupError) {
         console.error(
-          "⚠️ Tracks actualizados pero algunos audios antiguos no pudieron eliminarse:",
-          storageCleanupError,
+          "⚠️ Tracks actualizados pero algunos audios antiguos no pudieron eliminarse.",
         );
       }
     }
-
-    console.log("✅ Tracks sincronizados correctamente.");
   } catch (error) {
     // =====================================================
     // NETTOYAGE DES NOUVEAUX UPLOADS EN CAS D'ERREUR
@@ -3404,8 +3608,7 @@ async function syncDashboardReleaseTracks(
 
       if (rollbackStorageError) {
         console.error(
-          "⚠️ No se pudieron limpiar algunos audios después del error:",
-          rollbackStorageError,
+          "⚠️ No se pudieron limpiar algunos audios después del error.",
         );
       }
     }
@@ -3532,7 +3735,7 @@ async function saveDashboardRecord(tableName, originalRecord, form) {
       await loadDashboardSocialLinks();
     }
   } catch (error) {
-    console.error(`❌ Error actualizando ${tableName}:`, error);
+    console.error("❌ Error al actualizar el registro.");
 
     showDashboardToast("No se pudieron guardar los cambios.");
   }
@@ -3661,7 +3864,7 @@ async function saveDashboardContentSection(sectionContent, form) {
 
     await loadDashboardSiteContent();
   } catch (error) {
-    console.error("❌ Error guardando site_content:", error);
+    console.error("❌ Error al guardar el contenido del sitio.");
 
     showDashboardToast("No se pudo actualizar el contenido.");
   }
@@ -3748,8 +3951,6 @@ async function loadDashboardCmsData() {
     return;
   }
 
-  console.log("⏳ Cargando datos completos del CMS...");
-
   await Promise.all([
     loadDashboardSiteContent(),
     loadDashboardSocialLinks(),
@@ -3758,8 +3959,6 @@ async function loadDashboardCmsData() {
   ]);
 
   connectDashboardContentEditors();
-
-  console.log("✅ Datos completos del CMS cargados.");
 }
 
 // =========================================================
@@ -4008,10 +4207,6 @@ function openDashboardCreateEditor(tableName, records, editorTitle) {
         </div>
 
         <div class="dashboard-editor-form__footer">
-          <p>
-            El nuevo registro se guardará
-            directamente en Supabase.
-          </p>
 
           <button
             class="button button--dark"
@@ -4135,8 +4330,6 @@ async function createDashboardRecord(tableName, template, form) {
       throw error;
     }
 
-    console.log(`✅ Nuevo registro creado en ${tableName}:`, data);
-
     showDashboardToast(
       tableName === "releases"
         ? "Release creado correctamente."
@@ -4157,7 +4350,7 @@ async function createDashboardRecord(tableName, template, form) {
       await loadDashboardProducts();
     }
   } catch (error) {
-    console.error(`❌ Error creando registro en ${tableName}:`, error);
+    console.error("❌ Error al crear el registro.");
 
     showDashboardToast(
       "No se pudo crear el registro. Revisa los campos obligatorios.",
@@ -4196,10 +4389,921 @@ if (dashboardAddReleaseButton) {
 // NUEVO PRODUCTO
 // =========================================================
 
+function createDashboardProductSlug(title) {
+  return title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function openDashboardProductCreateEditor() {
+  openDashboardEditor(
+    "Nuevo producto",
+    `
+      <form
+        class="dashboard-editor-form"
+        id="dashboard-product-create-form"
+      >
+        <div class="dashboard-editor-form__fields">
+          <div class="dashboard-editor-field">
+            <label for="product-create-title">Título</label>
+            <input
+              id="product-create-title"
+              name="title"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-type">Tipo de producto</label>
+            <input
+              id="product-create-type"
+              name="product_type"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-cover">PORTADA DEL PRODUCTO</label>
+            <input
+              id="product-create-cover"
+              name="cover_file"
+              type="file"
+              accept="image/*"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-short-description">
+              Descripción corta
+            </label>
+            <textarea
+              id="product-create-short-description"
+              name="short_description"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-full-description">
+              Descripción completa
+            </label>
+            <textarea
+              id="product-create-full-description"
+              name="full_description"
+              rows="6"
+            ></textarea>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-price">Precio</label>
+            <input
+              id="product-create-price"
+              name="price"
+              type="number"
+              step="0.01"
+              value="0"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-old-price">Precio anterior</label>
+            <input
+              id="product-create-old-price"
+              name="old_price"
+              type="number"
+              step="0.01"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-currency">Divisa</label>
+            <select id="product-create-currency" name="currency">
+              <option value="USD" selected>USD</option>
+              <option value="EUR">EUR</option>
+              <option value="CHF">CHF</option>
+            </select>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-compatibility">Compatibilidad</label>
+            <input
+              id="product-create-compatibility"
+              name="compatibility"
+              type="text"
+            />
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input name="is_free" type="checkbox" />
+              <span>Producto gratuito</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input name="is_featured" type="checkbox" />
+              <span>Producto destacado</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input name="is_published" type="checkbox" />
+              <span>Publicado</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-display-order">Orden de visualización</label>
+            <input
+              id="product-create-display-order"
+              name="display_order"
+              type="number"
+              value="0"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-create-release-date">Fecha de lanzamiento</label>
+            <input
+              id="product-create-release-date"
+              name="release_date"
+              type="date"
+            />
+          </div>
+        </div>
+
+        <div class="dashboard-editor-form__footer">
+          <button
+            class="button button--dark"
+            id="dashboard-product-create-submit"
+            type="submit"
+          >
+            Crear
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+    `,
+  );
+
+  const form = document.querySelector("#dashboard-product-create-form");
+
+  if (!form) {
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    await createDashboardProduct(form);
+  });
+}
+
+async function createDashboardProduct(form) {
+  const formData = new FormData(form);
+  const title = formData.get("title")?.trim() || "";
+  const productType = formData.get("product_type")?.trim() || "";
+  const coverFile = formData.get("cover_file");
+  const submitButton = form.querySelector("#dashboard-product-create-submit");
+
+  if (!title || !productType) {
+    showDashboardToast("El título y el tipo de producto son obligatorios.");
+
+    return;
+  }
+
+  if (submitButton) {
+    submitButton.disabled = true;
+
+    submitButton.innerHTML = `
+      Guardando...
+      <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+    `;
+  }
+
+  const productSlug = createDashboardProductSlug(title);
+
+  const productData = {
+    title,
+    slug: productSlug,
+    product_type: productType,
+    short_description: formData.get("short_description")?.trim() || null,
+    full_description: formData.get("full_description")?.trim() || null,
+    price: Number(formData.get("price") || 0),
+    old_price: formData.get("old_price")
+      ? Number(formData.get("old_price"))
+      : null,
+    currency: formData.get("currency") || "USD",
+    compatibility: formData.get("compatibility")?.trim() || null,
+    is_free: formData.get("is_free") === "on",
+    is_featured: formData.get("is_featured") === "on",
+    is_published: formData.get("is_published") === "on",
+    display_order: Number(formData.get("display_order") || 0),
+    release_date: formData.get("release_date") || null,
+  };
+
+  try {
+    if (coverFile instanceof File && coverFile.size > 0) {
+      productData.cover_image_url = await uploadDashboardProductCover(
+        coverFile,
+        productSlug,
+      );
+    }
+
+    const { error } = await window.supabaseClient
+      .from("products")
+      .insert(productData);
+
+    if (error) {
+      throw error;
+    }
+
+    showDashboardToast("Producto creado correctamente.");
+
+    closeDashboardEditor();
+
+    await loadDashboardProducts();
+  } catch (error) {
+    const uploadedCoverPath = getDashboardProductCoverStoragePath(
+      productData.cover_image_url,
+    );
+
+    if (uploadedCoverPath) {
+      await window.supabaseClient.storage
+        .from("product-images")
+        .remove([uploadedCoverPath]);
+    }
+
+    console.error("❌ Error al crear el producto.");
+
+    showDashboardToast("No se pudo crear el producto.", 5000);
+
+    if (submitButton) {
+      submitButton.disabled = false;
+
+      submitButton.innerHTML = `
+        Crear
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      `;
+    }
+  }
+}
+
+function openDashboardProductEditEditor(product) {
+  openDashboardEditor(
+    `Editar producto · ${getDashboardRecordTitle(product)}`,
+    `
+      <form
+        class="dashboard-editor-form"
+        id="dashboard-product-edit-form"
+      >
+        <div class="dashboard-editor-form__fields">
+          <div class="dashboard-editor-field">
+            <label for="product-edit-title">Título</label>
+            <input
+              id="product-edit-title"
+              name="title"
+              type="text"
+              value="${escapeDashboardHtml(product.title || "")}" 
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-type">Tipo de producto</label>
+            <input
+              id="product-edit-type"
+              name="product_type"
+              type="text"
+              value="${escapeDashboardHtml(product.product_type || "")}" 
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-cover">PORTADA DEL PRODUCTO</label>
+            <input
+              id="product-edit-cover"
+              name="cover_file"
+              type="file"
+              accept="image/*"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-short-description">
+              Descripción corta
+            </label>
+            <textarea
+              id="product-edit-short-description"
+              name="short_description"
+              rows="4"
+            >${escapeDashboardHtml(product.short_description || "")}</textarea>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-full-description">
+              Descripción completa
+            </label>
+            <textarea
+              id="product-edit-full-description"
+              name="full_description"
+              rows="6"
+            >${escapeDashboardHtml(product.full_description || "")}</textarea>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-file-title">ARCHIVO DEL PRODUCTO</label>
+            <input
+              id="product-edit-file-title"
+              name="product_file_title"
+              type="text"
+              placeholder="Nombre visible del archivo"
+            />
+            <input
+              id="product-edit-file"
+              name="product_file"
+              type="file"
+            />
+
+            <div id="product-edit-existing-files"></div>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-price">Precio</label>
+            <input
+              id="product-edit-price"
+              name="price"
+              type="number"
+              step="0.01"
+              value="${escapeDashboardHtml(product.price ?? 0)}"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-old-price">Precio anterior</label>
+            <input
+              id="product-edit-old-price"
+              name="old_price"
+              type="number"
+              step="0.01"
+              value="${escapeDashboardHtml(product.old_price ?? "")}"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-currency">Divisa</label>
+            <select id="product-edit-currency" name="currency">
+              <option value="USD" ${product.currency === "USD" ? "selected" : ""}>USD</option>
+              <option value="EUR" ${product.currency === "EUR" ? "selected" : ""}>EUR</option>
+              <option value="CHF" ${product.currency === "CHF" ? "selected" : ""}>CHF</option>
+            </select>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-compatibility">Compatibilidad</label>
+            <input
+              id="product-edit-compatibility"
+              name="compatibility"
+              type="text"
+              value="${escapeDashboardHtml(product.compatibility || "")}"
+            />
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input name="is_free" type="checkbox" ${product.is_free ? "checked" : ""} />
+              <span>Producto gratuito</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input name="is_featured" type="checkbox" ${product.is_featured ? "checked" : ""} />
+              <span>Producto destacado</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input name="is_published" type="checkbox" ${product.is_published ? "checked" : ""} />
+              <span>Publicado</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-display-order">Orden de visualización</label>
+            <input
+              id="product-edit-display-order"
+              name="display_order"
+              type="number"
+              value="${escapeDashboardHtml(product.display_order ?? 0)}"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-edit-release-date">Fecha de lanzamiento</label>
+            <input
+              id="product-edit-release-date"
+              name="release_date"
+              type="date"
+              value="${escapeDashboardHtml(product.release_date || "")}"
+            />
+          </div>
+        </div>
+
+        <div class="dashboard-editor-form__footer">
+          <button
+            class="button button--danger"
+            id="dashboard-delete-product"
+            type="button"
+          >
+            ELIMINAR PRODUCTO
+
+            <i class="bi bi-trash3" aria-hidden="true"></i>
+          </button>
+
+          <button
+            class="button button--dark"
+            id="dashboard-product-edit-submit"
+            type="submit"
+          >
+            Guardar cambios
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+    `,
+  );
+
+  const form = document.querySelector("#dashboard-product-edit-form");
+
+  if (!form) {
+    return;
+  }
+
+  loadDashboardProductFiles(product.id);
+
+  const deleteProductButton = document.querySelector(
+    "#dashboard-delete-product",
+  );
+
+  if (deleteProductButton) {
+    deleteProductButton.addEventListener("click", async () => {
+      const confirmed = window.confirm(
+        `¿Eliminar definitivamente "${product.title}"?`,
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      await deleteDashboardProduct(product, deleteProductButton);
+    });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    await updateDashboardProduct(product, form);
+  });
+}
+
+async function loadDashboardProductFiles(productId) {
+  const filesContainer = document.querySelector("#product-edit-existing-files");
+
+  if (!filesContainer) {
+    return;
+  }
+
+  filesContainer.innerHTML = "";
+
+  const { data: productFiles, error } = await window.supabaseClient
+    .from("product_files")
+    .select("id, title, file_url, file_type, file_size_bytes")
+    .eq("product_id", productId)
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("❌ Error al cargar los archivos del producto.");
+    return;
+  }
+
+  if (!productFiles?.length) {
+    return;
+  }
+
+  filesContainer.innerHTML = `
+    <div class="dashboard-product-files">
+      <p>Archivos existentes</p>
+      <ul>
+        ${productFiles
+          .map((productFile) => {
+            const fileSizeMb =
+              Number(productFile.file_size_bytes || 0) / (1024 * 1024);
+
+            return `
+              <li>
+                <span>${escapeDashboardHtml(productFile.title || "Archivo")}</span>
+                <span>${escapeDashboardHtml(productFile.file_type || "Tipo desconocido")}</span>
+                <span>${fileSizeMb.toFixed(2)} MB</span>
+                <button
+                  class="button button--danger"
+                  type="button"
+                  data-delete-product-file
+                  data-file-id="${escapeDashboardHtml(productFile.id)}"
+                  data-file-path="${escapeDashboardHtml(productFile.file_url)}"
+                >
+                  ELIMINAR
+                </button>
+              </li>
+            `;
+          })
+          .join("")}
+      </ul>
+    </div>
+  `;
+
+  filesContainer
+    .querySelectorAll("[data-delete-product-file]")
+    .forEach((button) => {
+      button.addEventListener("click", async () => {
+        const confirmed = window.confirm(
+          `¿Eliminar definitivamente "${button.closest("li")?.querySelector("span")?.textContent || "este archivo"}"?`,
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        await deleteDashboardProductFile(
+          button.dataset.fileId,
+          button.dataset.filePath,
+          productId,
+          button,
+        );
+      });
+    });
+}
+
+async function deleteDashboardProductFile(
+  fileId,
+  filePath,
+  productId,
+  deleteButton,
+) {
+  if (deleteButton) {
+    deleteButton.disabled = true;
+  }
+
+  try {
+    const { error: storageError } = await window.supabaseClient.storage
+      .from("product-files")
+      .remove([filePath]);
+
+    if (storageError) {
+      throw storageError;
+    }
+
+    const { error: databaseError } = await window.supabaseClient
+      .from("product_files")
+      .delete()
+      .eq("id", fileId);
+
+    if (databaseError) {
+      throw databaseError;
+    }
+
+    await loadDashboardProductFiles(productId);
+  } catch (error) {
+    console.error("❌ Error al eliminar el archivo del producto.");
+
+    if (deleteButton) {
+      deleteButton.disabled = false;
+    }
+  }
+}
+
+async function updateDashboardProduct(product, form) {
+  const formData = new FormData(form);
+  const title = formData.get("title")?.trim() || "";
+  const productType = formData.get("product_type")?.trim() || "";
+  const coverFile = formData.get("cover_file");
+  const productFile = formData.get("product_file");
+  const productFileTitle = formData.get("product_file_title")?.trim() || "";
+  const submitButton = form.querySelector("#dashboard-product-edit-submit");
+  let uploadedCoverPath = null;
+
+  if (!title || !productType) {
+    showDashboardToast("El título y el tipo de producto son obligatorios.");
+
+    return;
+  }
+
+  if (
+    productFile instanceof File &&
+    productFile.size > 0 &&
+    !productFileTitle
+  ) {
+    showDashboardToast("El nombre del archivo es obligatorio.");
+
+    return;
+  }
+
+  if (submitButton) {
+    submitButton.disabled = true;
+
+    submitButton.innerHTML = `
+      Guardando...
+      <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+    `;
+  }
+
+  const productData = {
+    title,
+    product_type: productType,
+    short_description: formData.get("short_description")?.trim() || null,
+    full_description: formData.get("full_description")?.trim() || null,
+    price: Number(formData.get("price") || 0),
+    old_price: formData.get("old_price")
+      ? Number(formData.get("old_price"))
+      : null,
+    currency: formData.get("currency") || "USD",
+    compatibility: formData.get("compatibility")?.trim() || null,
+    is_free: formData.get("is_free") === "on",
+    is_featured: formData.get("is_featured") === "on",
+    is_published: formData.get("is_published") === "on",
+    display_order: Number(formData.get("display_order") || 0),
+    release_date: formData.get("release_date") || null,
+  };
+
+  if (title !== (product.title || "")) {
+    productData.slug = createDashboardProductSlug(title);
+  }
+
+  try {
+    let newCoverUrl = null;
+
+    if (coverFile instanceof File && coverFile.size > 0) {
+      const productSlug =
+        productData.slug || product.slug || createDashboardProductSlug(title);
+
+      newCoverUrl = await uploadDashboardProductCover(coverFile, productSlug);
+      productData.cover_image_url = newCoverUrl;
+      uploadedCoverPath = getDashboardProductCoverStoragePath(newCoverUrl);
+    }
+
+    const { error } = await window.supabaseClient
+      .from("products")
+      .update(productData)
+      .eq("id", product.id);
+
+    if (error) {
+      throw error;
+    }
+
+    if (productFile instanceof File && productFile.size > 0) {
+      const productSlug =
+        productData.slug || product.slug || createDashboardProductSlug(title);
+
+      await createDashboardProductFile(
+        product,
+        productFile,
+        productFileTitle,
+        productSlug,
+      );
+    }
+
+    showDashboardToast("Producto actualizado correctamente.");
+
+    if (newCoverUrl && product.cover_image_url) {
+      const oldCoverPath = getDashboardProductCoverStoragePath(
+        product.cover_image_url,
+      );
+
+      if (oldCoverPath) {
+        const { error: oldCoverDeleteError } =
+          await window.supabaseClient.storage
+            .from("product-images")
+            .remove([oldCoverPath]);
+
+        if (oldCoverDeleteError) {
+          console.error(
+            "❌ Error al eliminar la portada anterior del producto.",
+          );
+        }
+      }
+    }
+
+    closeDashboardEditor();
+
+    await loadDashboardProducts();
+  } catch (error) {
+    if (uploadedCoverPath) {
+      await window.supabaseClient.storage
+        .from("product-images")
+        .remove([uploadedCoverPath]);
+    }
+
+    console.error("❌ Error al actualizar el producto.");
+
+    showDashboardToast("No se pudieron guardar los cambios.", 5000);
+
+    if (submitButton) {
+      submitButton.disabled = false;
+
+      submitButton.innerHTML = `
+        Guardar cambios
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      `;
+    }
+  }
+}
+
+async function createDashboardProductFile(product, file, title, productSlug) {
+  let storagePath = null;
+
+  try {
+    storagePath = await uploadDashboardProductFile(file, productSlug);
+
+    const { error } = await window.supabaseClient.from("product_files").insert({
+      product_id: product.id,
+      title,
+      file_url: storagePath,
+      file_type: file.type || null,
+      file_size_bytes: file.size,
+      display_order: 0,
+      is_active: true,
+    });
+
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    if (storagePath) {
+      await window.supabaseClient.storage
+        .from("product-files")
+        .remove([storagePath]);
+    }
+
+    throw error;
+  }
+}
+
+async function deleteDashboardProduct(product, deleteProductButton) {
+  if (deleteProductButton) {
+    deleteProductButton.disabled = true;
+
+    deleteProductButton.innerHTML = `
+      Eliminando...
+      <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+    `;
+  }
+
+  try {
+    const { error } = await window.supabaseClient
+      .from("products")
+      .delete()
+      .eq("id", product.id);
+
+    if (error) {
+      throw error;
+    }
+
+    closeDashboardEditor();
+
+    await loadDashboardProducts();
+  } catch (error) {
+    console.error("❌ Error al eliminar el producto.");
+
+    showDashboardToast("No se pudo eliminar el producto.", 5000);
+
+    if (deleteProductButton) {
+      deleteProductButton.disabled = false;
+
+      deleteProductButton.innerHTML = `
+        ELIMINAR PRODUCTO
+        <i class="bi bi-trash3" aria-hidden="true"></i>
+      `;
+    }
+  }
+}
+
 if (dashboardAddProductButton) {
   dashboardAddProductButton.addEventListener("click", () => {
-    openDashboardCreateEditor("products", dashboardProducts, "Nuevo producto");
+    openDashboardProductCreateEditor();
   });
+}
+
+async function uploadDashboardProductCover(coverFile, productSlug) {
+  if (!coverFile) {
+    return null;
+  }
+
+  if (!coverFile.type.startsWith("image/")) {
+    throw new Error("La portada debe ser una imagen válida.");
+  }
+
+  const maxSize = 8 * 1024 * 1024;
+
+  if (coverFile.size > maxSize) {
+    throw new Error("La portada no puede superar los 8 MB.");
+  }
+
+  const extension = coverFile.name.split(".").pop()?.toLowerCase() || "jpg";
+  const safeExtension = extension.replace(/[^a-z0-9]/g, "") || "jpg";
+  const uniqueId =
+    globalThis.crypto?.randomUUID?.() ||
+    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const storagePath = `${productSlug || "product"}/${uniqueId}.${safeExtension}`;
+
+  const { error: uploadError } = await window.supabaseClient.storage
+    .from("product-images")
+    .upload(storagePath, coverFile, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: coverFile.type,
+    });
+
+  if (uploadError) {
+    console.error("❌ Error al enviar la portada del producto.");
+
+    throw uploadError;
+  }
+
+  const { data: publicUrlData } = window.supabaseClient.storage
+    .from("product-images")
+    .getPublicUrl(storagePath);
+
+  const publicUrl = publicUrlData?.publicUrl;
+
+  if (!publicUrl) {
+    await window.supabaseClient.storage
+      .from("product-images")
+      .remove([storagePath]);
+
+    throw new Error("No se pudo generar la URL pública de la portada.");
+  }
+
+  return publicUrl;
+}
+
+function getDashboardProductCoverStoragePath(publicUrl) {
+  if (!publicUrl) {
+    return null;
+  }
+
+  const marker = "/storage/v1/object/public/product-images/";
+  const markerIndex = publicUrl.indexOf(marker);
+
+  if (markerIndex === -1) {
+    return null;
+  }
+
+  const encodedPath = publicUrl.slice(markerIndex + marker.length);
+
+  try {
+    return decodeURIComponent(encodedPath);
+  } catch (error) {
+    return encodedPath;
+  }
+}
+
+async function uploadDashboardProductFile(file, productSlug) {
+  if (!file) {
+    throw new Error("El archivo del producto es obligatorio.");
+  }
+
+  const extension = file.name.split(".").pop()?.toLowerCase() || "bin";
+  const safeExtension = extension.replace(/[^a-z0-9]/g, "") || "bin";
+  const uniqueId =
+    globalThis.crypto?.randomUUID?.() ||
+    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const storagePath = `${productSlug || "product"}/${uniqueId}.${safeExtension}`;
+
+  const { error: uploadError } = await window.supabaseClient.storage
+    .from("product-files")
+    .upload(storagePath, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type || "application/octet-stream",
+    });
+
+  if (uploadError) {
+    console.error("❌ Error al enviar el archivo del producto.");
+
+    throw uploadError;
+  }
+
+  return storagePath;
 }
 
 // =========================================================
@@ -4584,9 +5688,6 @@ function openCreateReleaseEditor() {
         =============================================== -->
 
         <div class="dashboard-editor-form__footer">
-          <p>
-            El release se creará en Supabase.
-          </p>
 
           <button
             class="button button--dark"
@@ -5004,12 +6105,10 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
       });
 
   if (uploadError) {
-    console.error("❌ Error upload cover:", uploadError);
+    console.error("❌ Error al enviar la portada.");
 
     throw uploadError;
   }
-
-  console.log("✅ Cover envoyée vers Storage:", uploadedFile);
 
   // -------------------------------------------------------
   // URL PUBLIQUE
@@ -5024,8 +6123,6 @@ async function uploadDashboardReleaseCover(coverFile, releaseSlug) {
   if (!publicUrl) {
     throw new Error("No se pudo generar la URL pública de la portada.");
   }
-
-  console.log("✅ URL publique cover:", publicUrl);
 
   return publicUrl;
 }
@@ -5136,12 +6233,10 @@ async function uploadDashboardTrackAudio(
       });
 
   if (uploadError) {
-    console.error("❌ Error upload audio:", uploadError);
+    console.error("❌ Error al enviar el archivo de audio.");
 
     throw uploadError;
   }
-
-  console.log("✅ Audio envoyé vers Storage:", uploadedFile);
 
   // -------------------------------------------------------
   // URL PUBLIQUE
@@ -5158,8 +6253,6 @@ async function uploadDashboardTrackAudio(
       `No se pudo generar la URL pública del track ${trackNumber}.`,
     );
   }
-
-  console.log("✅ URL publique audio:", publicUrl);
 
   return {
     publicUrl,
@@ -5231,11 +6324,9 @@ async function createDashboardReleaseTracks(
       throw tracksError;
     }
 
-    console.log("✅ Tracks créés dans Supabase:", createdTracks);
-
     return createdTracks || [];
   } catch (error) {
-    console.error("❌ Error creando tracks:", error);
+    console.error("❌ Error al crear los tracks.");
 
     // -----------------------------------------------------
     // NETTOYAGE DES FICHIERS DÉJÀ UPLOADÉS
@@ -5247,7 +6338,7 @@ async function createDashboardReleaseTracks(
         .remove(uploadedPaths);
 
       if (cleanupError) {
-        console.error("❌ Error limpiando audios:", cleanupError);
+        console.error("❌ Error al limpiar los archivos de audio.");
       }
     }
 
@@ -5267,7 +6358,6 @@ async function createDashboardReleaseTracks(
 // 5. crée le release dans Supabase;
 // 6. rafraîchit le dashboard.
 //
-// Tracks et release_links viendront juste après.
 // =========================================================
 
 async function submitDashboardReleaseForm(form) {
@@ -5292,6 +6382,14 @@ async function submitDashboardReleaseForm(form) {
   const genre = formData.get("genre")?.trim() || null;
 
   const description = formData.get("description")?.trim() || null;
+
+  const spotifyUrl = formData.get("spotify_url")?.trim() || "";
+
+  const soundcloudUrl = formData.get("soundcloud_url")?.trim() || "";
+
+  const bandcampUrl = formData.get("bandcamp_url")?.trim() || "";
+
+  const youtubeUrl = formData.get("youtube_url")?.trim() || "";
 
   const isPublished = formData.get("is_published") === "on";
 
@@ -5440,6 +6538,29 @@ async function submitDashboardReleaseForm(form) {
       is_published: isPublished,
     };
 
+    const releaseLinks = [
+      {
+        platform: "spotify",
+        url: spotifyUrl,
+        display_order: 1,
+      },
+      {
+        platform: "soundcloud",
+        url: soundcloudUrl,
+        display_order: 2,
+      },
+      {
+        platform: "bandcamp",
+        url: bandcampUrl,
+        display_order: 3,
+      },
+      {
+        platform: "youtube",
+        url: youtubeUrl,
+        display_order: 4,
+      },
+    ].filter((link) => link.url);
+
     // =====================================================
     // INSERT SUPABASE
     // =====================================================
@@ -5453,6 +6574,28 @@ async function submitDashboardReleaseForm(form) {
 
     if (releaseError) {
       throw releaseError;
+    }
+
+    // =====================================================
+    // CRÉATION DES LIENS PLATEFORMES
+    // =====================================================
+
+    if (releaseLinks.length > 0) {
+      const releaseLinkRecords = releaseLinks.map((link) => ({
+        release_id: createdRelease.id,
+        platform: link.platform,
+        url: link.url,
+        display_order: link.display_order,
+        is_visible: true,
+      }));
+
+      const { error: releaseLinksError } = await window.supabaseClient
+        .from("release_links")
+        .insert(releaseLinkRecords);
+
+      if (releaseLinksError) {
+        throw releaseLinksError;
+      }
     }
 
     // =====================================================
@@ -5470,15 +6613,13 @@ async function submitDashboardReleaseForm(form) {
     // SUCCÈS
     // =====================================================
 
-    console.log("✅ Release créé dans Supabase:", createdRelease);
-
     showDashboardToast("Release creado correctamente.");
 
     closeDashboardEditor();
 
     await loadDashboardReleases();
   } catch (error) {
-    console.error("❌ Error creando release:", error);
+    console.error("❌ Error al crear el release.");
 
     showDashboardToast(error?.message || "No se pudo crear el release.", 5000);
 

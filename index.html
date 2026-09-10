@@ -32,7 +32,6 @@
     =================================================== -->
     <header class="header">
       <nav class="navbar" aria-label="Navegación principal">
-        <!-- Nombre o futuro logotipo del artista -->
         <a class="navbar__logo" href="#inicio" data-setting="site_name">
           GONZALO MD88
         </a>
@@ -125,7 +124,6 @@
        SECCIÓN 1 — HERO
       =================================================== -->
       <section class="hero section section--image" id="inicio">
-        <!-- Esta capa permanece disponible para futuros efectos -->
         <div class="section__overlay"></div>
 
         <div class="container hero__content">
@@ -509,9 +507,7 @@
             </div>
 
             <div class="contact__links">
-              <a href="mailto:correo@ejemplo.com" data-setting="contact_email">
-                correo@ejemplo.com
-              </a>
+              <a data-setting="contact_email" hidden></a>
 
               <a
                 href="#"
@@ -519,6 +515,7 @@
                 rel="noopener"
                 data-setting="calendly_url"
                 data-content-key="contact_calendly_label"
+                hidden
               >
                 Reservar mediante Calendly
               </a>
@@ -529,6 +526,7 @@
                 rel="noopener"
                 data-setting="whatsapp_url"
                 data-content-key="contact_whatsapp_label"
+                hidden
               >
                 Contactar por WhatsApp
               </a>
