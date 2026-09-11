@@ -1926,6 +1926,358 @@ async function loadDashboardProducts() {
   dashboardProducts = data || [];
 
   renderDashboardProducts();
+  ensureDashboardLicensesSection();
+  await loadDashboardLicenses();
+}
+
+function ensureDashboardLicensesSection() {
+  if (!dashboardProductsList || document.querySelector("#dashboard-licenses")) {
+    return;
+  }
+
+  dashboardProductsList.insertAdjacentHTML(
+    "afterend",
+    `
+      <div id="dashboard-licenses" class="dashboard-product-licenses">
+        <div class="dashboard-action-bar dashboard-action-bar--light">
+          <div>
+            <p class="dashboard-action-bar__eyebrow">GESTIÓN GLOBAL</p>
+            <h3>LICENCIAS</h3>
+          </div>
+
+          <button
+            class="button button--dark"
+            id="dashboard-add-license"
+            type="button"
+          >
+            NUEVA LICENCIA
+          </button>
+        </div>
+
+        <div class="dashboard-data-grid" id="dashboard-licenses-list">
+          <div class="dashboard-empty-state dashboard-empty-state--light">
+            <p>No hay licencias creadas.</p>
+          </div>
+        </div>
+      </div>
+    `,
+  );
+
+  const addLicenseButton = document.querySelector("#dashboard-add-license");
+
+  if (addLicenseButton) {
+    addLicenseButton.addEventListener("click", openDashboardLicenseEditor);
+  }
+}
+
+function openDashboardLicenseEditor() {
+  openDashboardEditor(
+    "Nueva licencia",
+    `
+      <form
+        class="dashboard-editor-form"
+        id="dashboard-license-create-form"
+      >
+        <div class="dashboard-editor-form__fields">
+          <div class="dashboard-editor-field">
+            <label for="license-title">Título</label>
+            <input
+              id="license-title"
+              name="license_title"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="license-slug">Slug</label>
+            <input
+              id="license-slug"
+              name="license_slug"
+              type="text"
+              placeholder="licencia-estandar"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="license-short-description">
+              Descripción corta
+            </label>
+            <input
+              id="license-short-description"
+              name="license_short_description"
+              type="text"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="license-terms">Términos</label>
+            <textarea
+              id="license-terms"
+              name="license_terms"
+              rows="8"
+            ></textarea>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input
+                name="license_is_active"
+                type="checkbox"
+                checked
+              />
+              <span>Activa</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="dashboard-editor-form__footer">
+          <button
+            class="button button--dark"
+            id="dashboard-license-create-submit"
+            type="submit"
+          >
+            Crear licencia
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+    `,
+  );
+
+  const form = document.querySelector("#dashboard-license-create-form");
+
+  if (!form) {
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    await createDashboardLicense(form);
+  });
+}
+
+async function createDashboardLicense(form) {
+  const formData = new FormData(form);
+  const isProductLicenseCreation = Boolean(
+    form.querySelector('[name="new_license_title"]'),
+  );
+  const title =
+    formData
+      .get(isProductLicenseCreation ? "new_license_title" : "license_title")
+      ?.trim() || "";
+  const enteredSlug = isProductLicenseCreation
+    ? ""
+    : formData.get("license_slug")?.trim() || "";
+  const slug = createDashboardSlug(enteredSlug || title);
+  const shortDescription =
+    formData
+      .get(
+        isProductLicenseCreation
+          ? "new_license_short_description"
+          : "license_short_description",
+      )
+      ?.trim() || null;
+  const terms =
+    formData
+      .get(isProductLicenseCreation ? "new_license_terms" : "license_terms")
+      ?.trim() || null;
+  const isActive =
+    formData.get(
+      isProductLicenseCreation ? "new_license_is_active" : "license_is_active",
+    ) === "on";
+  const submitButton = form.querySelector(
+    isProductLicenseCreation
+      ? "#dashboard-product-license-create-submit"
+      : "#dashboard-license-create-submit",
+  );
+  const message = form.querySelector("[data-license-form-message]");
+
+  if (
+    !title ||
+    !slug ||
+    (isProductLicenseCreation && (!shortDescription || !terms))
+  ) {
+    const validationMessage = isProductLicenseCreation
+      ? "Completa todos los campos obligatorios de la licencia."
+      : "El título de la licencia es obligatorio.";
+
+    if (message) {
+      message.textContent = validationMessage;
+    } else {
+      showDashboardToast(validationMessage);
+    }
+
+    return;
+  }
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.innerHTML = `
+      Creando...
+      <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+    `;
+  }
+
+  try {
+    const { data: lastLicense, error: orderError } = await window.supabaseClient
+      .from("licenses")
+      .select("display_order")
+      .order("display_order", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (orderError) {
+      throw orderError;
+    }
+
+    const displayOrder = lastLicense
+      ? Number(lastLicense.display_order || 0) + 1
+      : 0;
+
+    const { data: duplicateLicense, error: duplicateError } =
+      await window.supabaseClient
+        .from("licenses")
+        .select("id")
+        .eq("slug", slug)
+        .maybeSingle();
+
+    if (duplicateError) {
+      throw duplicateError;
+    }
+
+    if (duplicateLicense) {
+      if (message) {
+        message.textContent = "Ya existe una licencia con ese slug.";
+      } else {
+        showDashboardToast("Ya existe una licencia con ese slug.", 5000);
+      }
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = isProductLicenseCreation
+          ? `
+              CREAR LICENCIA
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            `
+          : `
+              Crear licencia
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            `;
+      }
+
+      return;
+    }
+
+    const { error: insertError } = await window.supabaseClient
+      .from("licenses")
+      .insert({
+        title,
+        slug,
+        short_description: shortDescription,
+        terms,
+        display_order: displayOrder,
+        is_active: isActive,
+      });
+
+    if (insertError) {
+      throw insertError;
+    }
+
+    if (isProductLicenseCreation) {
+      const productLicenseEditor = document.querySelector(
+        "#dashboard-product-license-create-form-container",
+      );
+      const productLicenseSelect = document.querySelector(
+        "#product-license-id",
+      );
+      const productLicenseOption = document.createElement("option");
+
+      productLicenseOption.value = "";
+      productLicenseOption.textContent = title;
+      productLicenseOption.selected = true;
+
+      if (productLicenseSelect) {
+        productLicenseSelect.appendChild(productLicenseOption);
+      }
+
+      productLicenseEditor?.remove();
+
+      return;
+    }
+
+    closeDashboardEditor();
+    await loadDashboardLicenses();
+  } catch (error) {
+    console.error("❌ Error al crear la licencia del dashboard.");
+    showDashboardToast("No se pudo crear la licencia.", 5000);
+
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = `
+        Crear licencia
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      `;
+    }
+  }
+}
+
+async function loadDashboardLicenses() {
+  const licensesContainer = document.querySelector("#dashboard-licenses-list");
+
+  if (!licensesContainer) {
+    return;
+  }
+
+  const { data: licenses, error } = await window.supabaseClient
+    .from("licenses")
+    .select("id, title, slug, short_description, display_order, is_active")
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("❌ Error al cargar las licencias del dashboard.");
+    return;
+  }
+
+  if (!licenses?.length) {
+    licensesContainer.innerHTML = `
+      <div class="dashboard-empty-state dashboard-empty-state--light">
+        <p>No hay licencias creadas.</p>
+      </div>
+    `;
+    return;
+  }
+
+  licensesContainer.innerHTML = licenses
+    .map(
+      (license, index) => `
+        <article class="dashboard-data-card dashboard-data-card--light">
+          <div class="dashboard-data-card__top">
+            <span>${String(index + 1).padStart(2, "0")}</span>
+            <span class="dashboard-data-card__status">
+              ${license.is_active ? "PUBLICADA" : "OCULTA"}
+            </span>
+          </div>
+
+          <div class="dashboard-data-card__content">
+            <i
+              class="bi bi-file-earmark-text dashboard-data-card__icon"
+              aria-hidden="true"
+            ></i>
+
+            <h3>${escapeDashboardHtml(license.title || "Sin título")}</h3>
+
+            ${
+              license.short_description
+                ? `<p>${escapeDashboardHtml(license.short_description)}</p>`
+                : ""
+            }
+          </div>
+        </article>
+      `,
+    )
+    .join("");
 }
 
 // =========================================================
@@ -2142,7 +2494,7 @@ function openDashboardRecordEditor(tableName, record, editorTitle) {
 
         <div class="dashboard-editor-form__footer">
           <button
-            class="button button--dark"
+            class="button button--dark dashboard-product-image-control"
             type="submit"
           >
             Guardar cambios
@@ -3814,7 +4166,7 @@ async function openDashboardContentEditor(section, title) {
           </p>
 
           <button
-            class="button button--dark"
+            class="button button--dark dashboard-product-image-control"
             type="submit"
           >
             Guardar contenido
@@ -4738,6 +5090,35 @@ function openDashboardProductEditEditor(product) {
           </div>
 
           <div class="dashboard-editor-field">
+            <p>IMÁGENES DEL PRODUCTO</p>
+            <input
+              name="product_image_alt"
+              type="text"
+              placeholder="Texto alternativo"
+            />
+            <input
+              name="product_image_file"
+              type="file"
+              accept="image/*"
+            />
+            <div id="product-edit-existing-images"></div>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <p>LICENCIAS DEL PRODUCTO</p>
+            <div id="dashboard-product-existing-licenses">
+              Este producto no tiene licencias asociadas.
+            </div>
+            <button
+              class="button button--dark"
+              id="dashboard-product-add-license"
+              type="button"
+            >
+              + AÑADIR LICENCIA
+            </button>
+          </div>
+
+          <div class="dashboard-editor-field">
             <label for="product-edit-price">Precio</label>
             <input
               id="product-edit-price"
@@ -4822,7 +5203,7 @@ function openDashboardProductEditEditor(product) {
 
         <div class="dashboard-editor-form__footer">
           <button
-            class="button button--danger"
+            class="button button--danger dashboard-product-delete-button"
             id="dashboard-delete-product"
             type="button"
           >
@@ -4832,7 +5213,7 @@ function openDashboardProductEditEditor(product) {
           </button>
 
           <button
-            class="button button--dark"
+            class="button button--dark dashboard-product-save-button"
             id="dashboard-product-edit-submit"
             type="submit"
           >
@@ -4851,6 +5232,18 @@ function openDashboardProductEditEditor(product) {
   }
 
   loadDashboardProductFiles(product.id);
+  loadDashboardProductImages(product.id);
+  loadDashboardProductLicenses(product.id);
+
+  const addProductLicenseButton = document.querySelector(
+    "#dashboard-product-add-license",
+  );
+
+  if (addProductLicenseButton) {
+    addProductLicenseButton.addEventListener("click", async () => {
+      await openDashboardProductLicenseEditor(product);
+    });
+  }
 
   const deleteProductButton = document.querySelector(
     "#dashboard-delete-product",
@@ -4875,6 +5268,752 @@ function openDashboardProductEditEditor(product) {
 
     await updateDashboardProduct(product, form);
   });
+}
+
+async function loadDashboardProductLicenses(productId) {
+  const licensesContainer = document.querySelector(
+    "#dashboard-product-existing-licenses",
+  );
+
+  if (!licensesContainer) {
+    return;
+  }
+
+  licensesContainer.innerHTML = "";
+
+  const { data: productLicenses, error } = await window.supabaseClient
+    .from("product_licenses")
+    .select(
+      "id, license_id, price, currency, display_order, is_active, licenses(id, title, short_description, terms)",
+    )
+    .eq("product_id", productId)
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("❌ Error al cargar las licencias del producto.");
+    return;
+  }
+
+  if (!productLicenses?.length) {
+    licensesContainer.textContent =
+      "Este producto no tiene licencias asociadas.";
+    return;
+  }
+
+  licensesContainer.innerHTML = productLicenses
+    .map((productLicense) => {
+      const license = productLicense.licenses;
+      const price =
+        Number(productLicense.price) === 0
+          ? "INCLUIDA EN EL PRECIO DEL PRODUCTO"
+          : productLicense.price === null || productLicense.price === undefined
+            ? ""
+            : `${productLicense.price} ${productLicense.currency || ""}`.trim();
+
+      return `
+        <article class="dashboard-product-license">
+          <div>
+            <h4>${escapeDashboardHtml(license?.title || "Sin título")}</h4>
+            ${
+              license?.short_description
+                ? `<p>${escapeDashboardHtml(license.short_description)}</p>`
+                : ""
+            }
+            ${price ? `<span>${escapeDashboardHtml(price)}</span>` : ""}
+          </div>
+          <div>
+            <span class="dashboard-data-card__status">
+              ${productLicense.is_active ? "ACTIVA" : "OCULTA"}
+            </span>
+            <button
+              class="button button--danger dashboard-product-image-control"
+              type="button"
+              data-delete-product-license
+              data-product-license-id="${escapeDashboardHtml(productLicense.id)}"
+              aria-label="Quitar licencia del producto"
+              title="Quitar licencia"
+            >
+              ×
+            </button>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  licensesContainer
+    .querySelectorAll("[data-delete-product-license]")
+    .forEach((button) => {
+      button.addEventListener("click", async () => {
+        const confirmed = window.confirm("¿Quitar esta licencia del producto?");
+
+        if (!confirmed) {
+          return;
+        }
+
+        await deleteDashboardProductLicense(
+          productId,
+          button.dataset.productLicenseId,
+          button,
+        );
+      });
+    });
+}
+
+async function deleteDashboardProductLicense(
+  productId,
+  productLicenseId,
+  button,
+) {
+  if (button) {
+    button.disabled = true;
+  }
+
+  try {
+    const { error } = await window.supabaseClient
+      .from("product_licenses")
+      .delete()
+      .eq("id", productLicenseId);
+
+    if (error) {
+      throw error;
+    }
+
+    await loadDashboardProductLicenses(productId);
+  } catch (error) {
+    console.error("❌ Error al quitar la licencia del producto.");
+
+    const licensesContainer = document.querySelector(
+      "#dashboard-product-existing-licenses",
+    );
+
+    if (licensesContainer) {
+      const errorMessage = document.createElement("p");
+      errorMessage.textContent = "No se pudo quitar la licencia del producto.";
+      licensesContainer.appendChild(errorMessage);
+    }
+
+    if (button) {
+      button.disabled = false;
+    }
+  }
+}
+
+async function openDashboardProductLicenseEditor(product) {
+  const { data: licenses, error } = await window.supabaseClient
+    .from("licenses")
+    .select("id, title, short_description, is_active")
+    .eq("is_active", true)
+    .order("title", { ascending: true });
+
+  if (error) {
+    console.error("❌ Error al cargar las licencias disponibles.");
+    return;
+  }
+
+  openDashboardEditor(
+    "Añadir licencia al producto",
+    `
+      <form
+        class="dashboard-editor-form"
+        id="dashboard-product-license-form"
+      >
+        <div class="dashboard-editor-form__fields">
+          <div class="dashboard-editor-field">
+            <label for="product-license-id">LICENCIA</label>
+            <select id="product-license-id" name="license_id" required>
+              <option value="">Selecciona una licencia</option>
+              ${(licenses || [])
+                .map(
+                  (license) => `
+                    <option value="${escapeDashboardHtml(license.id)}">
+                      ${escapeDashboardHtml(license.title || "Sin título")}
+                    </option>
+                  `,
+                )
+                .join("")}
+            </select>
+            <button
+              class="button button--dark"
+              id="dashboard-create-product-license"
+              type="button"
+            >
+              + CREAR NUEVA LICENCIA
+            </button>
+          </div>
+
+          <div
+            class="dashboard-editor-field"
+            id="dashboard-product-license-create-form-container"
+            hidden
+          >
+            <div id="dashboard-product-license-create-form">
+              <label for="new-license-title">NOMBRE DE LA LICENCIA *</label>
+              <input
+                id="new-license-title"
+                name="new_license_title"
+                type="text"
+              />
+
+              <label for="new-license-short-description">
+                DESCRIPCIÓN CORTA *
+              </label>
+              <textarea
+                id="new-license-short-description"
+                name="new_license_short_description"
+                rows="3"
+              ></textarea>
+
+              <label for="new-license-terms">
+                CONDICIONES / TÉRMINOS *
+              </label>
+              <textarea
+                id="new-license-terms"
+                name="new_license_terms"
+                rows="5"
+              ></textarea>
+
+              <label class="dashboard-editor-field--checkbox">
+                <input
+                  name="new_license_is_active"
+                  type="checkbox"
+                  checked
+                />
+                <span>ACTIVA</span>
+              </label>
+
+              <p data-license-form-message role="alert"></p>
+
+              <button
+                class="button button--dark"
+                id="dashboard-product-license-create-submit"
+                type="button"
+              >
+                CREAR LICENCIA
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-license-price">PRECIO</label>
+            <input
+              id="product-license-price"
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input
+                id="product-license-included"
+                name="product_license_included"
+                type="checkbox"
+                checked
+              />
+              <span>Incluida en el precio del producto</span>
+            </label>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="product-license-currency">MONEDA</label>
+            <select id="product-license-currency" name="currency">
+              <option value="CHF" selected>CHF</option>
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+            </select>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input
+                name="is_active"
+                type="checkbox"
+                checked
+              />
+              <span>ACTIVA</span>
+            </label>
+          </div>
+
+          <p id="dashboard-product-license-message" role="alert"></p>
+        </div>
+
+        <div class="dashboard-editor-form__footer">
+          <button
+            class="button button--dark"
+            id="dashboard-product-license-submit"
+            type="submit"
+            ${licenses?.length ? "" : "disabled"}
+          >
+            AÑADIR LICENCIA
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+    `,
+  );
+
+  const form = document.querySelector("#dashboard-product-license-form");
+
+  if (!form) {
+    return;
+  }
+
+  const createProductLicenseButton = document.querySelector(
+    "#dashboard-create-product-license",
+  );
+  const createProductLicenseContainer = document.querySelector(
+    "#dashboard-product-license-create-form-container",
+  );
+  const createProductLicenseForm = document.querySelector(
+    "#dashboard-product-license-create-form",
+  );
+
+  createProductLicenseButton?.addEventListener("click", () => {
+    if (createProductLicenseContainer) {
+      createProductLicenseContainer.hidden = false;
+    }
+
+    createProductLicenseForm
+      ?.querySelectorAll('[name^="new_license_"]')
+      .forEach((field) => {
+        if (field.name !== "new_license_is_active") {
+          field.required = true;
+        }
+      });
+
+    createProductLicenseButton.disabled = true;
+  });
+
+  document
+    .querySelector("#dashboard-product-license-create-submit")
+    ?.addEventListener("click", async () => {
+      await createDashboardLicense(form);
+    });
+
+  if (!licenses?.length) {
+    const message = document.querySelector(
+      "#dashboard-product-license-message",
+    );
+
+    if (message) {
+      message.textContent = "No hay licencias globales activas disponibles.";
+    }
+
+    return;
+  }
+
+  const includedCheckbox = form.querySelector("#product-license-included");
+  const priceInput = form.querySelector("#product-license-price");
+
+  const updatePriceState = () => {
+    if (!includedCheckbox || !priceInput) {
+      return;
+    }
+
+    priceInput.disabled = includedCheckbox.checked;
+    priceInput.required = !includedCheckbox.checked;
+  };
+
+  includedCheckbox?.addEventListener("change", updatePriceState);
+  updatePriceState();
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    await createDashboardProductLicense(product.id, form);
+  });
+}
+
+async function createDashboardProductLicense(productId, form) {
+  const formData = new FormData(form);
+  const licenseId = formData.get("license_id")?.trim() || "";
+  const isIncluded = formData.get("product_license_included") === "on";
+  const rawPrice = formData.get("price")?.trim() || "";
+  const price = isIncluded ? 0 : Number(rawPrice);
+  const currency = formData.get("currency")?.trim() || "CHF";
+  const isActive = formData.get("is_active") === "on";
+  const submitButton = form.querySelector("#dashboard-product-license-submit");
+  const message = form.querySelector("#dashboard-product-license-message");
+
+  if (
+    !licenseId ||
+    (!isIncluded && (!rawPrice || !Number.isFinite(price) || price < 0))
+  ) {
+    if (message) {
+      message.textContent =
+        "Selecciona una licencia e introduce un precio válido.";
+    }
+
+    return;
+  }
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.innerHTML = `
+      Añadiendo...
+      <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+    `;
+  }
+
+  try {
+    const { data: existingLicense, error: duplicateError } =
+      await window.supabaseClient
+        .from("product_licenses")
+        .select("id")
+        .eq("product_id", productId)
+        .eq("license_id", licenseId)
+        .maybeSingle();
+
+    if (duplicateError) {
+      throw duplicateError;
+    }
+
+    if (existingLicense) {
+      if (message) {
+        message.textContent = "Esta licencia ya está asociada a este producto.";
+      }
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = `
+          AÑADIR LICENCIA
+          <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        `;
+      }
+
+      return;
+    }
+
+    const { data: lastProductLicense, error: orderError } =
+      await window.supabaseClient
+        .from("product_licenses")
+        .select("display_order")
+        .eq("product_id", productId)
+        .order("display_order", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    if (orderError) {
+      throw orderError;
+    }
+
+    const displayOrder = lastProductLicense
+      ? Number(lastProductLicense.display_order || 0) + 1
+      : 0;
+
+    const { error: insertError } = await window.supabaseClient
+      .from("product_licenses")
+      .insert({
+        product_id: productId,
+        license_id: licenseId,
+        price,
+        currency,
+        display_order: displayOrder,
+        is_active: isActive,
+      });
+
+    if (insertError) {
+      throw insertError;
+    }
+
+    closeDashboardEditor();
+    openDashboardProductEditEditor(
+      dashboardProducts.find(
+        (product) => String(product.id) === String(productId),
+      ) || {
+        id: productId,
+      },
+    );
+  } catch (error) {
+    console.error("❌ Error al asociar la licencia al producto.");
+
+    if (message) {
+      message.textContent = "No se pudo asociar la licencia al producto.";
+    }
+
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = `
+        AÑADIR LICENCIA
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      `;
+    }
+  }
+}
+
+async function loadDashboardProductImages(productId) {
+  const imagesContainer = document.querySelector(
+    "#product-edit-existing-images",
+  );
+
+  if (!imagesContainer) {
+    return;
+  }
+
+  imagesContainer.innerHTML = "";
+
+  const { data: productImages, error } = await window.supabaseClient
+    .from("product_images")
+    .select("id, image_url, alt_text, display_order, is_active")
+    .eq("product_id", productId)
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("❌ Error al cargar las imágenes del producto.");
+    return;
+  }
+
+  if (!productImages?.length) {
+    imagesContainer.textContent = "Sin imágenes";
+    return;
+  }
+
+  imagesContainer.innerHTML = productImages
+    .map(
+      (productImage, productImageIndex) => `
+        <figure>
+          <img
+            src="${escapeDashboardHtml(productImage.image_url || "")}"
+            alt="${escapeDashboardHtml(productImage.alt_text || "")}"
+          />
+          ${
+            productImage.alt_text
+              ? `<figcaption>${escapeDashboardHtml(productImage.alt_text)}</figcaption>`
+              : ""
+          }
+          <div class="dashboard-product-image-controls">
+            <span>Orden: ${escapeDashboardHtml(productImage.display_order ?? "")}</span>
+            <button
+              class="button button--dark dashboard-product-image-control"
+              type="button"
+              data-move-product-image="up"
+              data-image-id="${escapeDashboardHtml(productImage.id)}"
+              aria-label="Subir imagen"
+              title="Subir"
+              ${productImageIndex === 0 ? "disabled" : ""}
+            >
+              ↑
+            </button>
+            <button
+              class="button button--dark dashboard-product-image-control"
+              type="button"
+              data-move-product-image="down"
+              data-image-id="${escapeDashboardHtml(productImage.id)}"
+              aria-label="Bajar imagen"
+              title="Bajar"
+              ${productImageIndex === productImages.length - 1 ? "disabled" : ""}
+            >
+              ↓
+            </button>
+            <button
+              class="button button--danger dashboard-product-image-control"
+              type="button"
+              data-delete-product-image
+              data-image-id="${escapeDashboardHtml(productImage.id)}"
+            >
+              ×
+            </button>
+          </div>
+        </figure>
+      `,
+    )
+    .join("");
+
+  imagesContainer
+    .querySelectorAll("[data-move-product-image]")
+    .forEach((button) => {
+      button.addEventListener("click", async () => {
+        const currentIndex = productImages.findIndex(
+          (productImage) =>
+            String(productImage.id) === String(button.dataset.imageId),
+        );
+        const direction = button.dataset.moveProductImage;
+
+        if (currentIndex === -1) {
+          console.error("❌ Error al encontrar la imagen del producto.");
+          return;
+        }
+
+        await moveDashboardProductImage(
+          productId,
+          productImages,
+          currentIndex,
+          direction,
+        );
+      });
+    });
+
+  imagesContainer
+    .querySelectorAll("[data-delete-product-image]")
+    .forEach((button) => {
+      button.addEventListener("click", async () => {
+        const confirmed = window.confirm(
+          "¿Eliminar esta imagen? Esta acción no se puede deshacer.",
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        const image = productImages.find(
+          (productImage) =>
+            String(productImage.id) === String(button.dataset.imageId),
+        );
+
+        if (!image) {
+          console.error("❌ Error al encontrar la imagen del producto.");
+          return;
+        }
+
+        await deleteDashboardProductImage(productId, image, button);
+      });
+    });
+}
+
+async function moveDashboardProductImage(
+  productId,
+  images,
+  currentIndex,
+  direction,
+) {
+  const adjacentIndex =
+    direction === "up" ? currentIndex - 1 : currentIndex + 1;
+  const currentImage = images[currentIndex];
+  const adjacentImage = images[adjacentIndex];
+  const imagesContainer = document.querySelector(
+    "#product-edit-existing-images",
+  );
+
+  if (!currentImage || !adjacentImage || !imagesContainer) {
+    return;
+  }
+
+  const movementButtons = Array.from(
+    imagesContainer.querySelectorAll("[data-move-product-image]"),
+  ).filter((button) => {
+    const imageId = String(button.dataset.imageId);
+
+    return (
+      imageId === String(currentImage.id) ||
+      imageId === String(adjacentImage.id)
+    );
+  });
+
+  movementButtons.forEach((button) => {
+    button.disabled = true;
+  });
+
+  try {
+    const displayOrders = images
+      .map((image) => Number(image.display_order))
+      .filter(Number.isFinite);
+    const maximumDisplayOrder = Math.max(...displayOrders, -1);
+    const temporaryCurrentOrder = maximumDisplayOrder + 1000;
+    const temporaryAdjacentOrder = maximumDisplayOrder + 1001;
+
+    const { error: currentTemporaryError } = await window.supabaseClient
+      .from("product_images")
+      .update({ display_order: temporaryCurrentOrder })
+      .eq("id", currentImage.id)
+      .eq("product_id", productId);
+
+    if (currentTemporaryError) {
+      throw currentTemporaryError;
+    }
+
+    const { error: adjacentTemporaryError } = await window.supabaseClient
+      .from("product_images")
+      .update({ display_order: temporaryAdjacentOrder })
+      .eq("id", adjacentImage.id)
+      .eq("product_id", productId);
+
+    if (adjacentTemporaryError) {
+      throw adjacentTemporaryError;
+    }
+
+    const { error: currentFinalError } = await window.supabaseClient
+      .from("product_images")
+      .update({ display_order: adjacentImage.display_order })
+      .eq("id", currentImage.id)
+      .eq("product_id", productId);
+
+    if (currentFinalError) {
+      throw currentFinalError;
+    }
+
+    const { error: adjacentFinalError } = await window.supabaseClient
+      .from("product_images")
+      .update({ display_order: currentImage.display_order })
+      .eq("id", adjacentImage.id)
+      .eq("product_id", productId);
+
+    if (adjacentFinalError) {
+      throw adjacentFinalError;
+    }
+
+    await loadDashboardProductImages(productId);
+  } catch (error) {
+    console.error("❌ Error al reordenar las imágenes del producto.");
+    await loadDashboardProductImages(productId);
+  }
+}
+
+function getDashboardProductImageStoragePath(publicUrl) {
+  const marker = "/storage/v1/object/public/product-images/";
+  const markerIndex = publicUrl?.indexOf(marker) ?? -1;
+
+  if (markerIndex === -1) {
+    throw new Error("No se pudo obtener la ruta de la imagen del producto.");
+  }
+
+  const encodedPath = publicUrl.slice(markerIndex + marker.length);
+  const storagePath = decodeURIComponent(encodedPath);
+
+  if (!storagePath) {
+    throw new Error("No se pudo obtener la ruta de la imagen del producto.");
+  }
+
+  return storagePath;
+}
+
+async function deleteDashboardProductImage(productId, image, deleteButton) {
+  if (deleteButton) {
+    deleteButton.disabled = true;
+  }
+
+  try {
+    const storagePath = getDashboardProductImageStoragePath(image.image_url);
+    const { error: storageError } = await window.supabaseClient.storage
+      .from("product-images")
+      .remove([storagePath]);
+
+    if (storageError) {
+      throw storageError;
+    }
+
+    const { error: databaseError } = await window.supabaseClient
+      .from("product_images")
+      .delete()
+      .eq("id", image.id)
+      .eq("product_id", productId);
+
+    if (databaseError) {
+      throw databaseError;
+    }
+
+    await loadDashboardProductImages(productId);
+  } catch (error) {
+    console.error("❌ Error al eliminar la imagen del producto.");
+
+    if (deleteButton) {
+      deleteButton.disabled = false;
+    }
+  }
 }
 
 async function loadDashboardProductFiles(productId) {
@@ -4999,6 +6138,10 @@ async function updateDashboardProduct(product, form) {
   const coverFile = formData.get("cover_file");
   const productFile = formData.get("product_file");
   const productFileTitle = formData.get("product_file_title")?.trim() || "";
+  const productImageAlt = formData.get("product_image_alt")?.trim() || "";
+  const productImageFile = formData.get("product_image_file");
+  const hasNewProductImage =
+    productImageFile instanceof File && productImageFile.size > 0;
   const submitButton = form.querySelector("#dashboard-product-edit-submit");
   let uploadedCoverPath = null;
 
@@ -5082,6 +6225,20 @@ async function updateDashboardProduct(product, form) {
       );
     }
 
+    if (hasNewProductImage) {
+      const productSlug =
+        productData.slug || product.slug || createDashboardProductSlug(title);
+
+      await createDashboardProductImage(
+        product,
+        productImageFile,
+        productImageAlt,
+        productSlug,
+      );
+
+      await loadDashboardProductImages(product.id);
+    }
+
     showDashboardToast("Producto actualizado correctamente.");
 
     if (newCoverUrl && product.cover_image_url) {
@@ -5101,6 +6258,20 @@ async function updateDashboardProduct(product, form) {
           );
         }
       }
+    }
+
+    if (hasNewProductImage) {
+      await loadDashboardProducts();
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = `
+          Guardar cambios
+          <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        `;
+      }
+
+      return;
     }
 
     closeDashboardEditor();
@@ -5125,6 +6296,59 @@ async function updateDashboardProduct(product, form) {
         <i class="bi bi-arrow-right" aria-hidden="true"></i>
       `;
     }
+  }
+}
+
+async function createDashboardProductImage(
+  product,
+  file,
+  altText,
+  productSlug,
+) {
+  let uploadedImage = null;
+
+  try {
+    uploadedImage = await uploadDashboardProductImage(file, productSlug);
+
+    const { data: lastImage, error: orderError } = await window.supabaseClient
+      .from("product_images")
+      .select("display_order")
+      .eq("product_id", product.id)
+      .order("display_order", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (orderError) {
+      throw orderError;
+    }
+
+    const nextDisplayOrder = lastImage
+      ? Number(lastImage.display_order || 0) + 1
+      : 0;
+
+    const { error: insertError } = await window.supabaseClient
+      .from("product_images")
+      .insert({
+        product_id: product.id,
+        image_url: uploadedImage.publicUrl,
+        alt_text: altText || null,
+        display_order: nextDisplayOrder,
+        is_active: true,
+      });
+
+    if (insertError) {
+      throw insertError;
+    }
+  } catch (error) {
+    if (uploadedImage?.path) {
+      await window.supabaseClient.storage
+        .from("product-images")
+        .remove([uploadedImage.path]);
+    }
+
+    console.error("❌ Error al crear la imagen del producto.");
+
+    throw error;
   }
 }
 
@@ -5254,6 +6478,59 @@ async function uploadDashboardProductCover(coverFile, productSlug) {
   }
 
   return publicUrl;
+}
+
+async function uploadDashboardProductImage(file, productSlug) {
+  if (!file || !file.type.startsWith("image/")) {
+    throw new Error("La imagen del producto no es válida.");
+  }
+
+  const extensionByType = {
+    "image/avif": "avif",
+    "image/gif": "gif",
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  };
+  const safeExtension = extensionByType[file.type] || "jpg";
+  const uniqueId =
+    globalThis.crypto?.randomUUID?.() ||
+    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const storagePath = `${productSlug || "product"}/${uniqueId}.${safeExtension}`;
+
+  const { error: uploadError } = await window.supabaseClient.storage
+    .from("product-images")
+    .upload(storagePath, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type,
+    });
+
+  if (uploadError) {
+    console.error("❌ Error al subir la imagen del producto.");
+
+    throw uploadError;
+  }
+
+  const { data: publicUrlData } = window.supabaseClient.storage
+    .from("product-images")
+    .getPublicUrl(storagePath);
+  const publicUrl = publicUrlData?.publicUrl;
+
+  if (!publicUrl) {
+    await window.supabaseClient.storage
+      .from("product-images")
+      .remove([storagePath]);
+
+    console.error("❌ Error al obtener la URL pública de la imagen.");
+
+    throw new Error("No se pudo generar la URL pública de la imagen.");
+  }
+
+  return {
+    path: storagePath,
+    publicUrl,
+  };
 }
 
 function getDashboardProductCoverStoragePath(publicUrl) {

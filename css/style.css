@@ -4935,12 +4935,74 @@ body.menu-open {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   gap: 1.5rem;
 
   background: #f2f0e9;
 
   border-top: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+.dashboard-editor-form__footer > .button {
+  width: auto;
+  min-width: 0;
+  min-height: 42px;
+  flex: 0 1 auto;
+  padding: 0.7rem 1rem;
+  white-space: nowrap;
+}
+
+.dashboard-product-image-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 0.65rem;
+}
+
+#product-edit-existing-images figure {
+  margin: 0 0 1rem;
+}
+
+#product-edit-existing-images img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 240px;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+}
+
+.dashboard-product-image-controls > span {
+  margin-right: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dashboard-product-image-control {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 0.8rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.dashboard-product-image-control:hover {
+  transform: none;
+}
+
+.dashboard-product-delete-button,
+.dashboard-product-save-button {
+  white-space: nowrap;
 }
 
 .dashboard-editor-form__footer p {
@@ -4965,8 +5027,8 @@ body.menu-open {
   }
 
   .dashboard-editor-form__footer {
-    align-items: stretch;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
   }
 }
 
@@ -5469,6 +5531,39 @@ body.menu-open {
 .button--danger:hover {
   background: #111;
   color: #fff;
+}
+
+.dashboard-product-image-control {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0;
+  border: 1px solid #111;
+  background: #fff;
+  box-shadow: none;
+  color: #111;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.dashboard-product-image-control:hover:not(:disabled) {
+  border-color: #111;
+  background: #111;
+  color: #fff;
+}
+
+.dashboard-product-image-control:disabled,
+.dashboard-product-image-control:disabled:hover {
+  border-color: #c7c7c7;
+  background: #f3f3f3;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
 }
 
 /* ---------------------------------------------------------
