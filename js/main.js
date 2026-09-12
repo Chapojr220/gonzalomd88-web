@@ -1945,13 +1945,22 @@ function ensureDashboardLicensesSection() {
             <h3>LICENCIAS</h3>
           </div>
 
-          <button
-            class="button button--dark"
-            id="dashboard-add-license"
-            type="button"
-          >
-            NUEVA LICENCIA
-          </button>
+          <div class="dashboard-action-bar__actions">
+            <button
+              class="button button--dark"
+              id="dashboard-add-license"
+              type="button"
+            >
+              NUEVA LICENCIA
+            </button>
+            <button
+              class="button button--dark"
+              id="dashboard-edit-licenses"
+              type="button"
+            >
+              EDITAR LICENCIAS
+            </button>
+          </div>
         </div>
 
         <div class="dashboard-data-grid" id="dashboard-licenses-list">
@@ -1964,9 +1973,17 @@ function ensureDashboardLicensesSection() {
   );
 
   const addLicenseButton = document.querySelector("#dashboard-add-license");
+  const editLicensesButton = document.querySelector("#dashboard-edit-licenses");
 
   if (addLicenseButton) {
     addLicenseButton.addEventListener("click", openDashboardLicenseEditor);
+  }
+
+  if (editLicensesButton) {
+    editLicensesButton.addEventListener(
+      "click",
+      openDashboardGlobalLicenseEditor,
+    );
   }
 }
 
@@ -2055,6 +2072,288 @@ function openDashboardLicenseEditor() {
     event.preventDefault();
 
     await createDashboardLicense(form);
+  });
+}
+
+async function openDashboardGlobalLicenseEditor() {
+  const { data: licenses, error } = await window.supabaseClient
+    .from("licenses")
+    .select(
+      "id, title, slug, short_description, terms, display_order, is_active",
+    )
+    .order("title", { ascending: true });
+
+  if (error) {
+    console.error("❌ Error al cargar las licencias para editar.");
+    showDashboardToast("No se pudieron cargar las licencias.", 5000);
+    return;
+  }
+
+  openDashboardEditor(
+    "Editar licencia",
+    `
+      <form class="dashboard-editor-form" id="dashboard-license-edit-form">
+        <div class="dashboard-editor-form__fields">
+          <div class="dashboard-editor-field">
+            <label for="dashboard-edit-license-id">Licencia</label>
+            <select id="dashboard-edit-license-id" name="license_id" required>
+              <option value="">Selecciona una licencia</option>
+              ${(licenses || [])
+                .map(
+                  (license) => `
+                    <option value="${escapeDashboardHtml(license.id)}">
+                      ${escapeDashboardHtml(license.title || "Sin título")}
+                    </option>
+                  `,
+                )
+                .join("")}
+            </select>
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="dashboard-edit-license-title">Título</label>
+            <input
+              id="dashboard-edit-license-title"
+              name="license_title"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="dashboard-edit-license-slug">Slug</label>
+            <input
+              id="dashboard-edit-license-slug"
+              name="license_slug"
+              type="text"
+              required
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="dashboard-edit-license-short-description">
+              Descripción corta
+            </label>
+            <input
+              id="dashboard-edit-license-short-description"
+              name="license_short_description"
+              type="text"
+            />
+          </div>
+
+          <div class="dashboard-editor-field">
+            <label for="dashboard-edit-license-terms">Términos</label>
+            <textarea
+              id="dashboard-edit-license-terms"
+              name="license_terms"
+              rows="8"
+            ></textarea>
+          </div>
+
+          <div class="dashboard-editor-field dashboard-editor-field--checkbox">
+            <label>
+              <input
+                name="license_is_active"
+                type="checkbox"
+              />
+              <span>Activa</span>
+            </label>
+          </div>
+
+          <p id="dashboard-license-edit-message" role="alert"></p>
+        </div>
+
+        <div class="dashboard-editor-form__footer">
+          <button
+            class="button button--danger"
+            id="dashboard-license-delete-submit"
+            type="button"
+            disabled
+          >
+            ELIMINAR LICENCIA
+            <i class="bi bi-trash3" aria-hidden="true"></i>
+          </button>
+          <button
+            class="button button--dark"
+            id="dashboard-license-edit-submit"
+            type="submit"
+            disabled
+          >
+            GUARDAR CAMBIOS
+          </button>
+        </div>
+      </form>
+    `,
+  );
+
+  const form = document.querySelector("#dashboard-license-edit-form");
+  const licenseSelect = form?.querySelector("#dashboard-edit-license-id");
+  const submitButton = form?.querySelector("#dashboard-license-edit-submit");
+  const deleteButton = form?.querySelector("#dashboard-license-delete-submit");
+  const message = form?.querySelector("#dashboard-license-edit-message");
+
+  const populateLicenseFields = () => {
+    const selectedLicense = (licenses || []).find(
+      (license) => String(license.id) === licenseSelect?.value,
+    );
+
+    if (!selectedLicense || !form) {
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+      if (deleteButton) {
+        deleteButton.disabled = true;
+      }
+      return;
+    }
+
+    form.querySelector('[name="license_title"]').value =
+      selectedLicense.title || "";
+    form.querySelector('[name="license_slug"]').value =
+      selectedLicense.slug || "";
+    form.querySelector('[name="license_short_description"]').value =
+      selectedLicense.short_description || "";
+    form.querySelector('[name="license_terms"]').value =
+      selectedLicense.terms || "";
+    form.querySelector('[name="license_is_active"]').checked = Boolean(
+      selectedLicense.is_active,
+    );
+    submitButton.disabled = false;
+    deleteButton.disabled = false;
+    message.textContent = "";
+  };
+
+  licenseSelect?.addEventListener("change", populateLicenseFields);
+
+  deleteButton?.addEventListener("click", async () => {
+    const selectedLicenseId = licenseSelect?.value || "";
+    const selectedLicense = (licenses || []).find(
+      (license) => String(license.id) === selectedLicenseId,
+    );
+
+    if (!selectedLicenseId || !selectedLicense) {
+      return;
+    }
+
+    deleteButton.disabled = true;
+
+    try {
+      const { count, error: associationsError } = await window.supabaseClient
+        .from("product_licenses")
+        .select("id", { count: "exact", head: true })
+        .eq("license_id", selectedLicenseId);
+
+      if (associationsError) {
+        throw associationsError;
+      }
+
+      if (count > 0) {
+        if (message) {
+          message.textContent = `Esta licencia está asociada a ${count} producto(s). Elimina primero esas asociaciones antes de borrar la licencia.`;
+        }
+        deleteButton.disabled = false;
+        return;
+      }
+
+      const confirmed = window.confirm(
+        `¿Eliminar definitivamente la licencia «${selectedLicense.title || "Sin título"}»? Esta acción no se puede deshacer.`,
+      );
+
+      if (!confirmed) {
+        deleteButton.disabled = false;
+        return;
+      }
+
+      const { error: deleteError } = await window.supabaseClient
+        .from("licenses")
+        .delete()
+        .eq("id", selectedLicenseId);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      closeDashboardEditor();
+      await loadDashboardLicenses();
+      showDashboardToast("Licencia eliminada correctamente.");
+    } catch (error) {
+      console.error("❌ No se pudo eliminar la licencia global.");
+      showDashboardToast("No se pudo eliminar la licencia.", 5000);
+      deleteButton.disabled = false;
+    }
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const selectedLicenseId = licenseSelect?.value || "";
+    const title = form.querySelector('[name="license_title"]')?.value.trim();
+    const slug = createDashboardSlug(
+      form.querySelector('[name="license_slug"]')?.value.trim() || "",
+    );
+    const shortDescription =
+      form.querySelector('[name="license_short_description"]')?.value.trim() ||
+      null;
+    const terms =
+      form.querySelector('[name="license_terms"]')?.value.trim() || null;
+    const isActive = form.querySelector('[name="license_is_active"]')?.checked;
+
+    if (!selectedLicenseId || !title || !slug) {
+      if (message) {
+        message.textContent = "El título y el slug son obligatorios.";
+      }
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "GUARDANDO...";
+
+    try {
+      const { data: duplicateLicense, error: duplicateError } =
+        await window.supabaseClient
+          .from("licenses")
+          .select("id")
+          .eq("slug", slug)
+          .neq("id", selectedLicenseId)
+          .maybeSingle();
+
+      if (duplicateError) {
+        throw duplicateError;
+      }
+
+      if (duplicateLicense) {
+        if (message) {
+          message.textContent = "Ya existe una licencia con ese slug.";
+        }
+        submitButton.disabled = false;
+        submitButton.textContent = "GUARDAR CAMBIOS";
+        return;
+      }
+
+      const { error: updateError } = await window.supabaseClient
+        .from("licenses")
+        .update({
+          title,
+          slug,
+          short_description: shortDescription,
+          terms,
+          is_active: isActive,
+        })
+        .eq("id", selectedLicenseId);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      closeDashboardEditor();
+      await loadDashboardLicenses();
+      showDashboardToast("Licencia actualizada correctamente.");
+    } catch (error) {
+      console.error("❌ No se pudo actualizar la licencia global.");
+      showDashboardToast("No se pudo actualizar la licencia.", 5000);
+      submitButton.disabled = false;
+      submitButton.textContent = "GUARDAR CAMBIOS";
+    }
   });
 }
 
@@ -2170,22 +2469,33 @@ async function createDashboardLicense(form) {
       return;
     }
 
-    const { error: insertError } = await window.supabaseClient
-      .from("licenses")
-      .insert({
-        title,
-        slug,
-        short_description: shortDescription,
-        terms,
-        display_order: displayOrder,
-        is_active: isActive,
-      });
+    const { data: createdLicense, error: insertError } =
+      await window.supabaseClient
+        .from("licenses")
+        .insert({
+          title,
+          slug,
+          short_description: shortDescription,
+          terms,
+          display_order: displayOrder,
+          is_active: isActive,
+        })
+        .select(
+          "id, title, short_description, slug, terms, display_order, is_active",
+        )
+        .single();
 
     if (insertError) {
       throw insertError;
     }
 
     if (isProductLicenseCreation) {
+      if (!createdLicense) {
+        throw new Error("La licencia creada no fue devuelta por Supabase.");
+      }
+
+      form.dashboardLicenses?.push(createdLicense);
+
       const productLicenseEditor = document.querySelector(
         "#dashboard-product-license-create-form-container",
       );
@@ -2193,13 +2503,28 @@ async function createDashboardLicense(form) {
         "#product-license-id",
       );
       const productLicenseOption = document.createElement("option");
+      const productLicenseSubmit = document.querySelector(
+        "#dashboard-product-license-submit",
+      );
+      const editSelectedLicenseButton = document.querySelector(
+        "#dashboard-edit-selected-license",
+      );
 
-      productLicenseOption.value = "";
-      productLicenseOption.textContent = title;
+      productLicenseOption.value = String(createdLicense.id);
+      productLicenseOption.textContent = createdLicense.title || title;
       productLicenseOption.selected = true;
 
       if (productLicenseSelect) {
         productLicenseSelect.appendChild(productLicenseOption);
+        productLicenseSelect.value = String(createdLicense.id);
+      }
+
+      if (productLicenseSubmit) {
+        productLicenseSubmit.disabled = false;
+      }
+
+      if (editSelectedLicenseButton) {
+        editSelectedLicenseButton.disabled = false;
       }
 
       productLicenseEditor?.remove();
@@ -6189,6 +6514,8 @@ async function openDashboardProductLicenseEditor(product) {
   if (!form) {
     return;
   }
+
+  form.dashboardLicenses = licenses || [];
 
   const createProductLicenseButton = document.querySelector(
     "#dashboard-create-product-license",

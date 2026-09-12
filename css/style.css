@@ -4139,6 +4139,11 @@ body.menu-open {
   border-bottom-color: rgba(0, 0, 0, 0.16);
 }
 
+.dashboard-action-bar__actions {
+  display: flex;
+  gap: 0.7rem;
+}
+
 .dashboard-action-bar__eyebrow {
   margin: 0 0 0.4rem;
 
@@ -4635,6 +4640,11 @@ body.menu-open {
   }
 
   .dashboard-action-bar .button {
+    width: 100%;
+  }
+
+  .dashboard-action-bar__actions {
+    flex-direction: column;
     width: 100%;
   }
 
