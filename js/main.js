@@ -5367,6 +5367,32 @@ function openDashboardProductEditEditor(product) {
 
           <div class="dashboard-editor-field">
             <label for="product-edit-cover">PORTADA DEL PRODUCTO</label>
+            ${
+              product.cover_image_url
+                ? `
+                  <div class="dashboard-release-cover__preview">
+                    <img
+                      src="${escapeDashboardHtml(product.cover_image_url)}"
+                      alt="Portada actual de ${escapeDashboardHtml(
+                        product.title || "producto",
+                      )}"
+                    />
+                  </div>
+                  <div class="dashboard-product-image-controls">
+                    <span>Portada actual</span>
+                    <button
+                      class="button button--danger dashboard-product-image-control"
+                      id="dashboard-delete-product-cover"
+                      type="button"
+                      aria-label="Eliminar portada"
+                      title="Eliminar portada"
+                    >
+                      ×
+                    </button>
+                  </div>
+                `
+                : `<p>Sin portada</p>`
+            }
             <input
               id="product-edit-cover"
               name="cover_file"
@@ -5570,6 +5596,24 @@ function openDashboardProductEditEditor(product) {
     });
   }
 
+  const deleteProductCoverButton = document.querySelector(
+    "#dashboard-delete-product-cover",
+  );
+
+  if (deleteProductCoverButton) {
+    deleteProductCoverButton.addEventListener("click", async () => {
+      const confirmed = window.confirm(
+        "¿Eliminar la portada actual de este producto?",
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      await deleteDashboardProductCover(product, deleteProductCoverButton);
+    });
+  }
+
   const deleteProductButton = document.querySelector(
     "#dashboard-delete-product",
   );
@@ -5593,6 +5637,62 @@ function openDashboardProductEditEditor(product) {
 
     await updateDashboardProduct(product, form);
   });
+}
+
+async function deleteDashboardProductCover(product, deleteCoverButton) {
+  if (deleteCoverButton) {
+    deleteCoverButton.disabled = true;
+    deleteCoverButton.textContent = "Eliminando...";
+  }
+
+  try {
+    const coverPath = getDashboardProductCoverStoragePath(
+      product.cover_image_url,
+    );
+
+    const { error: databaseError } = await window.supabaseClient
+      .from("products")
+      .update({ cover_image_url: null })
+      .eq("id", product.id);
+
+    if (databaseError) {
+      throw databaseError;
+    }
+
+    product.cover_image_url = null;
+
+    if (coverPath) {
+      const { error: storageError } = await window.supabaseClient.storage
+        .from("product-images")
+        .remove([coverPath]);
+
+      if (storageError) {
+        console.error(
+          "❌ La portada fue retirada del producto, pero no se pudo limpiar el archivo Storage.",
+          storageError,
+        );
+        closeDashboardEditor();
+        openDashboardProductEditEditor(product);
+        showDashboardToast(
+          "Portada retirada del producto, pero no se pudo limpiar el archivo Storage.",
+          6000,
+        );
+        return;
+      }
+    }
+
+    closeDashboardEditor();
+    openDashboardProductEditEditor(product);
+    showDashboardToast("Portada eliminada correctamente.");
+  } catch (error) {
+    console.error("❌ Error al eliminar la portada del producto.", error);
+    showDashboardToast("No se pudo eliminar la portada.", 5000);
+
+    if (deleteCoverButton) {
+      deleteCoverButton.disabled = false;
+      deleteCoverButton.textContent = "ELIMINAR PORTADA";
+    }
+  }
 }
 
 async function loadDashboardProductLicenses(productId) {
