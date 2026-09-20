@@ -5437,6 +5437,8 @@ function openDashboardProductEditEditor(product) {
               type="file"
             />
 
+            <p id="product-edit-file-upload-progress" role="status" hidden></p>
+
             <div id="product-edit-existing-files"></div>
           </div>
 
@@ -7302,12 +7304,23 @@ async function deleteDashboardProductFile(
   }
 
   try {
-    const { error: storageError } = await window.supabaseClient.storage
-      .from("product-files")
-      .remove([filePath]);
+    const response = await fetch(
+      "https://music-storage-api.jevasquezlibera.workers.dev/object/delete",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: filePath,
+        }),
+      },
+    );
 
-    if (storageError) {
-      throw storageError;
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      throw new Error(result.error || "No se pudo eliminar el archivo de R2.");
     }
 
     const { error: databaseError } = await window.supabaseClient
@@ -7341,7 +7354,14 @@ async function updateDashboardProduct(product, form) {
   const hasNewProductImage =
     productImageFile instanceof File && productImageFile.size > 0;
   const submitButton = form.querySelector("#dashboard-product-edit-submit");
+  const productFileProgress = form.querySelector(
+    "#product-edit-file-upload-progress",
+  );
   let uploadedCoverPath = null;
+
+  if (submitButton?.disabled) {
+    return;
+  }
 
   if (!title || !productType) {
     showDashboardToast("El título y el tipo de producto son obligatorios.");
@@ -7420,6 +7440,14 @@ async function updateDashboardProduct(product, form) {
         productFile,
         productFileTitle,
         productSlug,
+        (percentage) => {
+          if (!productFileProgress) {
+            return;
+          }
+
+          productFileProgress.hidden = false;
+          productFileProgress.textContent = `Subiendo archivo... ${percentage}%`;
+        },
       );
     }
 
@@ -7550,32 +7578,31 @@ async function createDashboardProductImage(
   }
 }
 
-async function createDashboardProductFile(product, file, title, productSlug) {
-  let storagePath = null;
+async function createDashboardProductFile(
+  product,
+  file,
+  title,
+  productSlug,
+  onProgress = null,
+) {
+  const storagePath = await uploadDashboardProductFile(
+    file,
+    productSlug,
+    onProgress,
+  );
 
-  try {
-    storagePath = await uploadDashboardProductFile(file, productSlug);
+  const { error } = await window.supabaseClient.from("product_files").insert({
+    product_id: product.id,
+    title,
+    file_url: storagePath,
+    file_type: file.type || null,
+    file_size_bytes: file.size,
+    display_order: 0,
+    is_active: true,
+  });
 
-    const { error } = await window.supabaseClient.from("product_files").insert({
-      product_id: product.id,
-      title,
-      file_url: storagePath,
-      file_type: file.type || null,
-      file_size_bytes: file.size,
-      display_order: 0,
-      is_active: true,
-    });
-
-    if (error) {
-      throw error;
-    }
-  } catch (error) {
-    if (storagePath) {
-      await window.supabaseClient.storage
-        .from("product-files")
-        .remove([storagePath]);
-    }
-
+  if (error) {
+    // TODO: Llamar a un endpoint R2 de eliminación/cleanup si COMPLETE ya terminó.
     throw error;
   }
 }
@@ -7752,9 +7779,39 @@ function getDashboardProductCoverStoragePath(publicUrl) {
   }
 }
 
-async function uploadDashboardProductFile(file, productSlug) {
+async function parseDashboardProductFileUploadResponse(response, stage) {
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error(`${stage}: el Worker devolvió un JSON inválido.`);
+  }
+
+  if (!response.ok) {
+    const detail = data?.error || data?.message || response.statusText;
+
+    throw new Error(`${stage} (${response.status}): ${detail}`);
+  }
+
+  if (data?.ok !== true) {
+    throw new Error(`${stage}: el Worker devolvió ok !== true.`);
+  }
+
+  return data;
+}
+
+async function uploadDashboardProductFile(
+  file,
+  productSlug,
+  onProgress = null,
+) {
   if (!file) {
     throw new Error("El archivo del producto es obligatorio.");
+  }
+
+  if (file.size <= 0) {
+    throw new Error("El archivo del producto está vacío.");
   }
 
   const extension = file.name.split(".").pop()?.toLowerCase() || "bin";
@@ -7762,23 +7819,95 @@ async function uploadDashboardProductFile(file, productSlug) {
   const uniqueId =
     globalThis.crypto?.randomUUID?.() ||
     `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const storagePath = `${productSlug || "product"}/${uniqueId}.${safeExtension}`;
+  const fileName = `${productSlug || "product"}/${uniqueId}.${safeExtension}`;
+  const contentType = file.type || "application/octet-stream";
+  const chunkSize = 16 * 1024 * 1024;
+  const workerBaseUrl = "https://music-storage-api.jevasquezlibera.workers.dev";
 
-  const { error: uploadError } = await window.supabaseClient.storage
-    .from("product-files")
-    .upload(storagePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type || "application/octet-stream",
-    });
-
-  if (uploadError) {
-    console.error("❌ Error al enviar el archivo del producto.");
-
-    throw uploadError;
+  if (typeof onProgress === "function") {
+    onProgress(0);
   }
 
-  return storagePath;
+  const createResponse = await fetch(`${workerBaseUrl}/multipart/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fileName,
+      contentType,
+    }),
+  });
+  const createData = await parseDashboardProductFileUploadResponse(
+    createResponse,
+    "CREATE multipart falló",
+  );
+
+  if (!createData.key || !createData.uploadId) {
+    throw new Error("CREATE multipart: faltan key o uploadId.");
+  }
+
+  const parts = [];
+  const totalParts = Math.ceil(file.size / chunkSize);
+
+  for (let partNumber = 1; partNumber <= totalParts; partNumber += 1) {
+    const start = (partNumber - 1) * chunkSize;
+    const end = Math.min(start + chunkSize, file.size);
+    const chunk = file.slice(start, end);
+    const query = new URLSearchParams({
+      key: createData.key,
+      uploadId: createData.uploadId,
+      partNumber: String(partNumber),
+    });
+    const partResponse = await fetch(
+      `${workerBaseUrl}/multipart/upload-part?${query.toString()}`,
+      {
+        method: "PUT",
+        body: chunk,
+      },
+    );
+    const partData = await parseDashboardProductFileUploadResponse(
+      partResponse,
+      `UPLOAD PART ${partNumber}/${totalParts} falló`,
+    );
+
+    if (!partData.etag || Number(partData.partNumber) !== partNumber) {
+      throw new Error(
+        `UPLOAD PART ${partNumber}/${totalParts}: respuesta incompleta.`,
+      );
+    }
+
+    parts.push({
+      partNumber,
+      etag: partData.etag,
+    });
+
+    if (typeof onProgress === "function") {
+      onProgress(Math.round((end / file.size) * 100));
+    }
+  }
+
+  const completeResponse = await fetch(`${workerBaseUrl}/multipart/complete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      key: createData.key,
+      uploadId: createData.uploadId,
+      parts,
+    }),
+  });
+  const completeData = await parseDashboardProductFileUploadResponse(
+    completeResponse,
+    "COMPLETE multipart falló",
+  );
+
+  if (!completeData.key) {
+    throw new Error("COMPLETE multipart: falta la key final de R2.");
+  }
+
+  return completeData.key;
 }
 
 // =========================================================
