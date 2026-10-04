@@ -6,6 +6,10 @@
   "compatibility_date": "2026-10-04",
   "keep_vars": true,
 
+  "vars": {
+    "SUPABASE_URL": "https://mndbqzoazrejiuciyodq.supabase.co",
+  },
+
   "r2_buckets": [
     {
       "binding": "PRODUCT_FILES",

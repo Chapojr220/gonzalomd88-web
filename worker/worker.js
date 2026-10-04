@@ -512,6 +512,10 @@ export default {
       }
     }
 
+    if (url.pathname === "/download" && request.method === "GET") {
+      return handleSecureDownload(request, env, url, corsHeaders);
+    }
+
     // =====================================================
     // RUTA NO ENCONTRADA
     // =====================================================
@@ -530,6 +534,165 @@ export default {
     );
   },
 };
+
+async function handleSecureDownload(request, env, url, corsHeaders) {
+  const headers = {
+    ...corsHeaders,
+    "Cache-Control": "private, no-store",
+  };
+  const fail = (status, error) =>
+    Response.json({ ok: false, error }, { status, headers });
+  const bearer = request.headers
+    .get("Authorization")
+    ?.match(/^Bearer\s+(\S+)$/i);
+
+  if (!bearer) {
+    return fail(401, "Authentication required");
+  }
+
+  try {
+    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error("Missing download configuration");
+    }
+
+    const authResponse = await fetch(
+      new URL("/auth/v1/user", env.SUPABASE_URL),
+      {
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${bearer[1]}`,
+        },
+        redirect: "error",
+      },
+    );
+
+    if (authResponse.status === 401 || authResponse.status === 403) {
+      return fail(401, "Invalid authentication");
+    }
+
+    if (!authResponse.ok) {
+      throw new Error("Authentication service failed");
+    }
+
+    const authenticatedUser = await authResponse.json();
+
+    if (!isDownloadUuid(authenticatedUser?.id)) {
+      return fail(401, "Invalid authentication");
+    }
+
+    const fileIds = url.searchParams.getAll("fileId");
+    const fileId = fileIds[0];
+
+    if (fileIds.length !== 1 || !isDownloadUuid(fileId)) {
+      return fail(404, "File not found");
+    }
+
+    const files = await queryDownloadSupabase(env, "product_files", {
+      select: "id,product_id,file_url,file_type,is_active",
+      id: `eq.${fileId}`,
+      limit: "2",
+    });
+
+    if (files.length === 0) {
+      return fail(404, "File not found");
+    }
+
+    if (files.length !== 1) {
+      throw new Error("Invalid file result");
+    }
+
+    const productFile = files[0];
+
+    if (productFile.is_active !== true) {
+      return fail(404, "File not found");
+    }
+
+    if (!isDownloadUuid(productFile.product_id)) {
+      throw new Error("Invalid file product");
+    }
+
+    const purchases = await queryDownloadSupabase(env, "order_items", {
+      select: "order_id,orders!inner(id)",
+      product_id: `eq.${productFile.product_id}`,
+      "orders.profile_id": `eq.${authenticatedUser.id}`,
+      "orders.payment_status": "eq.paid",
+      limit: "1",
+    });
+
+    if (purchases.length === 0) {
+      return fail(403, "Access denied");
+    }
+
+    const key = productFile.file_url;
+
+    if (typeof key !== "string" || !key.trim() || /^https?:\/\//i.test(key)) {
+      throw new Error("Invalid private file key");
+    }
+
+    const object = await env.PRODUCT_FILES.get(key);
+
+    if (!object) {
+      return fail(404, "File not found");
+    }
+
+    const fileName =
+      sanitizeFileName(key.split("/").pop()).slice(-180) || "download";
+    const contentType =
+      object.httpMetadata?.contentType ||
+      productFile.file_type ||
+      "application/octet-stream";
+    const safeContentType =
+      typeof contentType === "string" &&
+      /^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/i.test(contentType)
+        ? contentType
+        : "application/octet-stream";
+
+    return new Response(object.body, {
+      headers: {
+        ...headers,
+        "Content-Type": safeContentType,
+        "Content-Disposition": `attachment; filename="${fileName}"`,
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
+  } catch {
+    return fail(500, "Could not download file");
+  }
+}
+
+function isDownloadUuid(value) {
+  return (
+    typeof value === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      value,
+    )
+  );
+}
+
+async function queryDownloadSupabase(env, table, parameters) {
+  const endpoint = new URL(`/rest/v1/${table}`, env.SUPABASE_URL);
+  endpoint.search = new URLSearchParams(parameters).toString();
+
+  const response = await fetch(endpoint, {
+    headers: {
+      apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+    },
+    redirect: "error",
+  });
+
+  if (!response.ok) {
+    throw new Error("Download database query failed");
+  }
+
+  const rows = await response.json();
+
+  if (!Array.isArray(rows)) {
+    throw new Error("Invalid download database response");
+  }
+
+  return rows;
+}
 
 // =========================================================
 // FILE NAME

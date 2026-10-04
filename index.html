@@ -1,688 +1,622 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <!-- Configuración general del documento -->
     <meta charset="UTF-8" />
-
-    <!-- Permite adaptar correctamente el sitio a móviles y tablets -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Descripción utilizada por buscadores -->
     <meta
       name="description"
-      content="Sitio oficial de Gonzalo MD88. Música techno, clases privadas, lanzamientos y productos para productores."
+      content="Samples, herramientas, conocimiento y artistas para construir tu sonido. Plataforma musical Gonzalo MD88."
     />
-
-    <!-- Título mostrado en la pestaña del navegador -->
-    <title>Gonzalo MD88 | Techno Artist</title>
-
-    <!-- Bootstrap Icons -->
+    <title>Gonzalo MD88 | Sounds, Learning & Creators</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     />
-
-    <!-- Conexión con nuestro archivo CSS -->
     <link rel="stylesheet" href="./css/style.css" />
   </head>
-
-  <body>
-    <!-- ==================================================
-         ENCABEZADO Y NAVEGACIÓN
-    =================================================== -->
-    <header class="header">
-      <nav class="navbar" aria-label="Navegación principal">
-        <a class="navbar__logo" href="#inicio" data-setting="site_name">
-          GONZALO MD88
-        </a>
-
-        <!-- Botón del menú móvil -->
-        <button
-          class="navbar__toggle"
-          type="button"
-          aria-label="Abrir menú de navegación"
-          aria-expanded="false"
-          aria-controls="navbar-menu"
+  <body class="student-page platform-page">
+    <a class="student-skip" href="#platform-main">Saltar al contenido</a>
+    <header class="platform-header">
+      <div class="platform-container platform-header-inner">
+        <a class="platform-brand" href="#platform-home"
+          >GONZALO MD88<span>/</span></a
         >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-
-        <!-- Enlaces internos hacia las diferentes secciones -->
-        <ul class="navbar__menu" id="navbar-menu">
-          <li>
-            <a class="navbar__link" href="#inicio" data-content-key="nav_home">
-              Inicio
-            </a>
-          </li>
-
-          <li>
+        <nav class="platform-nav" aria-label="Navegación principal">
+          <a href="#platform-sounds">SOUNDS</a
+          ><a href="#platform-learn">LEARN</a
+          ><a href="#platform-creators">CREATORS</a
+          ><a href="#platform-pricing">PRICING</a>
+        </nav>
+        <div class="platform-header-actions">
+          <a class="platform-login" href="./dashboard-login.html">LOGIN</a
+          ><a
+            class="student-button student-button--primary platform-explore-button"
+            href="#platform-sounds"
+            >EXPLORAR <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+          ></a>
+        </div>
+        <details class="platform-mobile-nav">
+          <summary aria-label="Abrir navegación">
+            <i class="bi bi-list" aria-hidden="true"></i>
+          </summary>
+          <nav aria-label="Navegación móvil">
+            <a href="#platform-sounds">SOUNDS</a
+            ><a href="#platform-learn">LEARN</a
+            ><a href="#platform-creators">CREATORS</a
+            ><a href="#platform-pricing">PRICING</a>
             <a
-              class="navbar__link"
-              href="#clases"
-              data-content-key="nav_classes"
-            >
-              Clases
-            </a>
-          </li>
-
-          <li>
-            <a class="navbar__link" href="#musica" data-content-key="nav_music">
-              Música
-            </a>
-          </li>
-
-          <li>
-            <a
-              class="navbar__link"
-              href="#productos"
-              data-content-key="nav_products"
-            >
-              Productos
-            </a>
-          </li>
-
-          <li>
-            <a
-              class="navbar__link"
-              href="#artista"
-              data-content-key="nav_artist"
-            >
-              Artista
-            </a>
-          </li>
-
-          <li>
-            <a
-              class="navbar__link"
-              href="#contacto"
-              data-content-key="nav_contact"
-            >
-              Contacto
-            </a>
-          </li>
-
-          <li class="navbar__login-item">
-            <a
-              class="navbar__login"
-              href="./dashboard-login.html"
-              aria-label="Acceder al panel de administración"
-            >
-              Login
-            </a>
-          </li>
-        </ul>
-      </nav>
+              class="student-button student-button--primary"
+              href="#platform-sounds"
+              >EXPLORAR <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+            ></a>
+          </nav>
+        </details>
+      </div>
     </header>
-
-    <!-- ==================================================
-     CONTENIDO PRINCIPAL
-    =================================================== -->
-    <main>
-      <!-- ==================================================
-       SECCIÓN 1 — HERO
-      =================================================== -->
-      <section class="hero section section--image" id="inicio">
-        <div class="section__overlay"></div>
-
-        <div class="container hero__content">
-          <!-- Identidad profesional -->
-          <p class="hero__eyebrow" data-content-key="hero_eyebrow">
-            ARTISTA · PRODUCTOR · EDUCADOR
+    <main id="platform-main">
+      <section
+        class="platform-hero"
+        id="platform-home"
+        aria-labelledby="platform-hero-title"
+      >
+        <img
+          class="platform-hero-image"
+          src="./images/Industrial/image3.png"
+          alt="Espacio industrial y consola de producción"
+          fetchpriority="high"
+        />
+        <div class="platform-container platform-hero-content">
+          <p class="student-label platform-hero-eyebrow">
+            SOUNDS / LEARNING / CREATORS <span class="student-demo">DEMO</span>
           </p>
-
-          <!-- Título principal -->
-          <h1 class="hero__title" data-content-key="hero_title">
-            El sonido transforma la energía en emoción.
+          <h1 id="platform-hero-title">
+            <span class="platform-hero-name">GONZALO MD88</span
+            >CREATE.<br />LEARN.<br /><span class="platform-hero-last"
+              >FIND YOUR SOUND.</span
+            >
           </h1>
-
-          <!-- Presentación breve -->
-          <p class="hero__description" data-content-key="hero_description">
-            Producción techno, formación, mentoría, samples y herramientas
-            creativas para construir un sonido propio.
+          <p class="platform-hero-description">
+            Samples, herramientas, conocimiento y artistas para construir tu
+            sonido.
           </p>
-
-          <!-- Botones e iconos sociales en la misma línea -->
-          <div class="hero__actions">
-            <!-- Acción principal -->
-            <a
-              class="button button--light"
-              href="./videollamada.html"
-              aria-label="Agendar una llamada gratuita"
-              data-content-key="hero_button_primary"
+          <div class="platform-search" role="search" aria-label="Búsqueda demo">
+            <i class="bi bi-search" aria-hidden="true"></i
+            ><label class="platform-sr-only" for="platform-search-input"
+              >Buscar samples, presets, tutoriales, artistas</label
+            ><input
+              id="platform-search-input"
+              type="search"
+              placeholder="Buscar samples, presets, tutoriales, artistas..."
+              autocomplete="off"
+            /><span class="student-demo">DEMO</span
+            ><button
+              type="button"
+              disabled
+              aria-label="Buscar, no disponible en la demo"
+              title="DEMO"
             >
-              Agendar una llamada gratis
-            </a>
-
-            <!-- Acción secundaria -->
-            <a
-              class="button button--outline-light"
-              href="#productos"
-              aria-label="Descubrir nuestros productos"
-              data-content-key="hero_button_secondary"
-            >
-              Descubrir nuestros productos
-            </a>
-
-            <!-- Redes y plataformas -->
-            <div
-              class="hero__socials"
-              data-social-links="global"
-              aria-label="Redes sociales y plataformas musicales"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Indicador visual para invitar a bajar -->
-        <a
-          class="scroll-indicator"
-          href="#clases"
-          aria-label="Bajar a la sección de clases"
-        >
-          <span>Scroll</span>
-          <span class="scroll-indicator__line"></span>
-        </a>
-      </section>
-
-      <!-- ==================================================
-      SECCIÓN 2 — CLASES PRIVADAS
-      =================================================== -->
-      <section class="classes section section--light" id="clases">
-        <div class="container">
-          <div class="section-heading">
-            <p class="section-heading__number">01</p>
-
-            <p
-              class="section-heading__eyebrow"
-              data-content-key="classes_eyebrow"
-            >
-              CLASES PRIVADAS
-            </p>
-
-            <h2 class="section-heading__title" data-content-key="classes_title">
-              Desarrolla tu estilo, crea tus propios sonidos y da vida a tus
-              ideas.
-            </h2>
-
-            <p
-              class="section-heading__description"
-              data-content-key="classes_description"
-            >
-              Sesiones individuales de producción musical adaptadas a tu nivel,
-              tus objetivos y tu identidad artística.
-            </p>
-          </div>
-
-          <div class="classes__content">
-            <article class="service-card">
-              <p class="service-card__number">01</p>
-
-              <h3
-                class="service-card__title"
-                data-content-key="classes_service_1_title"
-              >
-                Beatmaking
-              </h3>
-
-              <p
-                class="service-card__description"
-                data-content-key="classes_service_1_description"
-              >
-                Aprende a utilizar Ableton Live desde cero, instala y domina tus
-                plugins, comprende los fundamentos de la producción musical y
-                crea tus primeros temas techno paso a paso, incluso si nunca has
-                producido antes.
-              </p>
-            </article>
-
-            <article class="service-card">
-              <p class="service-card__number">02</p>
-
-              <h3
-                class="service-card__title"
-                data-content-key="classes_service_2_title"
-              >
-                Sound design
-              </h3>
-
-              <p
-                class="service-card__description"
-                data-content-key="classes_service_2_description"
-              >
-                Diseña tus propios sonidos, percusiones, bajos y mas. Aprende a
-                crear presets, templates y herramientas personales para trabajar
-                más rápido y dejar de depender únicamente de samples y sonidos
-                externos.
-              </p>
-            </article>
-
-            <article class="service-card">
-              <p class="service-card__number">03</p>
-
-              <h3
-                class="service-card__title"
-                data-content-key="classes_service_3_title"
-              >
-                Mezcla y Master
-              </h3>
-
-              <p
-                class="service-card__description"
-                data-content-key="classes_service_3_description"
-              >
-                Analizamos tus proyectos para mejorar la calidad de tus
-                producciones. Aprende mezcla y mastering con técnicas y
-                herramientas profesionales para conseguir un sonido potente y
-                competitivo.
-              </p>
-            </article>
-          </div>
-
-          <div class="classes__actions">
-            <a
-              class="button button--dark"
-              href="./videollamada.html"
-              data-content-key="classes_button_primary"
-            >
-              Reservar una clase
-            </a>
-
-            <a
-              class="button button--outline-light"
-              href="./videollamada.html"
-              data-content-key="classes_button_secondary"
-            >
-              Agendar una llamada gratis
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==================================================
-      SECCIÓN 3 — MÚSICA Y LANZAMIENTOS
-      =================================================== -->
-      <section class="music section section--light" id="musica">
-        <div class="container">
-          <!-- Encabezado -->
-          <div class="section-heading">
-            <p class="section-heading__number">02</p>
-
-            <p
-              class="section-heading__eyebrow"
-              data-content-key="music_eyebrow"
-            >
-              MÚSICA Y LANZAMIENTOS
-            </p>
-
-            <h2 class="section-heading__title" data-content-key="music_title">
-              Explora los últimos proyectos.
-            </h2>
-
-            <p
-              class="section-heading__description"
-              data-content-key="music_description"
-            >
-              Escucha una selección de EPs, descubre cada proyecto y accede a
-              las plataformas oficiales para comprar o seguir los lanzamientos.
-            </p>
-          </div>
-
-          <!-- Controles del carrusel -->
-          <div class="music-carousel__header">
-            <p class="music-carousel__counter" id="musicCounter">
-              00 PROYECTOS · 00 TRACKS
-            </p>
-
-            <div class="music-carousel__controls">
-              <button
-                class="music-carousel__button music-carousel__button--prev"
-                type="button"
-                aria-label="Ver proyecto anterior"
-              >
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
-              </button>
-
-              <button
-                class="music-carousel__button music-carousel__button--next"
-                type="button"
-                aria-label="Ver proyecto siguiente"
-              >
-                <i class="bi bi-arrow-right" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Carrusel -->
-          <div
-            class="music-carousel"
-            id="musicCarousel"
-            aria-label="Carrusel de proyectos musicales"
-          ></div>
-        </div>
-      </section>
-
-      <!-- ==================================================
-      SECCIÓN 4 — SAMPLE PACKS Y PRODUCTOS
-      =================================================== -->
-      <section class="products section section--image" id="productos">
-        <div class="container">
-          <!-- Encabezado de la sección -->
-          <div class="section-heading section-heading--light">
-            <p class="section-heading__number">03</p>
-
-            <p
-              class="section-heading__eyebrow"
-              data-content-key="products_eyebrow"
-            >
-              PRODUCTOS
-            </p>
-
-            <h2
-              class="section-heading__title"
-              data-content-key="products_title"
-            >
-              Herramientas creadas para productores.
-            </h2>
-
-            <p
-              class="section-heading__description"
-              data-content-key="products_description"
-            >
-              Sample packs, Ableton racks y formaciones diseñadas para mejorar
-              tu flujo de trabajo, desarrollar tu sonido y producir con mayor
-              libertad.
-            </p>
-          </div>
-
-          <!-- Encabezado del carrusel -->
-          <div class="products-carousel__header">
-            <p class="products-carousel__counter" id="productsCounter">
-              00 PRODUCTOS DIGITALES
-            </p>
-
-            <div class="products-carousel__controls">
-              <button
-                class="products-carousel__button products-carousel__button--prev"
-                type="button"
-                aria-label="Ver producto anterior"
-              >
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
-              </button>
-
-              <button
-                class="products-carousel__button products-carousel__button--next"
-                type="button"
-                aria-label="Ver producto siguiente"
-              >
-                <i class="bi bi-arrow-right" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Carrusel de productos -->
-          <div
-            class="products__grid"
-            id="productsGrid"
-            aria-label="Carrusel de productos digitales"
-          ></div>
-        </div>
-      </section>
-
-      <!-- ==================================================
-      SECCIÓN 5 — SOBRE EL ARTISTA
-      =================================================== -->
-      <section class="artist section section--image" id="artista">
-        <div class="section__overlay"></div>
-
-        <div class="container artist__content">
-          <div class="section-heading section-heading--light">
-            <p class="section-heading__number">04</p>
-
-            <p
-              class="section-heading__eyebrow"
-              data-content-key="artist_eyebrow"
-            >
-              EL ARTISTA
-            </p>
-
-            <h2 class="section-heading__title" data-content-key="artist_title">
-              Una visión construida entre máquinas, ritmo y experimentación.
-            </h2>
-          </div>
-
-          <div class="artist__description">
-            <p data-content-key="artist_paragraph_1">
-              Gonzalo MD88 desarrolla una propuesta centrada en el techno, la
-              creación de grooves y la búsqueda de una identidad sonora propia.
-            </p>
-
-            <p data-content-key="artist_paragraph_2">
-              Su trabajo combina producción, experimentación y transmisión de
-              conocimientos para ayudar a otros artistas a comprender mejor su
-              proceso creativo.
-            </p>
-          </div>
-
-          <a
-            class="button button--light"
-            href="./videollamada.html"
-            data-content-key="artist_button"
-          >
-            Trabajar conmigo
-          </a>
-        </div>
-      </section>
-
-      <!-- ==================================================
-      SECCIÓN 6 — CONTACTO Y RESERVA
-      =================================================== -->
-      <section class="contact section section--dark" id="contacto">
-        <div class="container contact__layout">
-          <div class="contact__intro">
-            <div class="section-heading section-heading--light">
-              <p class="section-heading__number">05</p>
-
-              <p
-                class="section-heading__eyebrow"
-                data-content-key="contact_eyebrow"
-              >
-                CONTACTO
-              </p>
-
-              <h2
-                class="section-heading__title"
-                data-content-key="contact_title"
-              >
-                ¿Listo para llevar tu sonido más lejos?
-              </h2>
-
-              <p
-                class="section-heading__description"
-                data-content-key="contact_description"
-              >
-                Reserva una clase privada, solicita información o presenta tu
-                proyecto.
-              </p>
-            </div>
-
-            <div class="contact__links">
-              <a data-setting="contact_email" hidden></a>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
-                data-setting="calendly_url"
-                data-content-key="contact_calendly_label"
-                hidden
-              >
-                Reservar mediante Calendly
-              </a>
-
-              <a
-                href="#"
-                target="_blank"
-                rel="noopener"
-                data-setting="whatsapp_url"
-                data-content-key="contact_whatsapp_label"
-                hidden
-              >
-                Contactar por WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <!-- Formulario de contacto -->
-          <form class="contact-form">
-            <div class="contact-form__group">
-              <label for="name" data-content-key="contact_form_name_label">
-                Nombre
-              </label>
-
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autocomplete="name"
-                required
-              />
-            </div>
-
-            <div class="contact-form__group">
-              <label for="email" data-content-key="contact_form_email_label">
-                Correo electrónico
-              </label>
-
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autocomplete="email"
-                required
-              />
-            </div>
-
-            <div class="contact-form__group">
-              <label
-                for="service"
-                data-content-key="contact_form_service_label"
-              >
-                Servicio
-              </label>
-
-              <select id="service" name="service" required>
-                <option value="" data-content-key="contact_option_placeholder">
-                  Selecciona una opción
-                </option>
-
-                <option
-                  value="private-class"
-                  data-content-key="contact_option_private_class"
-                >
-                  Clase privada
-                </option>
-
-                <option
-                  value="feedback"
-                  data-content-key="contact_option_feedback"
-                >
-                  Feedback de proyecto
-                </option>
-
-                <option
-                  value="product"
-                  data-content-key="contact_option_product"
-                >
-                  Información sobre productos
-                </option>
-
-                <option
-                  value="collaboration"
-                  data-content-key="contact_option_collaboration"
-                >
-                  Colaboración
-                </option>
-
-                <option value="other" data-content-key="contact_option_other">
-                  Otro
-                </option>
-              </select>
-            </div>
-
-            <div class="contact-form__group">
-              <label
-                for="message"
-                data-content-key="contact_form_message_label"
-              >
-                Mensaje
-              </label>
-
-              <textarea
-                id="message"
-                name="message"
-                rows="6"
-                required
-              ></textarea>
-            </div>
-
-            <button
-              class="button button--light"
-              type="submit"
-              data-content-key="contact_form_submit"
-            >
-              Enviar mensaje
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </button>
-          </form>
+          </div>
+          <div class="platform-hero-actions">
+            <a
+              class="student-button student-button--primary"
+              href="#platform-sounds"
+              >EXPLORAR SOUNDS
+              <i class="bi bi-arrow-right" aria-hidden="true"></i></a
+            ><a class="student-button" href="#platform-creators"
+              >DESCUBRIR CREATORS
+              <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+            ></a>
+          </div>
+        </div>
+        <div class="platform-hero-caption">
+          <span>GMD88 / CREATOR #001</span
+          ><a href="./creator-gonzalo.html"
+            >BERLIN TECHNO
+            <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+          ></a>
+        </div>
+      </section>
+      <section
+        class="platform-band"
+        id="platform-sounds"
+        aria-labelledby="platform-sounds-title"
+      >
+        <div class="platform-container">
+          <div class="student-section-heading platform-heading">
+            <div>
+              <p class="student-label">01 / DISCOVER SOUNDS</p>
+              <h2 id="platform-sounds-title">ENCUENTRA TU SONIDO</h2>
+            </div>
+            <span class="student-demo">DEMO</span>
+          </div>
+          <fieldset class="platform-filters">
+            <legend class="platform-sr-only">Categorías demo</legend>
+            <label><input type="checkbox" checked /><span>Techno</span></label
+            ><label><input type="checkbox" /><span>House</span></label
+            ><label><input type="checkbox" /><span>Afro House</span></label
+            ><label><input type="checkbox" /><span>Trap</span></label
+            ><label><input type="checkbox" /><span>Reggaeton</span></label
+            ><label><input type="checkbox" /><span>Drums</span></label
+            ><label><input type="checkbox" /><span>Kicks</span></label
+            ><label><input type="checkbox" /><span>Percussion</span></label
+            ><label><input type="checkbox" /><span>Vocals</span></label
+            ><label><input type="checkbox" /><span>Synths</span></label>
+          </fieldset>
+          <div class="platform-sound-list">
+            <div class="platform-sound-list-heading">
+              <span>SOUND / CREATOR</span><span>PREVIEW</span
+              ><span>BPM / KEY</span><span>CRÉDITOS</span>
+            </div>
+            <article class="platform-sound-row">
+              <button
+                class="platform-play"
+                type="button"
+                disabled
+                aria-label="Escuchar BERLIN_KICK_042.wav, preview demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="platform-sound-info">
+                <h3>BERLIN_KICK_042.wav</h3>
+                <p>Gonzalo MD88 <span>Techno · Kick</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--one"
+                aria-hidden="true"
+              ></div>
+              <p class="platform-sound-spec">
+                <span>138 BPM</span><span>C</span>
+              </p>
+              <p class="platform-sound-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+                crédito
+              </p>
+            </article>
+            <article class="platform-sound-row">
+              <button
+                class="platform-play"
+                type="button"
+                disabled
+                aria-label="Escuchar WAREHOUSE_PERC_018.wav, preview demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="platform-sound-info">
+                <h3>WAREHOUSE_PERC_018.wav</h3>
+                <p>Gonzalo MD88 <span>Techno · Percussion</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--two"
+                aria-hidden="true"
+              ></div>
+              <p class="platform-sound-spec">
+                <span>140 BPM</span><span>Am</span>
+              </p>
+              <p class="platform-sound-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+                crédito
+              </p>
+            </article>
+            <article class="platform-sound-row">
+              <button
+                class="platform-play"
+                type="button"
+                disabled
+                aria-label="Escuchar AFTERHOURS_SYNTH_006.wav, preview demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="platform-sound-info">
+                <h3>AFTERHOURS_SYNTH_006.wav</h3>
+                <p>CREATOR DEMO 002 <span>House · Synths</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--three"
+                aria-hidden="true"
+              ></div>
+              <p class="platform-sound-spec">
+                <span>126 BPM</span><span>Fm</span>
+              </p>
+              <p class="platform-sound-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>2
+                créditos
+              </p>
+            </article>
+            <article class="platform-sound-row">
+              <button
+                class="platform-play"
+                type="button"
+                disabled
+                aria-label="Escuchar HYPNOTIC_BASS_011.mid, preview demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="platform-sound-info">
+                <h3>HYPNOTIC_BASS_011.mid</h3>
+                <p>CREATOR DEMO 003 <span>Techno · MIDI</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--two"
+                aria-hidden="true"
+              ></div>
+              <p class="platform-sound-spec">
+                <span>136 BPM</span><span>Dm</span>
+              </p>
+              <p class="platform-sound-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>3
+                créditos
+              </p>
+            </article>
+          </div>
+          <div class="platform-sounds-bottom">
+            <span class="student-label"
+              >SAMPLES / LOOPS / ONE-SHOTS / PRESETS / MIDI / PACKS</span
+            ><button
+              class="student-button student-button--small"
+              type="button"
+              disabled
+              title="DEMO"
+            >
+              VER TODOS LOS SOUNDS
+              <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section
+        class="platform-band platform-band--charcoal"
+        id="platform-learn"
+        aria-labelledby="platform-learn-title"
+      >
+        <div class="platform-container">
+          <div class="student-section-heading platform-heading">
+            <div>
+              <p class="student-label">02 / LEARN</p>
+              <h2 id="platform-learn-title">APRENDE DE ARTISTAS</h2>
+            </div>
+            <span class="student-demo">DEMO</span>
+          </div>
+          <div class="student-explore-grid platform-card-grid">
+            <article class="student-content-card platform-learning-card">
+              <div class="student-content-card__media">
+                <img
+                  src="./images/Products/serum-dark-textures.png"
+                  alt="Portada Serum Dark Textures para el tutorial demo"
+                  loading="lazy"
+                /><span class="student-content-card__number">TUTORIAL</span>
+              </div>
+              <div class="student-content-card__body">
+                <p class="student-creator">GONZALO MD88</p>
+                <h3>Diseña un bassline que tenga identidad.</h3>
+                <p class="student-meta">
+                  <span>24 MIN</span><span>INTERMEDIO</span>
+                </p>
+                <div class="platform-card-bottom">
+                  <span
+                    ><i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                    15 créditos</span
+                  ><span class="student-demo">DEMO</span>
+                </div>
+              </div>
+            </article>
+            <article class="student-content-card platform-learning-card">
+              <div class="student-content-card__media">
+                <img
+                  src="./images/Covers/cover2.jpg"
+                  alt="Portada musical para la masterclass demo"
+                  loading="lazy"
+                /><span class="student-content-card__number">MASTERCLASS</span>
+              </div>
+              <div class="student-content-card__body">
+                <p class="student-creator">CREATOR DEMO 002</p>
+                <h3>De la primera idea al groove completo.</h3>
+                <p class="student-meta">
+                  <span>1 H 20 MIN</span><span>TODOS LOS NIVELES</span>
+                </p>
+                <div class="platform-card-bottom">
+                  <span
+                    ><i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                    40 créditos</span
+                  ><span class="student-demo">DEMO</span>
+                </div>
+              </div>
+            </article>
+            <article class="student-content-card platform-learning-card">
+              <div class="student-content-card__media">
+                <img
+                  src="./images/Industrial/image1.png"
+                  alt="Entorno industrial de la formación demo de Gonzalo MD88"
+                  loading="lazy"
+                /><span class="student-content-card__number">FORMATION</span>
+              </div>
+              <div class="student-content-card__body">
+                <p class="student-creator">GONZALO MD88</p>
+                <h3>Beatmaker &amp; Music Producer.</h3>
+                <p class="student-meta">
+                  <span>TUTORIALS + MASTERCLASSES</span
+                  ><span>BERLIN TECHNO</span>
+                </p>
+                <div class="platform-card-bottom">
+                  <a href="#platform-formations"
+                    >VER FORMACIÓN
+                    <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a
+                  ><span class="student-demo">DEMO</span>
+                </div>
+              </div>
+            </article>
+          </div>
+          <p class="platform-catalog-types student-label">
+            TUTORIALS / MASTERCLASSES / FORMATIONS
+          </p>
+        </div>
+      </section>
+      <section
+        class="platform-band"
+        id="platform-creators"
+        aria-labelledby="platform-creators-title"
+      >
+        <div class="platform-container">
+          <div class="student-section-heading platform-heading">
+            <div>
+              <p class="student-label">03 / CREATORS</p>
+              <h2 id="platform-creators-title">DESCUBRE CREATORS</h2>
+            </div>
+            <span class="student-label"
+              >DIFERENTES MÉTODOS. TU PROPIO SONIDO.</span
+            >
+          </div>
+          <div class="platform-creators-grid">
+            <article class="platform-creator-card">
+              <div class="platform-creator-image">
+                <img
+                  src="./images/Industrial/image5.png"
+                  alt="Imagen industrial del universo Gonzalo MD88"
+                  loading="lazy"
+                /><span class="student-content-card__number">CREATOR #001</span>
+              </div>
+              <div class="platform-creator-body">
+                <h3>GONZALO MD88</h3>
+                <p class="platform-creator-specialty">Berlin Techno</p>
+                <p class="platform-creator-tags">
+                  Techno / Producción / Sound Design
+                </p>
+                <p class="platform-creator-offers">
+                  Sounds · Tutorials · Masterclasses<br />Formation · Private
+                  Lessons
+                </p>
+                <a
+                  class="student-button student-button--small"
+                  href="./creator-gonzalo.html"
+                  >VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+                ></a>
+              </div>
+            </article>
+            <article class="platform-creator-card">
+              <div class="platform-creator-image">
+                <img
+                  src="./images/Products/hypnotic-elements.png"
+                  alt="Artwork de catálogo del creator demo 002"
+                  loading="lazy"
+                /><span class="student-content-card__number"
+                  >CREATOR DEMO #002</span
+                >
+              </div>
+              <div class="platform-creator-body">
+                <h3>CREATOR DEMO 002</h3>
+                <p class="platform-creator-specialty">House &amp; Groove</p>
+                <p class="platform-creator-tags">House / Loops / Rhythm</p>
+                <p class="platform-creator-offers">Samples · Presets</p>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="platform-creator-card">
+              <div class="platform-creator-image">
+                <img
+                  src="./images/Products/pigments-atmospheres.png"
+                  alt="Artwork de catálogo del creator demo 003"
+                  loading="lazy"
+                /><span class="student-content-card__number"
+                  >CREATOR DEMO #003</span
+                >
+              </div>
+              <div class="platform-creator-body">
+                <h3>CREATOR DEMO 003</h3>
+                <p class="platform-creator-specialty">Producción musical</p>
+                <p class="platform-creator-tags">
+                  Workflow / Producción / Técnicas
+                </p>
+                <p class="platform-creator-offers">Tutorials · Masterclasses</p>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="platform-program-band"
+        id="platform-formations"
+        aria-labelledby="platform-formations-title"
+      >
+        <img
+          src="./images/Industrial/image1.png"
+          alt="Entorno industrial de las formaciones creadas por artistas"
+          loading="lazy"
+        />
+        <div class="platform-container platform-program-content">
+          <p class="student-label">
+            04 / FORMATIONS <span class="student-demo">DEMO</span>
+          </p>
+          <h2 id="platform-formations-title">
+            FORMACIONES CREADAS POR ARTISTAS
+          </h2>
+          <p>
+            Aprende siguiendo recorridos completos creados por productores,
+            artistas y profesionales.
+          </p>
+          <article
+            class="student-content-card platform-formation-feature"
+            aria-labelledby="platform-featured-formation-title"
+          >
+            <div class="student-content-card__body">
+              <p class="student-label">
+                FEATURED / FORMATION <span class="student-demo">DEMO</span>
+              </p>
+              <p class="platform-program-genre">BERLIN TECHNO</p>
+              <h3 id="platform-featured-formation-title">
+                BEATMAKER &amp; MUSIC PRODUCER
+              </h3>
+              <p class="student-creator">by Gonzalo MD88</p>
+              <ul class="platform-program-benefits">
+                <li>
+                  <i class="bi bi-play" aria-hidden="true"></i> Tutoriales
+                </li>
+                <li>
+                  <i class="bi bi-camera-video" aria-hidden="true"></i>
+                  Masterclasses
+                </li>
+                <li>
+                  <i class="bi bi-file-earmark" aria-hidden="true"></i> Recursos
+                </li>
+                <li>
+                  <i class="bi bi-bar-chart" aria-hidden="true"></i> Progreso
+                </li>
+              </ul>
+              <button
+                class="student-button student-button--primary"
+                type="button"
+                disabled
+                title="DEMO"
+              >
+                VER FORMACIÓN
+                <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section
+        class="platform-band"
+        id="platform-become-creator"
+        aria-labelledby="platform-creator-cta-title"
+      >
+        <div class="platform-container platform-creator-cta">
+          <div>
+            <p class="student-label">05 / PARA ARTISTAS</p>
+            <h2 id="platform-creator-cta-title">
+              COMPARTE TU SONIDO.<br /><span>ENSEÑA TU MÉTODO.</span>
+            </h2>
+          </div>
+          <div>
+            <p>
+              Crea tu perfil, publica sounds, vende presets y MIDI, comparte
+              tutorials y masterclasses u ofrece clases privadas. Crea una
+              formación si quieres: tú decides qué publicar.
+            </p>
+            <button class="student-button" type="button" disabled title="DEMO">
+              CONVERTIRME EN CREATOR
+              <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section
+        class="platform-band platform-band--charcoal"
+        id="platform-pricing"
+        aria-labelledby="platform-pricing-title"
+      >
+        <div class="platform-container platform-membership">
+          <div>
+            <p class="student-label">
+              06 / MEMBERSHIP <span class="student-demo">DEMO</span>
+            </p>
+            <h2 id="platform-pricing-title">
+              MÁS POSIBILIDADES.<br />A TU RITMO.
+            </h2>
+            <ul>
+              <li>
+                <i class="bi bi-check2" aria-hidden="true"></i> Créditos
+                mensuales para Sounds y Learn
+              </li>
+              <li>
+                <i class="bi bi-check2" aria-hidden="true"></i> Acceso al
+                Marketplace
+              </li>
+              <li>
+                <i class="bi bi-check2" aria-hidden="true"></i> Conserva lo que
+                desbloqueas en Mi Biblioteca
+              </li>
+            </ul>
+            <p class="platform-membership-note">
+              Mi Biblioteca: Sounds, Packs, Presets, MIDI, Tutorials,
+              Masterclasses y Formations.
+            </p>
+          </div>
+          <div>
+            <p class="student-label">PLANES / CRÉDITOS MENSUALES</p>
+            <div class="platform-credit-tiers">
+              <div><strong>100</strong><span>CRÉDITOS</span></div>
+              <div><strong>300</strong><span>CRÉDITOS</span></div>
+              <div><strong>500</strong><span>CRÉDITOS</span></div>
+              <div><strong>800</strong><span>CRÉDITOS</span></div>
+            </div>
+            <p class="platform-membership-note">Precios por definir.</p>
+            <button
+              class="student-button student-button--primary"
+              type="button"
+              disabled
+              title="DEMO"
+            >
+              VER PLANES <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </section>
     </main>
-
-    <!-- ==================================================
-         PIE DE PÁGINA
-    =================================================== -->
-    <footer class="footer">
-      <div class="container footer__content">
-        <a class="footer__logo" href="#inicio" data-setting="site_name">
-          GONZALO MD88
-        </a>
-
-        <ul
-          class="footer__socials"
-          data-social-links="global"
-          data-social-display="text"
-          aria-label="Redes sociales y plataformas musicales"
-        ></ul>
-
-        <p class="footer__copyright">
-          © 2026 Gonzalo MD88. Todos los derechos reservados.
-        </p>
+    <footer class="platform-footer">
+      <div class="platform-container">
+        <div class="platform-footer-top">
+          <a class="platform-brand" href="#platform-home"
+            >GONZALO MD88<span>/</span></a
+          >
+          <p class="student-label">CREATE. LEARN. FIND YOUR SOUND.</p>
+          <nav aria-label="Navegación del footer">
+            <a href="#platform-sounds">Sounds</a
+            ><a href="#platform-learn">Learn</a
+            ><a href="#platform-creators">Creators</a
+            ><a href="#platform-pricing">Pricing</a
+            ><a href="./dashboard-login.html">Login</a
+            ><a href="./creator-gonzalo.html">Creator #001</a
+            ><a href="#platform-become-creator">Become a Creator</a>
+          </nav>
+        </div>
+        <div class="platform-footer-bottom">
+          <span>© 2026 GONZALO MD88</span><span class="student-demo">DEMO</span
+          ><span>SOUNDS / LEARNING / CREATORS</span>
+        </div>
       </div>
     </footer>
-
-    <!-- ==================================================
-     WHATSAPP FLOTTANT
-=================================================== -->
-    <a
-      class="whatsapp-float"
-      href="https://wa.me/41790000000?text=Hola%20Gonzalo%2C%20me%20gustaría%20recibir%20más%20información."
-      data-setting="whatsapp_url"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Contactar con Gonzalo MD88 por WhatsApp"
-    >
-      <i class="bi bi-whatsapp" aria-hidden="true"></i>
-
-      <span class="whatsapp-float__tooltip">WhatsApp</span>
-    </a>
-
-    <!-- Bibliothèque officielle Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Configuration Supabase -->
-    <script src="./js/supabase.js"></script>
-
-    <!-- JavaScript principal -->
-    <script src="./js/main.js"></script>
   </body>
 </html>
