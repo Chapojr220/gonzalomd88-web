@@ -7293,6 +7293,29 @@ async function loadDashboardProductFiles(productId) {
     });
 }
 
+async function deleteDashboardProductR2Object(key) {
+  const response = await fetch(
+    "https://music-storage-api.jevasquezlibera.workers.dev/object/delete",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        key,
+      }),
+    },
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    throw new Error(result.error || "No se pudo eliminar el archivo de R2.");
+  }
+
+  return result;
+}
+
 async function deleteDashboardProductFile(
   fileId,
   filePath,
@@ -7304,24 +7327,7 @@ async function deleteDashboardProductFile(
   }
 
   try {
-    const response = await fetch(
-      "https://music-storage-api.jevasquezlibera.workers.dev/object/delete",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          key: filePath,
-        }),
-      },
-    );
-
-    const result = await response.json();
-
-    if (!response.ok || !result.ok) {
-      throw new Error(result.error || "No se pudo eliminar el archivo de R2.");
-    }
+    await deleteDashboardProductR2Object(filePath);
 
     const { error: databaseError } = await window.supabaseClient
       .from("product_files")
@@ -7588,6 +7594,7 @@ async function createDashboardProductFile(
   const storagePath = await uploadDashboardProductFile(
     file,
     productSlug,
+    product.id,
     onProgress,
   );
 
@@ -7602,7 +7609,12 @@ async function createDashboardProductFile(
   });
 
   if (error) {
-    // TODO: Llamar a un endpoint R2 de eliminación/cleanup si COMPLETE ya terminó.
+    try {
+      await deleteDashboardProductR2Object(storagePath);
+    } catch (cleanupError) {
+      console.error("Cleanup R2 falló tras error de Supabase:", cleanupError);
+    }
+
     throw error;
   }
 }
@@ -7804,6 +7816,7 @@ async function parseDashboardProductFileUploadResponse(response, stage) {
 async function uploadDashboardProductFile(
   file,
   productSlug,
+  productId,
   onProgress = null,
 ) {
   if (!file) {
@@ -7812,6 +7825,10 @@ async function uploadDashboardProductFile(
 
   if (file.size <= 0) {
     throw new Error("El archivo del producto está vacío.");
+  }
+
+  if (!productId) {
+    throw new Error("El producto es obligatorio para subir el archivo.");
   }
 
   const extension = file.name.split(".").pop()?.toLowerCase() || "bin";
@@ -7836,6 +7853,7 @@ async function uploadDashboardProductFile(
     body: JSON.stringify({
       fileName,
       contentType,
+      productId,
     }),
   });
   const createData = await parseDashboardProductFileUploadResponse(
@@ -7847,67 +7865,89 @@ async function uploadDashboardProductFile(
     throw new Error("CREATE multipart: faltan key o uploadId.");
   }
 
-  const parts = [];
-  const totalParts = Math.ceil(file.size / chunkSize);
+  try {
+    const parts = [];
+    const totalParts = Math.ceil(file.size / chunkSize);
 
-  for (let partNumber = 1; partNumber <= totalParts; partNumber += 1) {
-    const start = (partNumber - 1) * chunkSize;
-    const end = Math.min(start + chunkSize, file.size);
-    const chunk = file.slice(start, end);
-    const query = new URLSearchParams({
-      key: createData.key,
-      uploadId: createData.uploadId,
-      partNumber: String(partNumber),
-    });
-    const partResponse = await fetch(
-      `${workerBaseUrl}/multipart/upload-part?${query.toString()}`,
+    for (let partNumber = 1; partNumber <= totalParts; partNumber += 1) {
+      const start = (partNumber - 1) * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+      const query = new URLSearchParams({
+        key: createData.key,
+        uploadId: createData.uploadId,
+        partNumber: String(partNumber),
+      });
+      const partResponse = await fetch(
+        `${workerBaseUrl}/multipart/upload-part?${query.toString()}`,
+        {
+          method: "PUT",
+          body: chunk,
+        },
+      );
+      const partData = await parseDashboardProductFileUploadResponse(
+        partResponse,
+        `UPLOAD PART ${partNumber}/${totalParts} falló`,
+      );
+
+      if (!partData.etag || Number(partData.partNumber) !== partNumber) {
+        throw new Error(
+          `UPLOAD PART ${partNumber}/${totalParts}: respuesta incompleta.`,
+        );
+      }
+
+      parts.push({
+        partNumber,
+        etag: partData.etag,
+      });
+
+      if (typeof onProgress === "function") {
+        onProgress(Math.round((end / file.size) * 100));
+      }
+    }
+
+    const completeResponse = await fetch(
+      `${workerBaseUrl}/multipart/complete`,
       {
-        method: "PUT",
-        body: chunk,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: createData.key,
+          uploadId: createData.uploadId,
+          parts,
+        }),
       },
     );
-    const partData = await parseDashboardProductFileUploadResponse(
-      partResponse,
-      `UPLOAD PART ${partNumber}/${totalParts} falló`,
+    const completeData = await parseDashboardProductFileUploadResponse(
+      completeResponse,
+      "COMPLETE multipart falló",
     );
 
-    if (!partData.etag || Number(partData.partNumber) !== partNumber) {
-      throw new Error(
-        `UPLOAD PART ${partNumber}/${totalParts}: respuesta incompleta.`,
-      );
+    if (!completeData.key) {
+      throw new Error("COMPLETE multipart: falta la key final de R2.");
     }
 
-    parts.push({
-      partNumber,
-      etag: partData.etag,
-    });
-
-    if (typeof onProgress === "function") {
-      onProgress(Math.round((end / file.size) * 100));
+    return completeData.key;
+  } catch (error) {
+    try {
+      await fetch(`${workerBaseUrl}/multipart/abort`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: createData.key,
+          uploadId: createData.uploadId,
+        }),
+      });
+    } catch (abortError) {
+      console.error("ABORT multipart falló:", abortError);
     }
+
+    throw error;
   }
-
-  const completeResponse = await fetch(`${workerBaseUrl}/multipart/complete`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      key: createData.key,
-      uploadId: createData.uploadId,
-      parts,
-    }),
-  });
-  const completeData = await parseDashboardProductFileUploadResponse(
-    completeResponse,
-    "COMPLETE multipart falló",
-  );
-
-  if (!completeData.key) {
-    throw new Error("COMPLETE multipart: falta la key final de R2.");
-  }
-
-  return completeData.key;
 }
 
 // =========================================================

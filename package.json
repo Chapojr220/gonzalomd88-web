@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Chapojr220/gonzalomd88-web/issues"
   },
-  "homepage": "https://github.com/Chapojr220/gonzalomd88-web#readme"
+  "homepage": "https://github.com/Chapojr220/gonzalomd88-web#readme",
+  "devDependencies": {
+    "wrangler": "^4.147.0"
+  }
 }

@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+
+  "name": "music-storage-api",
+  "main": "worker/worker.js",
+  "compatibility_date": "2026-10-04",
+  "keep_vars": true,
+
+  "r2_buckets": [
+    {
+      "binding": "PRODUCT_FILES",
+      "bucket_name": "gonzalomd88",
+    },
+  ],
+}
