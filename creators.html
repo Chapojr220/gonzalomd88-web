@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="Descubre productores, artistas y profesionales. Explora su contenido, aprende de ellos o trabaja directamente con ellos."
+    />
+    <title>Creators | Gonzalo MD88</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./creators.css" />
+  </head>
+  <body class="student-page platform-page creators-page">
+    <a class="student-skip" href="#creators-main">Saltar al contenido</a>
+    <header class="platform-header creators-header">
+      <div class="platform-container platform-header-inner">
+        <a class="platform-brand" href="./index.html"
+          >GONZALO MD88<span>/</span></a
+        >
+        <nav class="platform-nav" aria-label="Navegación principal">
+          <a href="./sounds.html">SOUNDS</a>
+          <a href="./learn.html">LEARN</a>
+          <a
+            class="creators-nav-active"
+            href="./creators.html"
+            aria-current="page"
+            >CREATORS</a
+          >
+          <a href="./index.html#platform-pricing">PRICING</a>
+        </nav>
+        <div class="platform-header-actions">
+          <a class="platform-login" href="./dashboard-login.html">LOGIN</a>
+          <a
+            class="student-button student-button--primary platform-explore-button"
+            href="#creators-results"
+            >EXPLORAR <i class="bi bi-arrow-down" aria-hidden="true"></i
+          ></a>
+        </div>
+        <details class="platform-mobile-nav">
+          <summary aria-label="Abrir navegación">
+            <i class="bi bi-list" aria-hidden="true"></i>
+          </summary>
+          <nav aria-label="Navegación móvil">
+            <a href="./sounds.html">SOUNDS</a>
+            <a href="./learn.html">LEARN</a>
+            <a
+              class="creators-nav-active"
+              href="./creators.html"
+              aria-current="page"
+              >CREATORS</a
+            >
+            <a href="./index.html#platform-pricing">PRICING</a>
+            <a href="./dashboard-login.html">LOGIN</a>
+            <a
+              class="student-button student-button--primary"
+              href="#creators-results"
+              >EXPLORAR <i class="bi bi-arrow-down" aria-hidden="true"></i
+            ></a>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main id="creators-main" class="creators-container">
+      <section class="creators-intro" aria-labelledby="creators-title">
+        <div class="creators-intro-top">
+          <p class="student-label">
+            CREATORS / 03 <span class="student-demo">DEMO</span>
+          </p>
+          <span class="creators-intro-index">PEOPLE / SOUND / PRACTICE</span>
+        </div>
+        <h1 id="creators-title">
+          ENCUENTRA A QUIEN ESTÁ DETRÁS DEL SONIDO<span>.</span>
+        </h1>
+        <p>
+          Descubre productores, artistas y profesionales. Explora su contenido,
+          aprende de ellos o trabaja directamente con ellos.
+        </p>
+        <form
+          class="platform-search creators-search"
+          role="search"
+          aria-label="Buscar creators"
+        >
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <label class="platform-sr-only" for="creators-search-input"
+            >Buscar Creator, género o especialidad</label
+          >
+          <input
+            id="creators-search-input"
+            type="search"
+            placeholder="Buscar Creator, género, especialidad..."
+            autocomplete="off"
+          />
+          <span class="student-demo">DEMO</span>
+          <button
+            type="submit"
+            disabled
+            aria-label="Buscar, función demo"
+            title="DEMO"
+          >
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+      </section>
+
+      <section
+        class="creators-discovery-chips"
+        aria-labelledby="creators-topics-title"
+      >
+        <div class="creators-chips-heading">
+          <h2 id="creators-topics-title" class="student-label">
+            DISCOVER BY SOUND
+          </h2>
+          <span class="student-demo">DEMO</span>
+        </div>
+        <fieldset class="platform-filters creators-topic-filters">
+          <legend class="platform-sr-only">
+            Temas de descubrimiento, demo
+          </legend>
+          <label><input type="checkbox" /><span>Techno</span></label>
+          <label><input type="checkbox" /><span>House</span></label>
+          <label><input type="checkbox" /><span>Afro House</span></label>
+          <label><input type="checkbox" /><span>Tech House</span></label>
+          <label><input type="checkbox" /><span>Trap</span></label>
+          <label><input type="checkbox" /><span>Reggaeton</span></label>
+          <label><input type="checkbox" /><span>Hip-Hop</span></label>
+          <label><input type="checkbox" /><span>Mixing</span></label>
+          <label><input type="checkbox" /><span>Mastering</span></label>
+          <label><input type="checkbox" /><span>Sound Design</span></label>
+          <label><input type="checkbox" /><span>Production</span></label>
+          <label><input type="checkbox" /><span>Vocals</span></label>
+        </fieldset>
+      </section>
+
+      <div class="creators-discovery-layout">
+        <aside class="creators-filter-sidebar" aria-label="Filtros de creators">
+          <div class="creators-filter-panel">
+            <input
+              class="creators-filter-toggle-state"
+              id="creators-filter-toggle"
+              type="checkbox"
+              aria-controls="creators-filter-body"
+            />
+            <label class="creators-filter-toggle" for="creators-filter-toggle">
+              <span>FILTERS</span>
+              <span>04 <i class="bi bi-plus" aria-hidden="true"></i></span>
+            </label>
+            <div class="creators-filter-body" id="creators-filter-body">
+              <div class="creators-filter-heading">
+                <span class="student-label">REFINE YOUR SEARCH</span
+                ><span class="student-demo">DEMO</span>
+              </div>
+              <fieldset class="creators-filter-group">
+                <legend>SPECIALTY</legend>
+                <label><input type="checkbox" /><span>Producer</span></label>
+                <label><input type="checkbox" /><span>Artist</span></label>
+                <label><input type="checkbox" /><span>Beatmaker</span></label>
+                <label
+                  ><input type="checkbox" /><span>Sound Designer</span></label
+                >
+                <label
+                  ><input type="checkbox" /><span>Mixing Engineer</span></label
+                >
+                <label
+                  ><input type="checkbox" /><span
+                    >Mastering Engineer</span
+                  ></label
+                >
+                <label><input type="checkbox" /><span>Educator</span></label>
+              </fieldset>
+              <fieldset class="creators-filter-group creators-filter-two-col">
+                <legend>GENRE</legend>
+                <label><input type="checkbox" /><span>Techno</span></label>
+                <label><input type="checkbox" /><span>House</span></label>
+                <label><input type="checkbox" /><span>Afro House</span></label>
+                <label><input type="checkbox" /><span>Tech House</span></label>
+                <label><input type="checkbox" /><span>Trap</span></label>
+                <label><input type="checkbox" /><span>Reggaeton</span></label>
+                <label><input type="checkbox" /><span>Hip-Hop</span></label>
+              </fieldset>
+              <fieldset class="creators-filter-group creators-filter-two-col">
+                <legend>OFFERS</legend>
+                <label><input type="checkbox" /><span>Sounds</span></label>
+                <label><input type="checkbox" /><span>Packs</span></label>
+                <label><input type="checkbox" /><span>Presets</span></label>
+                <label><input type="checkbox" /><span>MIDI</span></label>
+                <label><input type="checkbox" /><span>Tutorials</span></label>
+                <label
+                  ><input type="checkbox" /><span>Masterclasses</span></label
+                >
+                <label><input type="checkbox" /><span>Formations</span></label>
+                <label
+                  ><input type="checkbox" /><span>Private Lessons</span></label
+                >
+              </fieldset>
+              <fieldset class="creators-filter-group creators-filter-two-col">
+                <legend>LANGUAGE</legend>
+                <label><input type="checkbox" /><span>Español</span></label>
+                <label><input type="checkbox" /><span>English</span></label>
+                <label><input type="checkbox" /><span>Français</span></label>
+              </fieldset>
+              <p class="creators-filter-note">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>Filtros
+                visuales · DEMO
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <section
+          class="creators-results"
+          id="creators-results"
+          aria-labelledby="creators-results-title"
+        >
+          <header class="creators-results-header">
+            <div>
+              <p class="student-label">INDEPENDENT CREATORS / GLOBAL</p>
+              <h2 id="creators-results-title">08 <span>CREATORS</span></h2>
+            </div>
+            <label class="creators-sort-label" for="creators-sort"
+              >SORT
+              <select
+                id="creators-sort"
+                disabled
+                aria-label="Ordenar creators, demo"
+              >
+                <option>RELEVANCE</option>
+                <option>NEWEST</option>
+              </select></label
+            >
+          </header>
+          <div class="creators-card-grid">
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Industrial/image5.png"
+                  alt="Espacio creativo de Gonzalo MD88"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 001</span
+                ><span class="creators-card-location">BERLIN · DE</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>GONZALO MD88</h3>
+                    <p>BERLIN TECHNO / PRODUCER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">
+                  TECHNO · PRODUCTION · SOUND DESIGN
+                </p>
+                <p class="creators-card-language">ESPAÑOL · ENGLISH</p>
+                <div class="creators-offer-list">
+                  <span>SOUNDS</span><span>TUTORIALS</span
+                  ><span>MASTERCLASSES</span><span>FORMATION</span
+                  ><span>PRIVATE LESSONS</span>
+                </div>
+                <a
+                  class="student-button student-button--small"
+                  href="./creator-gonzalo.html"
+                  >VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+                ></a>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Industrial/image2.png"
+                  alt="Visual creativo para Creator Demo 002"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 002</span
+                ><span class="creators-card-location">LISBOA · PT</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 002</h3>
+                    <p>AFRO HOUSE / PRODUCER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">
+                  AFRO HOUSE · RHYTHM · PERCUSSION
+                </p>
+                <p class="creators-card-language">ENGLISH · PORTUGUÊS</p>
+                <div class="creators-offer-list">
+                  <span>SOUNDS</span><span>PACKS</span><span>TUTORIALS</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Products/pigments-atmospheres.png"
+                  alt="Visual creativo para Creator Demo 003"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 003</span
+                ><span class="creators-card-location">LONDON · UK</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 003</h3>
+                    <p>MIXING ENGINEER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">
+                  MIXING · MASTERING · ELECTRONIC
+                </p>
+                <p class="creators-card-language">ENGLISH</p>
+                <div class="creators-offer-list">
+                  <span>TUTORIALS</span><span>MASTERCLASSES</span
+                  ><span>PRIVATE LESSONS</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Industrial/image4.png"
+                  alt="Visual creativo para Creator Demo 004"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 004</span
+                ><span class="creators-card-location">ATLANTA · US</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 004</h3>
+                    <p>TRAP / BEATMAKER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">TRAP · HIP-HOP · BEATMAKING</p>
+                <p class="creators-card-language">ENGLISH</p>
+                <div class="creators-offer-list">
+                  <span>SOUNDS</span><span>PRESETS</span><span>MIDI</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Industrial/image3.png"
+                  alt="Visual creativo para Creator Demo 005"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 005</span
+                ><span class="creators-card-location">ROTTERDAM · NL</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 005</h3>
+                    <p>TECH HOUSE / PRODUCER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">TECH HOUSE · GROOVE · CLUB</p>
+                <p class="creators-card-language">ENGLISH · NEDERLANDS</p>
+                <div class="creators-offer-list">
+                  <span>SOUNDS</span><span>PACKS</span
+                  ><span>MASTERCLASSES</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Industrial/image6.png"
+                  alt="Visual creativo para Creator Demo 006"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 006</span
+                ><span class="creators-card-location">PARIS · FR</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 006</h3>
+                    <p>MASTERING ENGINEER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">
+                  MASTERING · ANALOG · ELECTRONIC
+                </p>
+                <p class="creators-card-language">FRANÇAIS · ENGLISH</p>
+                <div class="creators-offer-list">
+                  <span>MASTERCLASSES</span><span>PRIVATE LESSONS</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Products/hypnotic-elements.png"
+                  alt="Visual creativo para Creator Demo 007"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 007</span
+                ><span class="creators-card-location">MEDELLÍN · CO</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 007</h3>
+                    <p>REGGAETON / PRODUCER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">REGGAETON · LATIN · PRODUCTION</p>
+                <p class="creators-card-language">ESPAÑOL · ENGLISH</p>
+                <div class="creators-offer-list">
+                  <span>SOUNDS</span><span>MIDI</span><span>TUTORIALS</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+            <article class="creators-card">
+              <div class="creators-card-image">
+                <img
+                  src="./images/Products/serum-dark-textures.png"
+                  alt="Visual creativo para Creator Demo 008"
+                  loading="lazy"
+                /><span class="creators-card-id">CREATOR / 008</span
+                ><span class="creators-card-location">BERLIN · DE</span>
+              </div>
+              <div class="creators-card-body">
+                <div class="creators-card-title">
+                  <div>
+                    <h3>CREATOR DEMO 008</h3>
+                    <p>SOUND DESIGNER</p>
+                  </div>
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </div>
+                <p class="creators-card-tags">
+                  SOUND DESIGN · SYNTHS · TEXTURES
+                </p>
+                <p class="creators-card-language">ENGLISH · DEUTSCH</p>
+                <div class="creators-offer-list">
+                  <span>PRESETS</span><span>SOUNDS</span><span>TUTORIALS</span>
+                </div>
+                <button
+                  class="student-button student-button--small"
+                  type="button"
+                  disabled
+                  title="DEMO"
+                >
+                  VER PERFIL
+                  <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section
+        class="creators-featured"
+        aria-labelledby="creators-featured-title"
+      >
+        <div class="creators-featured-image">
+          <img
+            src="./images/Industrial/image5.png"
+            alt="Estudio y entorno creativo de Gonzalo MD88"
+            loading="lazy"
+          /><span>FEATURED / 001</span>
+        </div>
+        <div class="creators-featured-content">
+          <p class="student-label">
+            CREATOR DESTACADO / 001 <span class="student-demo">DEMO</span>
+          </p>
+          <h2 id="creators-featured-title">GONZALO MD88</h2>
+          <p class="creators-featured-specialty">BERLIN TECHNO / PRODUCER</p>
+          <p class="creators-featured-copy">
+            Productor y artista de Berlin. Sounds, procesos y herramientas para
+            explorar una identidad sonora propia.
+          </p>
+          <div class="creators-featured-offers">
+            <span>SOUNDS</span><span>TUTORIALS</span><span>MASTERCLASSES</span
+            ><span>FORMATION</span><span>PRIVATE LESSONS</span>
+          </div>
+          <a
+            class="student-button student-button--small"
+            href="./creator-gonzalo.html"
+            >EXPLORAR PERFIL
+            <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+          ></a>
+        </div>
+      </section>
+
+      <section
+        class="creators-offer-section"
+        aria-labelledby="creators-offer-title"
+      >
+        <div class="creators-section-heading">
+          <div>
+            <p class="student-label">CREATOR ECOSYSTEM / 01</p>
+            <h2 id="creators-offer-title">
+              UN CREATOR. MUCHAS FORMAS DE COMPARTIR.
+            </h2>
+          </div>
+          <span class="student-demo">DEMO</span>
+        </div>
+        <div class="creators-offer-grid">
+          <article>
+            <span>01</span><i class="bi bi-soundwave" aria-hidden="true"></i>
+            <h3>SOUNDS</h3>
+            <p>Samples, loops y packs.</p>
+          </article>
+          <article>
+            <span>02</span><i class="bi bi-sliders" aria-hidden="true"></i>
+            <h3>TOOLS</h3>
+            <p>Presets y MIDI.</p>
+          </article>
+          <article>
+            <span>03</span><i class="bi bi-play-btn" aria-hidden="true"></i>
+            <h3>LEARN</h3>
+            <p>Tutorials y Masterclasses.</p>
+          </article>
+          <article>
+            <span>04</span
+            ><i class="bi bi-collection-play" aria-hidden="true"></i>
+            <h3>FORMATIONS</h3>
+            <p>Recorridos completos, opcionales.</p>
+          </article>
+          <article>
+            <span>05</span><i class="bi bi-camera-video" aria-hidden="true"></i>
+            <h3>PRIVATE LESSONS</h3>
+            <p>Sesiones individuales.</p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="creators-member-flow"
+        aria-label="Recorrido de un Member por el contenido de un Creator"
+      >
+        <div>
+          <p class="student-label">MEMBER / CREATOR</p>
+          <h2>DEL DESCUBRIMIENTO A TU BIBLIOTECA.</h2>
+        </div>
+        <ol>
+          <li><span>01</span>DESCUBRE</li>
+          <li><span>02</span>ABRE PERFIL</li>
+          <li><span>03</span>EXPLORA SOUNDS / LEARN</li>
+          <li><span>04</span>ADQUIERE</li>
+          <li><span>05</span>MI BIBLIOTECA</li>
+          <li><span>06</span>PRIVATE LESSON</li>
+        </ol>
+      </section>
+
+      <section class="creators-join" aria-labelledby="creators-join-title">
+        <img
+          src="./images/Industrial/image4.png"
+          alt="Entorno de producción musical para creators"
+          loading="lazy"
+        />
+        <div>
+          <p class="student-label">PARA ARTISTAS / PRODUCERS / EDUCATORS</p>
+          <h2 id="creators-join-title">
+            COMPARTE LO QUE SABES.<br /><span>CONSTRUYE TU ESPACIO.</span>
+          </h2>
+          <p>
+            Publica sonidos, herramientas o contenido educativo. Ofrece clases
+            privadas. Crea una formación completa solamente si lo necesitas.
+          </p>
+          <button
+            class="student-button student-button--primary"
+            type="button"
+            disabled
+            title="DEMO"
+          >
+            CONVERTIRME EN CREATOR
+            <i class="bi bi-arrow-up-right" aria-hidden="true"></i></button
+          ><span class="student-demo">DEMO / PRÓXIMAMENTE</span>
+        </div>
+      </section>
+
+      <footer class="creators-footer">
+        <span>GONZALO MD88 / CREATORS DISCOVERY</span
+        ><span class="student-demo">INDEPENDENT CREATORS · DEMO</span>
+      </footer>
+    </main>
+  </body>
+</html>

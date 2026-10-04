@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="Explora sounds, loops y one-shots creados por productores y artistas."
+    />
+    <title>Sounds Marketplace | Gonzalo MD88</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/sounds.css" />
+  </head>
+  <body class="student-page platform-page sounds-page">
+    <a class="student-skip" href="#sounds-main">Saltar al contenido</a>
+    <header class="platform-header sounds-header">
+      <div class="platform-container platform-header-inner">
+        <a class="platform-brand" href="./index.html"
+          >GONZALO MD88<span>/</span></a
+        >
+        <nav class="platform-nav" aria-label="Navegación principal">
+          <a class="sounds-nav-active" href="./sounds.html" aria-current="page"
+            >SOUNDS</a
+          >
+          <a href="./index.html#platform-learn">LEARN</a>
+          <a href="./index.html#platform-creators">CREATORS</a>
+          <a href="./index.html#platform-pricing">PRICING</a>
+        </nav>
+        <div class="platform-header-actions">
+          <a class="platform-login" href="./dashboard-login.html">LOGIN</a>
+          <span class="sounds-member-context"
+            ><i class="bi bi-lightning-charge" aria-hidden="true"></i> 420
+            <small>CRÉDITOS · DEMO</small></span
+          >
+          <a
+            class="student-button student-button--primary platform-explore-button"
+            href="#sounds-results"
+            >EXPLORAR <i class="bi bi-arrow-down" aria-hidden="true"></i
+          ></a>
+        </div>
+        <details class="platform-mobile-nav">
+          <summary aria-label="Abrir navegación">
+            <i class="bi bi-list" aria-hidden="true"></i>
+          </summary>
+          <nav aria-label="Navegación móvil">
+            <a
+              class="sounds-nav-active"
+              href="./sounds.html"
+              aria-current="page"
+              >SOUNDS</a
+            >
+            <a href="./index.html#platform-learn">LEARN</a>
+            <a href="./index.html#platform-creators">CREATORS</a>
+            <a href="./index.html#platform-pricing">PRICING</a>
+            <a href="./dashboard-login.html">LOGIN</a>
+            <a
+              class="student-button student-button--primary"
+              href="#sounds-results"
+              >EXPLORAR <i class="bi bi-arrow-down" aria-hidden="true"></i
+            ></a>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main id="sounds-main" class="sounds-container">
+      <section class="sounds-intro" aria-labelledby="sounds-title">
+        <div class="sounds-intro-heading">
+          <p class="student-label">
+            SOUNDS / 01 <span class="student-demo">DEMO</span>
+          </p>
+          <div class="sounds-intro-meta">
+            <span>CREATOR MARKETPLACE</span><span>BERLIN / GLOBAL</span>
+          </div>
+        </div>
+        <h1 id="sounds-title">ENCUENTRA TU SONIDO<span>.</span></h1>
+        <p class="sounds-intro-description">
+          Explora sonidos creados por productores y artistas de todo el mundo.
+        </p>
+        <form
+          class="platform-search sounds-search"
+          role="search"
+          aria-label="Buscar sounds"
+        >
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <label class="platform-sr-only" for="sounds-search-input"
+            >Buscar sounds por nombre, estilo o creator</label
+          >
+          <input
+            id="sounds-search-input"
+            type="search"
+            placeholder="Buscar kicks, vocals, percussion, loops..."
+            autocomplete="off"
+          />
+          <span class="student-demo">DEMO</span>
+          <button
+            type="submit"
+            disabled
+            aria-label="Buscar, función demo"
+            title="DEMO"
+          >
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+        <div class="sounds-trending">
+          <p class="student-label">TRENDING <span>/</span> CATEGORIES</p>
+          <fieldset class="platform-filters sounds-category-filters">
+            <legend class="platform-sr-only">
+              Categorías populares, selección visual demo
+            </legend>
+            <label><input type="checkbox" checked /><span>Techno</span></label>
+            <label><input type="checkbox" /><span>House</span></label>
+            <label><input type="checkbox" /><span>Afro House</span></label>
+            <label><input type="checkbox" /><span>Tech House</span></label>
+            <label><input type="checkbox" /><span>Trap</span></label>
+            <label><input type="checkbox" /><span>Reggaeton</span></label>
+            <label><input type="checkbox" /><span>Drums</span></label>
+            <label><input type="checkbox" /><span>Kicks</span></label>
+            <label><input type="checkbox" /><span>Percussion</span></label>
+            <label><input type="checkbox" /><span>Bass</span></label>
+            <label><input type="checkbox" /><span>Vocals</span></label>
+            <label><input type="checkbox" /><span>Synths</span></label>
+            <label><input type="checkbox" /><span>FX</span></label>
+          </fieldset>
+        </div>
+      </section>
+
+      <div class="sounds-market-layout">
+        <aside class="sounds-filter-sidebar" aria-label="Filtros de sounds">
+          <details class="sounds-filter-panel">
+            <summary>
+              <span>FILTERS</span
+              ><span class="sounds-filter-count"
+                >06 <i class="bi bi-plus" aria-hidden="true"></i
+              ></span>
+            </summary>
+            <div class="sounds-filter-body">
+              <div class="sounds-filter-title">
+                <span class="student-label">REFINE YOUR SEARCH</span
+                ><span class="student-demo">DEMO</span>
+              </div>
+              <fieldset class="sounds-filter-group">
+                <legend>TYPE</legend>
+                <label
+                  ><input type="checkbox" checked /><span>One Shot</span></label
+                >
+                <label><input type="checkbox" /><span>Loop</span></label>
+              </fieldset>
+              <fieldset class="sounds-filter-group sounds-filter-instruments">
+                <legend>INSTRUMENT</legend>
+                <label><input type="checkbox" /><span>Kick</span></label>
+                <label><input type="checkbox" /><span>Snare</span></label>
+                <label><input type="checkbox" /><span>Clap</span></label>
+                <label><input type="checkbox" /><span>Hi-Hat</span></label>
+                <label><input type="checkbox" /><span>Percussion</span></label>
+                <label><input type="checkbox" /><span>Bass</span></label>
+                <label><input type="checkbox" /><span>Synth</span></label>
+                <label><input type="checkbox" /><span>Vocal</span></label>
+                <label><input type="checkbox" /><span>FX</span></label>
+                <label><input type="checkbox" /><span>Texture</span></label>
+              </fieldset>
+              <fieldset class="sounds-filter-group sounds-filter-genres">
+                <legend>GENRE</legend>
+                <label
+                  ><input type="checkbox" checked /><span>Techno</span></label
+                >
+                <label><input type="checkbox" /><span>House</span></label>
+                <label><input type="checkbox" /><span>Afro House</span></label>
+                <label><input type="checkbox" /><span>Tech House</span></label>
+                <label><input type="checkbox" /><span>Trap</span></label>
+                <label><input type="checkbox" /><span>Reggaeton</span></label>
+              </fieldset>
+              <fieldset class="sounds-filter-group">
+                <legend>BPM</legend>
+                <div class="sounds-range-inputs">
+                  <label
+                    ><span class="platform-sr-only">BPM mínimo</span
+                    ><input type="number" value="80" min="0" max="300" /></label
+                  ><span>—</span
+                  ><label
+                    ><span class="platform-sr-only">BPM máximo</span
+                    ><input type="number" value="150" min="0" max="300"
+                  /></label>
+                </div>
+              </fieldset>
+              <fieldset class="sounds-filter-group">
+                <legend>KEY</legend>
+                <div class="sounds-key-grid">
+                  <label><input type="checkbox" /><span>C</span></label
+                  ><label><input type="checkbox" /><span>C#</span></label>
+                  <label><input type="checkbox" /><span>D</span></label
+                  ><label><input type="checkbox" /><span>D#</span></label>
+                  <label><input type="checkbox" /><span>E</span></label
+                  ><label><input type="checkbox" /><span>F</span></label>
+                  <label><input type="checkbox" /><span>F#</span></label
+                  ><label><input type="checkbox" /><span>G</span></label>
+                  <label><input type="checkbox" /><span>G#</span></label
+                  ><label><input type="checkbox" /><span>A</span></label>
+                  <label><input type="checkbox" /><span>A#</span></label
+                  ><label><input type="checkbox" /><span>B</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="sounds-filter-group sounds-filter-scales">
+                <legend>SCALE</legend>
+                <label><input type="checkbox" /><span>Major</span></label>
+                <label><input type="checkbox" /><span>Minor</span></label>
+              </fieldset>
+              <div class="sounds-filter-group sounds-creator-filter">
+                <label for="sounds-creator-search">CREATOR</label>
+                <div>
+                  <i class="bi bi-search" aria-hidden="true"></i
+                  ><input
+                    id="sounds-creator-search"
+                    type="search"
+                    placeholder="Buscar creator..."
+                  />
+                </div>
+              </div>
+              <p class="sounds-filter-note">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>Filtros
+                visuales · DEMO
+              </p>
+            </div>
+          </details>
+        </aside>
+
+        <section
+          class="sounds-results"
+          id="sounds-results"
+          aria-labelledby="sounds-results-title"
+        >
+          <header class="sounds-results-header">
+            <div>
+              <p class="student-label">SOUND LIBRARY / GLOBAL</p>
+              <h2 id="sounds-results-title">12,482 <span>SOUNDS</span></h2>
+            </div>
+            <div class="sounds-results-tools">
+              <span class="sounds-member-context sounds-member-context--results"
+                ><i class="bi bi-lightning-charge" aria-hidden="true"></i> 420
+                <small>CRÉDITOS · DEMO</small></span
+              >
+              <label for="sounds-sort">SORT BY</label>
+              <select
+                id="sounds-sort"
+                disabled
+                aria-label="Ordenar resultados, demo"
+              >
+                <option>RELEVANCE</option>
+                <option>NEWEST</option>
+                <option>POPULAR</option>
+              </select>
+            </div>
+          </header>
+
+          <div class="sounds-list-heading" aria-hidden="true">
+            <span>PLAY</span><span>SOUND / CREATOR</span><span>WAVEFORM</span
+            ><span>KEY / BPM / TIME</span><span>CREDITS</span><span>FAV</span
+            ><span>ADD</span>
+          </div>
+          <div class="sounds-result-list">
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar BERLIN_KICK_042.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>BERLIN_KICK_042.wav</h3>
+                <p>Gonzalo MD88 <span>KICK · TECHNO · ONE SHOT</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--one sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>C</span
+                ><span><small>BPM</small>138</span
+                ><span><small>TIME</small>00:02</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir BERLIN_KICK_042.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir BERLIN_KICK_042.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Techno_Rumble_018.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Techno_Rumble_018.wav</h3>
+                <p>CREATOR DEMO 014 <span>BASS · TECHNO · ONE SHOT</span></p>
+                <span class="sounds-pack-context"
+                  >FROM PACK / INDUSTRIAL PRESSURE</span
+                >
+              </div>
+              <div
+                class="platform-wave platform-wave--two sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>F#</span
+                ><span><small>BPM</small>134</span
+                ><span><small>TIME</small>00:03</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>2
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Techno_Rumble_018.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Techno_Rumble_018.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Warehouse_Hat_07.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Warehouse_Hat_07.wav</h3>
+                <p>CREATOR DEMO 009 <span>HI-HAT · TECHNO · ONE SHOT</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--three sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>A</span
+                ><span><small>BPM</small>140</span
+                ><span><small>TIME</small>00:01</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Warehouse_Hat_07.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Warehouse_Hat_07.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Afro_Perc_Loop_124.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Afro_Perc_Loop_124.wav</h3>
+                <p>
+                  CREATOR DEMO 021 <span>PERCUSSION · AFRO HOUSE · LOOP</span>
+                </p>
+              </div>
+              <div
+                class="platform-wave platform-wave--two sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>Dm</span
+                ><span><small>BPM</small>124</span
+                ><span><small>TIME</small>00:08</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>3
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Afro_Perc_Loop_124.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Afro_Perc_Loop_124.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+
+            <section
+              class="sounds-related-packs"
+              aria-labelledby="sounds-packs-title"
+            >
+              <div class="sounds-packs-heading">
+                <div>
+                  <p class="student-label">SOUNDS / IN CONTEXT</p>
+                  <h3 id="sounds-packs-title">PACKS RELACIONADOS</h3>
+                </div>
+                <span class="student-demo">DEMO</span>
+              </div>
+              <div class="sounds-pack-grid">
+                <article class="sounds-pack-card">
+                  <img
+                    src="./images/Products/industrial-pressure.png"
+                    alt="Artwork Industrial Pressure"
+                    loading="lazy"
+                  />
+                  <div>
+                    <span class="student-label">24 SOUNDS / PACK 01</span>
+                    <h4>Industrial Pressure</h4>
+                    <p>CREATOR DEMO 014</p>
+                    <span class="sounds-pack-price"
+                      ><i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                      24 CRÉDITOS</span
+                    >
+                  </div>
+                  <i
+                    class="bi bi-arrow-up-right sounds-pack-arrow"
+                    aria-hidden="true"
+                  ></i>
+                </article>
+                <article class="sounds-pack-card">
+                  <img
+                    src="./images/Products/hypnotic-elements.png"
+                    alt="Artwork Berlin Warehouse Drums"
+                    loading="lazy"
+                  />
+                  <div>
+                    <span class="student-label">32 SOUNDS / PACK 02</span>
+                    <h4>Berlin Warehouse Drums</h4>
+                    <p>GONZALO MD88</p>
+                    <span class="sounds-pack-price"
+                      ><i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                      30 CRÉDITOS</span
+                    >
+                  </div>
+                  <i
+                    class="bi bi-arrow-up-right sounds-pack-arrow"
+                    aria-hidden="true"
+                  ></i>
+                </article>
+                <article class="sounds-pack-card">
+                  <img
+                    src="./images/Products/percussion-enhancer.png"
+                    alt="Artwork Hypnotic Percussion"
+                    loading="lazy"
+                  />
+                  <div>
+                    <span class="student-label">18 SOUNDS / PACK 03</span>
+                    <h4>Hypnotic Percussion</h4>
+                    <p>CREATOR DEMO 021</p>
+                    <span class="sounds-pack-price"
+                      ><i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                      18 CRÉDITOS</span
+                    >
+                  </div>
+                  <i
+                    class="bi bi-arrow-up-right sounds-pack-arrow"
+                    aria-hidden="true"
+                  ></i>
+                </article>
+              </div>
+            </section>
+
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Dark_Vocal_Texture_03.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Dark_Vocal_Texture_03.wav</h3>
+                <p>CREATOR DEMO 006 <span>VOCAL · TECHNO · TEXTURE</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--one sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>Fm</span
+                ><span><small>BPM</small>128</span
+                ><span><small>TIME</small>00:06</span>
+              </p>
+              <p class="sounds-owned">
+                <i class="bi bi-check2" aria-hidden="true"></i> OWNED
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Dark_Vocal_Texture_03.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock sounds-unlock--owned"
+                type="button"
+                disabled
+                aria-label="Dark_Vocal_Texture_03.wav ya está en tu biblioteca"
+                title="EN TU BIBLIOTECA"
+              >
+                <i class="bi bi-check2" aria-hidden="true"></i
+                ><span>OWNED</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Reggaeton_Shaker_096.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Reggaeton_Shaker_096.wav</h3>
+                <p>
+                  CREATOR DEMO 011 <span>PERCUSSION · REGGAETON · LOOP</span>
+                </p>
+              </div>
+              <div
+                class="platform-wave platform-wave--three sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>B</span><span><small>BPM</small>96</span
+                ><span><small>TIME</small>00:04</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Reggaeton_Shaker_096.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Reggaeton_Shaker_096.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Acid_Bass_Loop_138.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Acid_Bass_Loop_138.wav</h3>
+                <p>Gonzalo MD88 <span>BASS · TECHNO · LOOP</span></p>
+                <span class="sounds-pack-context"
+                  >FROM PACK / BERLIN WAREHOUSE DRUMS</span
+                >
+              </div>
+              <div
+                class="platform-wave platform-wave--two sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>C#</span
+                ><span><small>BPM</small>138</span
+                ><span><small>TIME</small>00:08</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>3
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Acid_Bass_Loop_138.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Acid_Bass_Loop_138.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Industrial_Clap_014.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Industrial_Clap_014.wav</h3>
+                <p>
+                  CREATOR DEMO 002 <span>CLAP · TECH HOUSE · ONE SHOT</span>
+                </p>
+              </div>
+              <div
+                class="platform-wave platform-wave--one sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>D#</span
+                ><span><small>BPM</small>140</span
+                ><span><small>TIME</small>00:01</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Industrial_Clap_014.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Industrial_Clap_014.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Deep_House_Chord_122.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Deep_House_Chord_122.wav</h3>
+                <p>CREATOR DEMO 003 <span>SYNTH · DEEP HOUSE · LOOP</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--three sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>Am</span
+                ><span><small>BPM</small>122</span
+                ><span><small>TIME</small>00:08</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>2
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Deep_House_Chord_122.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Deep_House_Chord_122.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Techno_FX_Riser_09.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Techno_FX_Riser_09.wav</h3>
+                <p>CREATOR DEMO 018 <span>FX · TECHNO · ONE SHOT</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--two sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>F#</span
+                ><span><small>BPM</small>128</span
+                ><span><small>TIME</small>00:12</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>2
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Techno_FX_Riser_09.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Techno_FX_Riser_09.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Afterhours_Cymbal_008.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Afterhours_Cymbal_008.wav</h3>
+                <p>CREATOR DEMO 026 <span>FX · HOUSE · ONE SHOT</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--one sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>G</span
+                ><span><small>BPM</small>130</span
+                ><span><small>TIME</small>00:02</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>1
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Afterhours_Cymbal_008.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Afterhours_Cymbal_008.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+            <article class="sounds-result-row">
+              <button
+                class="platform-play sounds-play"
+                type="button"
+                disabled
+                aria-label="Escuchar Berlin_Metal_Perc_021.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-play-fill" aria-hidden="true"></i>
+              </button>
+              <div class="sounds-info">
+                <h3>Berlin_Metal_Perc_021.wav</h3>
+                <p>Gonzalo MD88 <span>PERCUSSION · TECHNO · LOOP</span></p>
+              </div>
+              <div
+                class="platform-wave platform-wave--three sounds-wave"
+                aria-hidden="true"
+              ></div>
+              <p class="sounds-spec">
+                <span><small>KEY</small>C</span
+                ><span><small>BPM</small>132</span
+                ><span><small>TIME</small>00:04</span>
+              </p>
+              <p class="sounds-cost">
+                <i class="bi bi-lightning-charge" aria-hidden="true"></i>2
+              </p>
+              <button
+                class="sounds-favorite"
+                type="button"
+                disabled
+                aria-label="Añadir Berlin_Metal_Perc_021.wav a favoritos, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-heart" aria-hidden="true"></i>
+              </button>
+              <button
+                class="sounds-unlock"
+                type="button"
+                disabled
+                aria-label="Añadir Berlin_Metal_Perc_021.wav, demo"
+                title="DEMO"
+              >
+                <i class="bi bi-plus-lg" aria-hidden="true"></i><span>ADD</span>
+              </button>
+            </article>
+          </div>
+
+          <div class="sounds-pagination">
+            <span class="student-label">SHOWING 12 OF 12,482 SOUNDS</span>
+            <button
+              class="student-button student-button--small"
+              type="button"
+              disabled
+              title="DEMO"
+            >
+              CARGAR MÁS SOUNDS
+              <i class="bi bi-arrow-down" aria-hidden="true"></i>
+            </button>
+            <span class="sounds-pagination-mark">01 / 1041</span>
+          </div>
+        </section>
+      </div>
+      <footer class="sounds-footer">
+        <span>GONZALO MD88 / SOUNDS MARKETPLACE</span
+        ><span class="student-demo">CATÁLOGO DEMO</span>
+      </footer>
+    </main>
+  </body>
+</html>
