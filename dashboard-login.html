@@ -1,256 +1,250 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <!-- ==================================================
-         CONFIGURACIÓN GENERAL
-    =================================================== -->
-
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <meta
       name="description"
-      content="Acceso privado al panel de administración del sitio."
+      content="Accede o crea tu cuenta de Gonzalo MD88. Una cuenta para explorar, aprender y crear."
     />
-
-    <title>Acceso privado | Gonzalo MD88</title>
-
-    <!-- Bootstrap Icons -->
+    <title>Account Entry | Gonzalo MD88</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     />
-
-    <!-- Hoja de estilos principal del sitio -->
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/dashboard-login.css" />
   </head>
+  <body class="student-page platform-page account-page">
+    <a class="student-skip" href="#account-main">Saltar al contenido</a>
 
-  <body class="dashboard-login-page">
-    <!-- ==================================================
-         HEADER
-    =================================================== -->
-
-    <header class="dashboard-login-header">
-      <div class="container dashboard-login-header__content">
-        <!--
-          Nombre global del sitio.
-          Se actualizará mediante site_settings.site_name.
-        -->
-        <a
-          class="dashboard-login-header__logo"
-          href="./index.html"
-          data-setting="site_name"
-          aria-label="Volver al sitio principal"
-        >
-          GONZALO MD88
+    <header class="platform-header account-header">
+      <div class="platform-container platform-header-inner">
+        <a class="platform-brand" href="./index.html" aria-label="Gonzalo MD88, inicio">
+          GONZALO MD88<span>/</span>
         </a>
-
-        <a
-          class="dashboard-login-header__back"
-          href="./index.html"
-          aria-label="Volver al sitio principal"
-        >
-          <i class="bi bi-arrow-left" aria-hidden="true"></i>
-          <span>Volver al sitio</span>
-        </a>
+        <nav class="platform-nav" aria-label="Navegación principal">
+          <a href="./sounds.html">SOUNDS</a>
+          <a href="./learn.html">LEARN</a>
+          <a href="./creators.html">CREATORS</a>
+          <a href="./pricing.html">PRICING</a>
+        </nav>
+        <div class="platform-header-actions">
+          <a
+            class="platform-login account-nav-active"
+            href="./dashboard-login.html"
+            aria-current="page"
+            >LOGIN</a
+          >
+        </div>
+        <details class="platform-mobile-nav account-mobile-nav">
+          <summary aria-label="Abrir navegación">
+            <i class="bi bi-list" aria-hidden="true"></i>
+          </summary>
+          <nav aria-label="Navegación móvil">
+            <a href="./sounds.html">SOUNDS</a>
+            <a href="./learn.html">LEARN</a>
+            <a href="./creators.html">CREATORS</a>
+            <a href="./pricing.html">PRICING</a>
+            <a href="./dashboard-login.html" aria-current="page">LOGIN</a>
+          </nav>
+        </details>
       </div>
     </header>
 
-    <!-- ==================================================
-         CONTENIDO PRINCIPAL
-    =================================================== -->
+    <main class="account-main" id="account-main">
+      <section class="account-identity" aria-labelledby="account-title">
+        <div class="account-eyebrow">
+          <span>ACCOUNT / 01</span>
+          <span>UNA CUENTA · MUCHAS POSIBILIDADES</span>
+        </div>
+        <h1 id="account-title">TODO TU UNIVERSO.<br />UNA SOLA CUENTA<span>.</span></h1>
+        <p class="account-intro">
+          Explora contenido, construye tu biblioteca y, si eres Creator,
+          gestiona también tu espacio desde la misma cuenta.
+        </p>
 
-    <main class="dashboard-login">
-      <!-- Fondo / ambiente visual -->
-      <div class="dashboard-login__background" aria-hidden="true">
-        <div class="dashboard-login__circle dashboard-login__circle--1"></div>
-        <div class="dashboard-login__circle dashboard-login__circle--2"></div>
-      </div>
+        <ol class="account-flow" aria-label="Del descubrimiento a la creación">
+          <li><span>01</span>DISCOVER</li>
+          <li><span>02</span>UNLOCK</li>
+          <li><span>03</span>LIBRARY</li>
+          <li><span>04</span>CREATE</li>
+        </ol>
 
-      <div class="container dashboard-login__container">
-        <!-- ==================================================
-             COLUMNA IZQUIERDA — IDENTIDAD
-        =================================================== -->
+        <p class="account-creator-note">
+          <span>¿CREAS MÚSICA O CONTENIDO?</span>
+          Puedes activar tu Creator Studio desde tu cuenta.
+        </p>
+      </section>
 
-        <section class="dashboard-login__intro">
-          <div class="dashboard-login__meta">
-            <span>PRIVATE ACCESS</span>
-            <span>CMS</span>
-          </div>
+      <section class="account-panel" aria-label="Acceso a tu cuenta">
+        <p class="account-panel-kicker">
+          <span>ACCOUNT ENTRY</span>
+          <span class="account-demo-tag">DEMO</span>
+        </p>
 
-          <p class="dashboard-login__eyebrow">PANEL DE ADMINISTRACIÓN</p>
-
-          <h1 class="dashboard-login__title">Gestiona tu universo creativo.</h1>
-
-          <p class="dashboard-login__description">
-            Accede al panel privado para actualizar los contenidos, productos,
-            lanzamientos, enlaces y ajustes globales del sitio.
-          </p>
-
-          <div class="dashboard-login__security">
-            <i class="bi bi-shield-lock" aria-hidden="true"></i>
-
-            <div>
-              <p class="dashboard-login__security-title">Acceso protegido</p>
-
-              <p class="dashboard-login__security-text">
-                Solo los administradores autorizados pueden acceder al CMS.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================================================
-             COLUMNA DERECHA — FORMULARIO
-        =================================================== -->
-
-        <section
-          class="dashboard-login__panel"
-          aria-labelledby="dashboard-login-title"
-        >
-          <div class="dashboard-login__panel-header">
-            <span class="dashboard-login__panel-number">01</span>
-
-            <div>
-              <p class="dashboard-login__panel-eyebrow">IDENTIFICACIÓN</p>
-
-              <h2
-                class="dashboard-login__panel-title"
-                id="dashboard-login-title"
-              >
-                Iniciar sesión
-              </h2>
-            </div>
-          </div>
-
-          <!-- ==================================================
-               MENSAJES DEL SISTEMA
-          =================================================== -->
-
-          <div
-            class="dashboard-login__message"
-            id="dashboard-login-message"
-            role="status"
-            aria-live="polite"
-            hidden
-          ></div>
-
-          <!-- ==================================================
-               FORMULARIO DE CONEXIÓN
-          =================================================== -->
-
-          <form
-            class="dashboard-login-form"
-            id="dashboard-login-form"
-            novalidate
+        <div class="account-tabs" role="tablist" aria-label="Acceso o registro">
+          <button
+            class="account-tab"
+            id="account-login-tab"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="account-login-panel"
+            tabindex="0"
           >
-            <!-- EMAIL -->
-            <div class="dashboard-login-form__group">
-              <label for="dashboard-email"> Correo electrónico </label>
+            INICIAR SESIÓN
+          </button>
+          <button
+            class="account-tab"
+            id="account-register-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="account-register-panel"
+            tabindex="-1"
+          >
+            CREAR CUENTA
+          </button>
+        </div>
 
-              <div class="dashboard-login-form__field">
-                <i class="bi bi-envelope" aria-hidden="true"></i>
+        <div
+          class="account-form-panel"
+          id="account-login-panel"
+          role="tabpanel"
+          aria-labelledby="account-login-tab"
+          tabindex="0"
+        >
+          <div class="account-form-heading">
+            <p class="account-form-step">01 / ACCESS</p>
+            <h2>Vuelve a tu espacio<span>.</span></h2>
+            <p>DEMO · No conectado; los datos no se envían.</p>
+          </div>
 
-                <input
-                  id="dashboard-email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="tu@email.com"
-                  required
-                />
-              </div>
+          <form class="account-form" id="account-login-form" novalidate>
+            <div class="account-field">
+              <label for="account-login-email">EMAIL</label>
+              <input
+                id="account-login-email"
+                type="email"
+                autocomplete="email"
+                placeholder="tu@email.com"
+              />
             </div>
-
-            <!-- PASSWORD -->
-            <div class="dashboard-login-form__group">
-              <label for="dashboard-password"> Contraseña </label>
-
-              <div class="dashboard-login-form__field">
-                <i class="bi bi-lock" aria-hidden="true"></i>
-
-                <input
-                  id="dashboard-password"
-                  name="password"
-                  type="password"
-                  autocomplete="current-password"
-                  placeholder="••••••••••••"
-                  required
-                />
-
-                <button
-                  class="dashboard-login-form__password-toggle"
-                  id="dashboard-password-toggle"
-                  type="button"
-                  aria-label="Mostrar contraseña"
-                  aria-pressed="false"
-                >
-                  <i
-                    class="bi bi-eye"
-                    id="dashboard-password-icon"
-                    aria-hidden="true"
-                  ></i>
-                </button>
-              </div>
+            <div class="account-field">
+              <label for="account-login-password">PASSWORD</label>
+              <input
+                id="account-login-password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="••••••••••"
+              />
             </div>
-
-            <!-- SUBMIT -->
-            <button
-              class="button button--light dashboard-login-form__submit"
-              id="dashboard-login-submit"
-              type="submit"
-            >
-              <span>Entrar al dashboard</span>
-
+            <div class="account-form-options">
+              <label class="account-check">
+                <input type="checkbox" />
+                <span>RECORDARME</span>
+              </label>
+              <button class="account-text-button" type="button">
+                ¿OLVIDASTE TU CONTRASEÑA?
+              </button>
+            </div>
+            <button class="account-submit" type="button">
+              <span>INICIAR SESIÓN</span>
               <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </button>
           </form>
 
-          <!-- ==================================================
-               INFORMACIÓN INFERIOR
-          =================================================== -->
+          <a class="account-demo-link" href="./member-dashboard.html">
+            <span>ENTRAR EN MEMBER SPACE</span>
+            <span>DEMO <i class="bi bi-arrow-up-right" aria-hidden="true"></i></span>
+          </a>
+        </div>
 
-          <div class="dashboard-login__footer">
-            <i class="bi bi-lock-fill" aria-hidden="true"></i>
-
-            <p>
-              La sesión se gestiona de forma segura mediante Supabase
-              Authentication.
-            </p>
+        <div
+          class="account-form-panel"
+          id="account-register-panel"
+          role="tabpanel"
+          aria-labelledby="account-register-tab"
+          tabindex="0"
+          hidden
+        >
+          <div class="account-form-heading">
+            <p class="account-form-step">02 / NEW ACCOUNT</p>
+            <h2>Empieza por explorar<span>.</span></h2>
+            <p>DEMO · No conectado; crear una cuenta no activa servicios.</p>
           </div>
-        </section>
-      </div>
+
+          <form class="account-form" id="account-register-form" novalidate>
+            <div class="account-field">
+              <label for="account-register-name">NOMBRE</label>
+              <input
+                id="account-register-name"
+                type="text"
+                autocomplete="name"
+                placeholder="Tu nombre"
+              />
+            </div>
+            <div class="account-field">
+              <label for="account-register-email">EMAIL</label>
+              <input
+                id="account-register-email"
+                type="email"
+                autocomplete="email"
+                placeholder="tu@email.com"
+              />
+            </div>
+            <div class="account-field">
+              <label for="account-register-password">PASSWORD</label>
+              <input
+                id="account-register-password"
+                type="password"
+                autocomplete="new-password"
+                placeholder="••••••••••"
+              />
+            </div>
+            <div class="account-field">
+              <label for="account-register-confirm">CONFIRMAR PASSWORD</label>
+              <input
+                id="account-register-confirm"
+                type="password"
+                autocomplete="new-password"
+                placeholder="••••••••••"
+              />
+            </div>
+            <label class="account-check account-terms">
+              <input type="checkbox" />
+              <span>ACEPTO LOS TÉRMINOS Y LA POLÍTICA DE PRIVACIDAD</span>
+            </label>
+            <button class="account-submit" type="button">
+              <span>CREAR CUENTA</span>
+              <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+
+        <div class="account-destination" aria-label="Destino después del acceso">
+          <p>DESPUÉS DE INICIAR SESIÓN <span>/ DEMO</span></p>
+          <div>
+            <span>→ MEMBER SPACE</span>
+            <span>CREATOR STUDIO si está habilitado</span>
+          </div>
+        </div>
+
+        <p class="account-membership-note">
+          CREATE ACCOUNT <span>→</span> EXPLORE
+          <span>→</span> MEMBERSHIP / CREDITS CUANDO CORRESPONDA
+        </p>
+      </section>
     </main>
 
-    <!-- ==================================================
-         FIRMA INFERIOR
-    =================================================== -->
-
-    <footer class="dashboard-login-footer">
-      <div class="container dashboard-login-footer__content">
-        <p>PANEL PRIVADO · CMS</p>
-
-        <p>
-          © 2026
-          <span data-setting="site_name">GONZALO MD88</span>
-        </p>
+    <footer class="account-footer">
+      <div class="platform-container">
+        <span>GONZALO MD88 / ACCOUNT ENTRY</span>
+        <span>DEMO · SIN AUTENTICACIÓN</span>
       </div>
     </footer>
 
-    <!-- ==================================================
-         SCRIPTS
-    =================================================== -->
-
-    <!-- Biblioteca oficial de Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Configuración Supabase existente -->
-    <script src="./js/supabase.js"></script>
-
-    <!-- JavaScript global del sitio -->
-    <script src="./js/main.js"></script>
-
-    <!-- JavaScript específico del login -->
+    <script src="./js/account-entry.js" defer></script>
   </body>
 </html>
